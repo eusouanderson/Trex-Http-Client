@@ -1,3 +1,10 @@
+# 1.0.0 (2026-10-06)
+
+
+### Bug Fixes
+
+* **tests:** unmount CodeEditor to prevent CodeMirror async update errors ([c2b684c](https://github.com/eusouanderson/Trex-Http-Client/commit/c2b684c7933d259f64ad45b2db68c4e9556ee7af))
+
 ## [1.0.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.0.0...v1.0.1) (2026-10-06)
 
 
