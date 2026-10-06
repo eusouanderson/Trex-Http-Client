@@ -1,8 +1,10 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import CodeEditor from '../index.vue';
 
 describe('CodeEditor Component', () => {
+  let wrapper: ReturnType<typeof mount> | undefined;
+
   beforeAll(() => {
     if (typeof Range.prototype.getClientRects === 'undefined') {
       Range.prototype.getClientRects = (): DOMRectList => [] as unknown as DOMRectList;
@@ -29,8 +31,13 @@ describe('CodeEditor Component', () => {
     }
   });
 
+  afterEach(() => {
+    wrapper?.unmount();
+    wrapper = undefined;
+  });
+
   it('should mount CodeEditor component properly', () => {
-    const wrapper = mount(CodeEditor, {
+    wrapper = mount(CodeEditor, {
       props: {
         modelValue: '{"hello": "world"}',
         readOnly: false,
@@ -41,7 +48,7 @@ describe('CodeEditor Component', () => {
   });
 
   it('should render search button and handle click', async () => {
-    const wrapper = mount(CodeEditor, {
+    wrapper = mount(CodeEditor, {
       props: {
         modelValue: '{"hello": "world"}',
         readOnly: false,
@@ -54,7 +61,7 @@ describe('CodeEditor Component', () => {
   });
 
   it('should not render search button when showSearch prop is false', () => {
-    const wrapper = mount(CodeEditor, {
+    wrapper = mount(CodeEditor, {
       props: {
         modelValue: '{}',
         showSearch: false,
