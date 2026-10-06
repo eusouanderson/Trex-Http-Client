@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.0.0...v1.0.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* make pwa icons relative to base url ([69bde5c](https://github.com/eusouanderson/Trex-Http-Client/commit/69bde5c00e35f4fdb33813bcdb329bea8698c77e))
+
 # 1.0.0 (2026-10-06)
 
 
