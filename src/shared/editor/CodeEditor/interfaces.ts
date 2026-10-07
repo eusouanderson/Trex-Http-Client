@@ -10,6 +10,7 @@ interface CodeEditorProps {
   maxHeight?: string;
   hideSearchButton?: boolean;
   showSearch?: boolean;
+  showCopy?: boolean;
 }
 
 type CodeEditorEmits = (e: 'update:modelValue' | 'change', value: string) => void;

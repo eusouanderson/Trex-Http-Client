@@ -1,5 +1,6 @@
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 import { computed, shallowRef } from 'vue';
+import { useClipboard } from '@vueuse/core';
 import type { Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 import { useSettings } from '../../../features/settings';
@@ -12,6 +13,9 @@ interface UseCodeEditorReturn {
   code: ComputedRef<string>;
   extensions: ComputedRef<Extension[]>;
   showSearch: ComputedRef<boolean>;
+  showCopy: ComputedRef<boolean>;
+  isCopied: Ref<boolean>;
+  copyCode: () => Promise<void>;
   handleUpdate: (value: string) => void;
   handleChange: (value: string) => void;
   handleReady: (payload: { view: EditorView }) => void;
@@ -32,6 +36,14 @@ const useCodeEditor = (
     }
     return true;
   });
+
+  const showCopy = computed<boolean>(() => props.showCopy !== false);
+
+  const { copy, copied: isCopied } = useClipboard({ source: code });
+
+  const copyCode = async (): Promise<void> => {
+    await copy(code.value);
+  };
 
   const extensions = computed<Extension[]>(() => {
     return themeService.buildExtensions(
@@ -64,6 +76,9 @@ const useCodeEditor = (
     code,
     extensions,
     showSearch,
+    showCopy,
+    isCopied,
+    copyCode,
     handleUpdate,
     handleChange,
     handleReady,

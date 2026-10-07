@@ -31,7 +31,7 @@ const {
 </script>
 
 <template>
-  <div v-if="activeTab" class="h-full flex flex-col bg-surface-panel overflow-hidden">
+  <div v-if="activeTab" class="h-full flex flex-col bg-surface-panel overflow-hidden select-text">
     <div class="p-4 border-b border-surface-border bg-surface-ground/30">
       <div class="flex items-center gap-2">
         <select

@@ -35,12 +35,13 @@ class CodeMirrorThemeService implements ICodeMirrorThemeService {
         '.cm-content': {
           caretColor: theme.keyColor,
           padding: '8px 0',
+          userSelect: 'text',
         },
         '.cm-cursor, .cm-dropCursor': {
           borderLeftColor: theme.keyColor,
         },
         '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backgroundColor: `${theme.keyColor}4D`,
         },
         '.cm-gutters': {
           backgroundColor: theme.backgroundColor,
@@ -145,10 +146,7 @@ class CodeMirrorThemeService implements ICodeMirrorThemeService {
     ];
 
     if (readOnly) {
-      extensions.push(
-        EditorState.readOnly.of(true),
-        EditorView.editable.of(false)
-      );
+      extensions.push(EditorState.readOnly.of(true));
     }
 
     return extensions;
