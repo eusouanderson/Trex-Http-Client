@@ -34,7 +34,7 @@ describe('AppLayout Component', () => {
 
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.text()).toContain('T-Rex');
-    expect(wrapper.find('img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
+    expect(wrapper.findComponent({ name: 'TrexLogo' }).exists()).toBe(true);
 
     const toggleSidebarBtn = wrapper.find('button[title="Alternar Barra Lateral"]');
     expect(toggleSidebarBtn.exists()).toBe(true);

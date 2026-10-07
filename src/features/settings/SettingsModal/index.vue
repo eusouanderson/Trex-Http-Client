@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
+import { TrexLogo } from '../../../shared/ui/TrexLogo';
 import { useSettings } from '../use-settings';
 import { useSettingsModal } from './use-settings-modal';
 
@@ -36,9 +37,7 @@ const {
     >
       <header class="flex items-center justify-between px-6 py-4 border-b border-surface-border bg-surface-ground/50">
         <div class="flex items-center gap-2">
-          <div class="flex items-center justify-center w-8 h-8 border rounded-lg bg-dino-500/10 border-dino-500/30">
-            <img src="/logos/Trex.png" alt="T-Rex" class="w-6 h-6 object-contain" />
-          </div>
+          <trex-logo size="sm" />
           <div>
             <h2 class="text-base font-semibold text-bone-100">Configurações do T-Rex</h2>
             <p class="text-xs text-fossil-400">Personalize seu ambiente, comportamento e HTTP client</p>

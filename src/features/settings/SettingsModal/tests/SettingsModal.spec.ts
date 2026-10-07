@@ -40,7 +40,7 @@ describe('SettingsModal Component', () => {
     const wrapper = mount(SettingsModal);
 
     expect(wrapper.find('h2').text()).toContain('Configurações do T-Rex');
-  expect(wrapper.find('header img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
+    expect(wrapper.findComponent({ name: 'TrexLogo' }).exists()).toBe(true);
 
     const jsonTabButton = wrapper
       .findAll('nav button')
