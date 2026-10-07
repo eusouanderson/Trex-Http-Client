@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRequest } from '../../../request';
 import { useCollectionTree } from '../use-collection-tree';
 
@@ -317,7 +317,7 @@ describe('useCollectionTree', () => {
     expect(selectedPayload).toEqual(item);
   });
 
-  it('should import a postman collection', () => {
+  it('should import a postman collection with variables to create an environment', () => {
     const tree = useCollectionTree();
     const postmanJson = {
       info: { name: 'Postman Import Test' },
@@ -334,6 +334,10 @@ describe('useCollectionTree', () => {
             }
           ]
         }
+      ],
+      variable: [
+        { key: 'baseUrl', value: 'https://api.test.com' },
+        { key: 'token', value: 'secret' }
       ]
     };
     

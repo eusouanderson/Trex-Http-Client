@@ -9,8 +9,8 @@ interface PostmanHeader {
 
 interface PostmanUrl {
   raw?: string;
-  query?: Array<{ key?: string; value?: string; disabled?: boolean }>;
-  variable?: Array<{ key?: string; value?: string }>;
+  query?: { key?: string; value?: string; disabled?: boolean }[];
+  variable?: { key?: string; value?: string }[];
 }
 
 interface PostmanUrlEncoded {
@@ -77,9 +77,9 @@ export class PostmanParserService {
 
     const variables = Array.isArray(parsed.variable)
       ? parsed.variable
-          .filter((v) => v.key !== undefined && v.key !== '')
+          .filter((v): v is typeof v & { key: string } => typeof v.key === 'string' && v.key !== '')
           .map((v) => ({
-            key: v.key ?? '',
+            key: v.key,
             value: v.value ?? '',
             enabled: v.disabled !== true,
           }))
