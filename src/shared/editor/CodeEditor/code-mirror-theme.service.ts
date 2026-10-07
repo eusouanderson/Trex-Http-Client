@@ -1,16 +1,16 @@
-import type { Extension } from '@codemirror/state';
-import { EditorState } from '@codemirror/state';
-import { EditorView, lineNumbers, keymap } from '@codemirror/view';
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { bracketMatching, HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { closeBrackets } from '@codemirror/autocomplete';
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { json } from '@codemirror/lang-json';
+import { bracketMatching, HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import {
-  search,
-  searchKeymap,
   highlightSelectionMatches,
   openSearchPanel,
+  search,
+  searchKeymap,
 } from '@codemirror/search';
+import type { Extension } from '@codemirror/state';
+import { EditorState } from '@codemirror/state';
+import { EditorView, keymap, lineNumbers } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import type { JsonThemeSettings } from '../../../features/settings/interfaces';
 import type { ICodeMirrorThemeService } from './interfaces';
@@ -145,7 +145,10 @@ class CodeMirrorThemeService implements ICodeMirrorThemeService {
     ];
 
     if (readOnly) {
-      extensions.push(EditorState.readOnly.of(true));
+      extensions.push(
+        EditorState.readOnly.of(true),
+        EditorView.editable.of(false)
+      );
     }
 
     return extensions;

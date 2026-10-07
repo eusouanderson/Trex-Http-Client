@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { defineEmits, defineProps, withDefaults, } from 'vue';
 import { Codemirror } from 'vue-codemirror';
-import type { CodeEditorProps, CodeEditorEmits } from './interfaces';
+import type { CodeEditorEmits, CodeEditorProps } from './interfaces';
 import { useCodeEditor } from './use-code-editor';
 
 const props = withDefaults(defineProps<CodeEditorProps>(), {
@@ -20,7 +21,7 @@ const {
 </script>
 
 <template>
-  <div class="relative h-full w-full rounded-lg overflow-hidden border border-surface-border bg-surface-ground group">
+  <div class="relative w-full h-full overflow-hidden border rounded-lg border-surface-border bg-surface-ground group">
     <button
       v-if="showSearch"
       type="button"
@@ -34,11 +35,10 @@ const {
     <codemirror
       :model-value="code"
       :extensions="extensions"
-      :disabled="readOnly"
       :placeholder="placeholder"
       :tab-size="2"
       :indent-with-tab="true"
-      class="h-full w-full text-xs font-mono"
+      class="w-full h-full font-mono text-xs"
       @ready="handleReady"
       @update:model-value="handleUpdate"
       @change="handleChange"
