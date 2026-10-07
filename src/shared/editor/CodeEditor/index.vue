@@ -43,5 +43,11 @@ const {
       @update:model-value="handleUpdate"
       @change="handleChange"
     />
+      <img
+        v-if="!code.trim()"
+        src="/logos/Trex.png"
+        alt="T-Rex"
+        class="absolute top-1/2 left-1/2 z-[1] w-64 h-64 max-w-[80%] max-h-[80%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-40 pointer-events-none select-none"
+      />
   </div>
 </template>

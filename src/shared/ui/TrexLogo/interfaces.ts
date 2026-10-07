@@ -1,9 +1,12 @@
-export interface TrexLogoProps {
+import type { ComputedRef } from 'vue';
+
+ interface TrexLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
-
-export interface UseTrexLogoReturn {
+ interface UseTrexLogoReturn {
   logoSrc: string;
-  containerClasses: import('vue').ComputedRef<string>;
-  innerClasses: import('vue').ComputedRef<string>;
+  containerClasses: ComputedRef<string>;
+  innerClasses: ComputedRef<string>;
 }
+
+export type { TrexLogoProps, UseTrexLogoReturn };

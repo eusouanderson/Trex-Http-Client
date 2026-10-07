@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import CodeEditor from '../index.vue';
 
 describe('CodeEditor Component', () => {
@@ -45,6 +45,32 @@ describe('CodeEditor Component', () => {
     });
 
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('should show a large transparent Trex watermark when the editor is empty', () => {
+    wrapper = mount(CodeEditor, {
+      props: {
+        modelValue: '',
+        readOnly: false,
+      },
+    });
+
+    const watermark = wrapper.find('img[alt="T-Rex"]');
+    expect(watermark.attributes('src')).toBe('/logos/Trex.png');
+    expect(watermark.classes()).toContain('w-64');
+    expect(watermark.classes()).toContain('opacity-40');
+    expect(watermark.classes()).toContain('pointer-events-none');
+  });
+
+  it('should hide the Trex watermark when the editor contains code', () => {
+    wrapper = mount(CodeEditor, {
+      props: {
+        modelValue: '{"hello":"world"}',
+        readOnly: false,
+      },
+    });
+
+    expect(wrapper.find('img[alt="T-Rex"]').exists()).toBe(false);
   });
 
   it('should render search button and handle click', async () => {

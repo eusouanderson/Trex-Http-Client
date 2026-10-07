@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defineOptions, defineProps, withDefaults, } from 'vue';
 import type { TrexLogoProps } from './interfaces';
 import { useTrexLogo } from './use-trex-logo';
 
@@ -13,15 +14,15 @@ const { logoSrc, containerClasses, innerClasses } = useTrexLogo(props);
 
 <template>
   <div
-    class="relative inline-flex items-center justify-center shrink-0 rounded-lg overflow-hidden animate-border-pulse shadow-sm"
+    class="relative inline-flex items-center justify-center overflow-hidden rounded-lg shadow-sm shrink-0 animate-border-pulse"
     :class="containerClasses"
   >
     <div class="absolute inset-0 bg-gradient-to-tr from-dino-500 via-dino-300 to-amber-400 animate-spin-slow opacity-90"></div>
     <div
-      class="relative z-10 w-full h-full bg-bone-50 flex items-center justify-center shadow-inner"
+      class="relative z-10 flex items-center justify-center w-full h-full shadow-inner bg-bone-50"
       :class="innerClasses"
     >
-      <img :src="logoSrc" alt="T-Rex" class="w-full h-full object-contain drop-shadow-sm" />
+      <img :src="logoSrc" alt="T-Rex" class="object-contain w-full h-full drop-shadow-sm" />
     </div>
   </div>
 </template>
