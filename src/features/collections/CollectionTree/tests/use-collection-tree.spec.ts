@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useRequest } from '../../../request';
 import { useCollectionTree } from '../use-collection-tree';
 
@@ -315,5 +315,41 @@ describe('useCollectionTree', () => {
 
     tree.select(item);
     expect(selectedPayload).toEqual(item);
+  });
+
+  it('should import a postman collection', () => {
+    const tree = useCollectionTree();
+    const postmanJson = {
+      info: { name: 'Postman Import Test' },
+      item: [
+        {
+          name: 'Folder',
+          item: [
+            {
+              name: 'Request',
+              request: {
+                method: 'GET',
+                url: { raw: 'https://test.com' }
+              }
+            }
+          ]
+        }
+      ]
+    };
+    
+    tree.importPostmanCollection(JSON.stringify(postmanJson));
+    const imported = tree.filteredCollections.value.find(c => c.name === 'Postman Import Test');
+    expect(imported).toBeDefined();
+    expect(imported?.items).toHaveLength(1);
+    expect(imported?.items[0].name).toBe('Folder / Request');
+  });
+
+  it('should trigger alert when import fails', () => {
+    const tree = useCollectionTree();
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    tree.importPostmanCollection('invalid json');
+    expect(alertMock).toHaveBeenCalledWith('Erro ao importar collection do Postman.');
+    alertMock.mockRestore();
   });
 });

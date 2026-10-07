@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defineEmits, defineProps, withDefaults, } from 'vue';
 import { Codemirror } from 'vue-codemirror';
 import type { CodeEditorEmits, CodeEditorProps } from './interfaces';
 import { useCodeEditor } from './use-code-editor';
@@ -23,7 +24,7 @@ const {
 </script>
 
 <template>
-  <div class="relative w-full h-full overflow-hidden border rounded-lg border-surface-border bg-surface-ground group select-text">
+  <div class="relative w-full h-full overflow-hidden border rounded-lg select-text border-surface-border bg-surface-ground group">
     <div class="absolute top-1.5 right-2 z-10 flex items-center gap-1.5 opacity-60 hover:opacity-100 group-hover:opacity-100 transition-opacity">
       <button
         v-if="showSearch"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import type { CollectionItem } from '../interfaces';
 import type { CollectionTreeProps, CollectionTreeEmits } from './interfaces';
 import { useCollectionTree } from './use-collection-tree';
@@ -31,7 +32,32 @@ const {
   startRenamingCollection,
   saveRenameCollection,
   cancelRenameCollection,
+  importPostmanCollection,
 } = useCollectionTree(handleSelect);
+
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+const triggerFileInput = (): void => {
+  fileInputRef.value?.click();
+};
+
+const handleFileImport = (event: Event): void => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const result = e.target?.result;
+    if (typeof result === 'string') {
+      importPostmanCollection(result);
+    }
+  };
+  reader.readAsText(file);
+  
+  // Reset input
+  target.value = '';
+};
 </script>
 
 <template>
@@ -39,14 +65,31 @@ const {
     <div class="p-3 border-b border-surface-border space-y-2">
       <div class="flex items-center justify-between">
         <span class="text-xs font-bold uppercase tracking-wider text-fossil-300">Coleções</span>
-        <button
-          type="button"
-          class="px-2 py-1 text-xs font-semibold text-dino-300 hover:text-dino-200 bg-dino-500/10 hover:bg-dino-500/20 border border-dino-500/30 rounded flex items-center gap-1 transition-colors"
-          @click="addNewCollection()"
-        >
-          <span>+</span>
-          <span>Nova</span>
-        </button>
+        <div class="flex gap-1.5">
+          <button
+            type="button"
+            class="px-2 py-1 text-xs font-semibold text-dino-300 hover:text-dino-200 bg-dino-500/10 hover:bg-dino-500/20 border border-dino-500/30 rounded flex items-center gap-1 transition-colors"
+            @click="triggerFileInput"
+          >
+            <span>📥</span>
+            <span>Importar</span>
+          </button>
+          <input
+            ref="fileInputRef"
+            type="file"
+            accept=".json"
+            class="hidden"
+            @change="handleFileImport"
+          />
+          <button
+            type="button"
+            class="px-2 py-1 text-xs font-semibold text-dino-300 hover:text-dino-200 bg-dino-500/10 hover:bg-dino-500/20 border border-dino-500/30 rounded flex items-center gap-1 transition-colors"
+            @click="addNewCollection()"
+          >
+            <span>+</span>
+            <span>Nova</span>
+          </button>
+        </div>
       </div>
 
       <div class="relative">
