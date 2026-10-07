@@ -138,13 +138,11 @@ describe('AppLayout Component', () => {
     const envSelector = wrapper.findComponent(EnvironmentSelector);
     if (envSelector.exists()) {
       envSelector.vm.$emit('open-manager');
-      envSelector.vm.$emit('openManager');
     }
 
     const colTree = wrapper.findComponent(CollectionTree);
     if (colTree.exists()) {
       colTree.vm.$emit('select-item', { id: 'dino-item', name: 'Dino', type: 'request' });
-      colTree.vm.$emit('selectItem', { id: 'dino-item', name: 'Dino', type: 'request' });
     }
 
     const globeBtn = wrapper.find('button[title*="Gerenciar Ambientes"]');

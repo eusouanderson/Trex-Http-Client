@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineEmits, defineProps, withDefaults, } from 'vue';
 import { Codemirror } from 'vue-codemirror';
 import type { CodeEditorEmits, CodeEditorProps } from './interfaces';
 import { useCodeEditor } from './use-code-editor';

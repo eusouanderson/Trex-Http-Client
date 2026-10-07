@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, } from 'vue';
+
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
 import type { ResponseViewerProps } from './interfaces';
 import { useResponseViewer } from './use-response-viewer';

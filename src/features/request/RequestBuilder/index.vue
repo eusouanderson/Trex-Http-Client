@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, defineProps, } from 'vue';
+
 import type { HttpMethod } from '../../../core/http/interfaces';
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
 import type { RequestBuilderEmits, RequestBuilderProps } from './interfaces';

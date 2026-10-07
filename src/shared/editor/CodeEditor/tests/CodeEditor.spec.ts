@@ -1,7 +1,23 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { ref } from 'vue';
 import CodeEditor from '../index.vue';
 
+import type * as vueuse from '@vueuse/core';
+
+vi.mock('@vueuse/core', async (importOriginal) => {
+  const original = await importOriginal<typeof vueuse>();
+  const mockedCopied = ref(false);
+  return {
+    ...original,
+    useClipboard: () => ({
+      copy: vi.fn().mockImplementation(() => {
+        mockedCopied.value = true;
+      }),
+      copied: mockedCopied,
+    }),
+  };
+});
 describe('CodeEditor Component', () => {
   let wrapper: ReturnType<typeof mount> | undefined;
 
@@ -96,5 +112,35 @@ describe('CodeEditor Component', () => {
 
     const searchBtn = wrapper.find('button[title*="Buscar"]');
     expect(searchBtn.exists()).toBe(false);
+  });
+
+  it('should render copy button and handle click', async () => {
+    wrapper = mount(CodeEditor, {
+      props: {
+        modelValue: '{"copy": "me"}',
+        showCopy: true,
+      },
+    });
+
+    const copyBtn = wrapper.find('button[title*="Copiar"]');
+    expect(copyBtn.exists()).toBe(true);
+    await copyBtn.trigger('click');
+    await wrapper.vm.$nextTick();
+    await new Promise(resolve => setTimeout(resolve, 50)); // allow useClipboard to update
+
+    const updatedCopyBtn = wrapper.find('button[title*="Copiado"]');
+    expect(updatedCopyBtn.exists()).toBe(true);
+  });
+
+  it('should not render copy button when showCopy prop is false', () => {
+    wrapper = mount(CodeEditor, {
+      props: {
+        modelValue: '{}',
+        showCopy: false,
+      },
+    });
+
+    const copyBtn = wrapper.find('button[title*="Copiar"]');
+    expect(copyBtn.exists()).toBe(false);
   });
 });
