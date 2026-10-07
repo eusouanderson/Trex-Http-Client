@@ -2,10 +2,10 @@
 import { Pane, Splitpanes } from 'splitpanes';
 import { VueDraggable } from 'vue-draggable-plus';
 import CollectionTree from '../../features/collections/CollectionTree/index.vue';
+import { EnvironmentManagerModal, EnvironmentSelector } from '../../features/environments';
 import RequestBuilder from '../../features/request/RequestBuilder/index.vue';
 import ResponseViewer from '../../features/response/ResponseViewer/index.vue';
 import SettingsModal from '../../features/settings/SettingsModal/index.vue';
-import { EnvironmentSelector, EnvironmentManagerModal } from '../../features/environments';
 import { useAppLayout } from './use-app-layout';
 
 const {
@@ -34,8 +34,8 @@ const {
     <header class="h-11 border-b border-surface-border bg-surface-panel flex items-center justify-between px-2 shrink-0 z-20 gap-2">
       <div class="flex items-center gap-2 shrink-0">
         <div class="flex items-center gap-1.5 cursor-pointer">
-          <div class="w-7 h-7 rounded-lg bg-dino-500/20 border border-dino-500/40 flex items-center justify-center text-dino-300 font-extrabold text-sm shadow-sm">
-            🦖
+          <div class="w-7 h-7 rounded-lg bg-dino-500/20 border border-dino-500/40 flex items-center justify-center shadow-sm">
+            <img src="/logos/Trex.png" alt="T-Rex" class="w-6 h-6 object-contain" />
           </div>
           <div class="hidden sm:block">
             <span class="font-black text-xs tracking-wider text-bone-100 uppercase">T-Rex</span>

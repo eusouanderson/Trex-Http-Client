@@ -1,6 +1,6 @@
-# Trex HTTP Client 🦖
+<h1><img src="public/logos/Trex.png" alt="T-Rex" width="36" /> Trex HTTP Client</h1>
 
-Bem-vindo ao **Trex**, o seu cliente HTTP com temática jurássica! 🦕
+Bem-vindo ao **Trex**, o seu cliente HTTP com temática jurássica! <img src="public/logos/Trex.png" alt="T-Rex" width="20" />
 
 O Trex foi criado para ser uma alternativa rápida, leve e direto no navegador para testar suas APIs (como o Postman ou Insomnia), com a vantagem de funcionar de forma offline-first e não exigir instalação de arquivos pesados.
 
@@ -65,4 +65,4 @@ Aqui estão algumas telas do aplicativo em funcionamento:
 * **Offline-First:** Seus dados (coleções e ambientes) são salvos de forma segura no seu próprio navegador.
 
 ---
-*Feito para tornar os testes de API mais simples e divertidos.* 🦖
+*Feito para tornar os testes de API mais simples e divertidos.* <img src="public/logos/Trex.png" alt="T-Rex" width="18" />

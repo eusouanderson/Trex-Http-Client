@@ -112,4 +112,5 @@ class SettingsEntity {
   }
 }
 
-export { SettingsEntity, JSON_THEME_PRESETS };
+export { JSON_THEME_PRESETS, SettingsEntity };
+

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { ResponseViewer } from '../../index';
 import { useResponseViewer } from '../use-response-viewer';
 
@@ -44,6 +44,7 @@ describe('ResponseViewer Component', () => {
     });
 
     expect(wrapper.text()).toContain('Aguardando resposta do T-Rex...');
+    expect(wrapper.find('img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
   });
 
   it('should render empty state when result is null and loading is false', () => {
@@ -55,6 +56,8 @@ describe('ResponseViewer Component', () => {
     });
 
     expect(wrapper.text()).toContain('Pronto para disparar');
+    expect(wrapper.find('img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
+    expect(wrapper.find('img[alt="T-Rex"]').classes()).toContain('w-16');
   });
 
   it('should render response details and switch between body and headers tabs', async () => {

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { mount, flushPromises } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRequest } from '../../use-request';
 import RequestBuilder from '../index.vue';
 
@@ -117,5 +117,6 @@ describe('RequestBuilder Component', () => {
 
     const wrapper = mount(RequestBuilder);
     expect(wrapper.text()).toContain('Nenhuma requisição aberta');
+    expect(wrapper.find('img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
   });
 });

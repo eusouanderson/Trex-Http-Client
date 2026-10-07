@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { mount } from '@vue/test-utils';
-import SettingsModal from '../index.vue';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { useSettings } from '../../use-settings';
+import SettingsModal from '../index.vue';
 
 describe('SettingsModal Component', () => {
   beforeAll(() => {
@@ -40,6 +40,7 @@ describe('SettingsModal Component', () => {
     const wrapper = mount(SettingsModal);
 
     expect(wrapper.find('h2').text()).toContain('Configurações do T-Rex');
+  expect(wrapper.find('header img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
 
     const jsonTabButton = wrapper
       .findAll('nav button')

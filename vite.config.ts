@@ -1,8 +1,8 @@
+import vue from '@vitejs/plugin-vue';
+import { execSync } from 'node:child_process';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
 import { VitePWA } from 'vite-plugin-pwa';
-import { execSync } from 'node:child_process';
 import packageJson from './package.json';
 
 const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
@@ -17,7 +17,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
+      includeAssets: ['logos/Trex.png'],
       manifest: {
         name: 'Trex HTTP Client',
         short_name: 'Trex',
@@ -28,27 +28,15 @@ export default defineConfig({
         orientation: 'portrait-primary',
         icons: [
           {
-            src: 'pwa-192x192.svg',
-            sizes: '192x192',
-            type: 'image/svg+xml',
+            src: 'logos/Trex.png',
+            sizes: '256x256',
+            type: 'image/png',
             purpose: 'any',
-          },
-          {
-            src: 'pwa-512x512.svg',
-            sizes: '512x512',
-            type: 'image/svg+xml',
-            purpose: 'any',
-          },
-          {
-            src: 'pwa-512x512.svg',
-            sizes: '512x512',
-            type: 'image/svg+xml',
-            purpose: 'maskable',
           },
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,ico}'],
+        globPatterns: ['**/*.{js,css,html,svg,ico,png}'],
       },
       devOptions: {
         enabled: true,

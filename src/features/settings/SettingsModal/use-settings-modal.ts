@@ -1,13 +1,13 @@
 import { ref } from 'vue';
 import type {
-  ThemePalette,
-  PanelOrientation,
-  UiDensity,
-  JsonPresetName,
-  JsonThemeSettings,
   JsonColorField,
   JsonPresetItem,
+  JsonPresetName,
+  JsonThemeSettings,
   JurassicThemeItem,
+  PanelOrientation,
+  ThemePalette,
+  UiDensity,
 } from '../interfaces';
 import { JSON_THEME_PRESETS } from '../settings.entity';
 import { useSettings } from '../use-settings';
@@ -40,7 +40,7 @@ const JURASSIC_THEMES_LIST: JurassicThemeItem[] = [
   {
     id: 'dino',
     label: 'TRex Jurassic',
-    icon: '🦖',
+    icon: 'logos/Trex.png',
     description: 'Tema fóssil profundo com acentos verde esmeralda e tons cretáceos.',
     previewColors: ['#141311', '#1c1b18', '#22c55e', '#86efac', '#fcd34d'],
   },
@@ -75,19 +75,19 @@ const JURASSIC_THEMES_LIST: JurassicThemeItem[] = [
   {
     id: 'brachiosaurus-light',
     label: 'Brachiosaurus Light',
-    icon: '🦕',
+    icon: 'logos/Trex.png',
     description: 'Um tema claro e tranquilo inspirado nas grandes planícies do jurássico, com tons azuis e esmeralda.',
     previewColors: ['#f8fafc', '#f1f5f9', '#0ea5e9', '#38bdf8', '#8b5cf6'],
   },
 ];
 
 const JSON_PRESETS_LIST: JsonPresetItem[] = [
-  { id: 'dino', label: 'TRex Jurassic', icon: '🦖' },
+  { id: 'dino', label: 'TRex Jurassic', icon: 'logos/Trex.png' },
   { id: 'trex-monokai', label: 'TRex Monokai', icon: '🌋' },
   { id: 'raptor-dracula', label: 'Raptor Dracula', icon: '🩸' },
   { id: 'pterodactyl-midnight', label: 'Pterodactyl Midnight', icon: '🌌' },
   { id: 'triceratops-amber', label: 'Triceratops Amber', icon: '🪨' },
-  { id: 'brachiosaurus-light', label: 'Brachiosaurus Light', icon: '🦕' },
+  { id: 'brachiosaurus-light', label: 'Brachiosaurus Light', icon: 'logos/Trex.png' },
 ];
 
 const JSON_COLOR_FIELDS: JsonColorField[] = [
@@ -216,5 +216,6 @@ const useSettingsModal = (): UseSettingsModalReturn => {
   };
 };
 
-export type { SettingsTab };
 export { useSettingsModal };
+export type { SettingsTab };
+

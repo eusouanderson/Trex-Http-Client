@@ -36,8 +36,8 @@ const {
     >
       <header class="flex items-center justify-between px-6 py-4 border-b border-surface-border bg-surface-ground/50">
         <div class="flex items-center gap-2">
-          <div class="flex items-center justify-center w-8 h-8 text-lg font-bold border rounded-lg bg-dino-500/10 border-dino-500/30 text-dino-400">
-            🦖
+          <div class="flex items-center justify-center w-8 h-8 border rounded-lg bg-dino-500/10 border-dino-500/30">
+            <img src="/logos/Trex.png" alt="T-Rex" class="w-6 h-6 object-contain" />
           </div>
           <div>
             <h2 class="text-base font-semibold text-bone-100">Configurações do T-Rex</h2>
@@ -156,7 +156,13 @@ const {
                 :class="settings.theme === themeItem.id ? 'border-dino-400 bg-dino-500/10 shadow-sm' : 'border-surface-border hover:bg-surface-hover'"
                 @click="setTheme(themeItem.id)"
               >
-                <span class="text-2xl shrink-0">{{ themeItem.icon }}</span>
+                <img
+                  v-if="themeItem.icon.startsWith('logos/')"
+                  :src="`/${themeItem.icon}`"
+                  alt="T-Rex"
+                  class="w-8 h-8 object-contain shrink-0"
+                />
+                <span v-else class="text-2xl shrink-0">{{ themeItem.icon }}</span>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between mb-1">
                     <span class="text-xs font-bold text-bone-100">{{ themeItem.label }}</span>

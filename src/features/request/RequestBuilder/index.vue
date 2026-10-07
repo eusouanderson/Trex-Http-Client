@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { CodeEditor } from '../../../shared/editor/CodeEditor';
+import { defineEmits, defineProps, } from 'vue';
 import type { HttpMethod } from '../../../core/http/interfaces';
-import type { RequestBuilderProps, RequestBuilderEmits } from './interfaces';
+import { CodeEditor } from '../../../shared/editor/CodeEditor';
+import type { RequestBuilderEmits, RequestBuilderProps } from './interfaces';
 import { useRequestBuilder } from './use-request-builder';
 
 defineProps<RequestBuilderProps>();
@@ -70,7 +71,7 @@ const {
           @click="send()"
         >
           <span v-if="isLoading" class="animate-spin text-sm">🔄</span>
-          <span v-else class="text-sm">🦖</span>
+          <img v-else src="/logos/Trex.png" alt="T-Rex" class="w-4 h-4 object-contain" />
           <span>{{ isLoading ? 'Enviando...' : 'Enviar' }}</span>
         </button>
       </div>
@@ -295,8 +296,8 @@ const {
   </div>
 
   <div v-else class="h-full flex flex-col items-center justify-center bg-surface-panel p-8 text-center select-none">
-    <div class="w-16 h-16 rounded-2xl bg-surface-ground border border-surface-border flex items-center justify-center text-3xl mb-4 shadow-inner">
-      🦖
+    <div class="w-16 h-16 rounded-2xl bg-surface-ground border border-surface-border flex items-center justify-center mb-4 shadow-inner">
+      <img src="/logos/Trex.png" alt="T-Rex" class="w-12 h-12 object-contain" />
     </div>
     <h3 class="text-base font-bold text-bone-100 mb-1">Nenhuma requisição aberta</h3>
     <p class="text-xs text-fossil-400 max-w-sm leading-relaxed">

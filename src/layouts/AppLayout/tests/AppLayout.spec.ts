@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { useRequest } from '../../../features/request';
+import { beforeEach, describe, expect, it } from 'vitest';
 import CollectionTree from '../../../features/collections/CollectionTree/index.vue';
 import { EnvironmentSelector } from '../../../features/environments';
+import { useRequest } from '../../../features/request';
 import AppLayout from '../index.vue';
 
 describe('AppLayout Component', () => {
@@ -34,6 +34,7 @@ describe('AppLayout Component', () => {
 
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.text()).toContain('T-Rex');
+    expect(wrapper.find('img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
 
     const toggleSidebarBtn = wrapper.find('button[title="Alternar Barra Lateral"]');
     expect(toggleSidebarBtn.exists()).toBe(true);
