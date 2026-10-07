@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.0.1...v1.1.0) (2026-10-07)
+
+
+### Features
+
+* icon / logo Trex ([7580d66](https://github.com/eusouanderson/Trex-Http-Client/commit/7580d662841e393571239d786c798cd3d1c97cb7))
+
 ## [1.0.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.0.0...v1.0.1) (2026-10-06)
 
 
