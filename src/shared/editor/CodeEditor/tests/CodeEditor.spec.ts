@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
+import type * as VueUseCore from '@vueuse/core';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { computed } from 'vue';
 import CodeEditor from '../index.vue';
-import type * as VueUseCore from '@vueuse/core';
 
 vi.mock('@vueuse/core', async (importOriginal) => {
   const actual = await importOriginal<typeof VueUseCore>();
@@ -17,21 +17,6 @@ vi.mock('@vueuse/core', async (importOriginal) => {
 
 import { useClipboard } from '@vueuse/core';
 
-import type * as vueuse from '@vueuse/core';
-
-vi.mock('@vueuse/core', async (importOriginal) => {
-  const original = await importOriginal<typeof vueuse>();
-  const mockedCopied = ref(false);
-  return {
-    ...original,
-    useClipboard: () => ({
-      copy: vi.fn().mockImplementation(() => {
-        mockedCopied.value = true;
-      }),
-      copied: mockedCopied,
-    }),
-  };
-});
 describe('CodeEditor Component', () => {
   let wrapper: ReturnType<typeof mount> | undefined;
 
