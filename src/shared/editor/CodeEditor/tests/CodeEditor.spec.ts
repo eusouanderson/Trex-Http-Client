@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { computed } from 'vue';
 import CodeEditor from '../index.vue';
 import type * as VueUseCore from '@vueuse/core';
 
@@ -10,7 +10,7 @@ vi.mock('@vueuse/core', async (importOriginal) => {
     ...actual,
     useClipboard: vi.fn(() => ({
       copy: vi.fn(),
-      copied: ref(false),
+      copied: computed(() => false),
     })),
   };
 });
@@ -140,10 +140,10 @@ describe('CodeEditor Component', () => {
   it('should render copied state properly', () => {
     vi.mocked(useClipboard).mockReturnValueOnce({
       copy: vi.fn(),
-      copied: ref(true),
-      isSupported: ref(true),
-      text: ref(''),
-    });
+      copied: computed(() => true),
+      isSupported: computed(() => true),
+      text: computed(() => ''),
+    } as any);
 
     wrapper = mount(CodeEditor, {
       props: {
