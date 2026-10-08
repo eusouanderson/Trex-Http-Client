@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import type { TrexLogoProps, UseTrexLogoReturn } from './interfaces';
 
 export const useTrexLogo = (props: TrexLogoProps): UseTrexLogoReturn => {
-  const logoSrc = '/logos/Trex.png';
+  const logoSrc = `${import.meta.env.BASE_URL}logos/Trex.png`;
 
   const containerClasses = computed(() => {
     switch (props.size) {

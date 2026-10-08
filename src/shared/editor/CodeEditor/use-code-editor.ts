@@ -10,6 +10,7 @@ import type { CodeEditorProps, CodeEditorEmits } from './interfaces';
 const themeService = new CodeMirrorThemeService();
 
 interface UseCodeEditorReturn {
+  logoSrc: string;
   code: ComputedRef<string>;
   extensions: ComputedRef<Extension[]>;
   showSearch: ComputedRef<boolean>;
@@ -26,6 +27,7 @@ const useCodeEditor = (
   props: CodeEditorProps,
   emit?: CodeEditorEmits,
 ): UseCodeEditorReturn => {
+  const logoSrc = `${import.meta.env.BASE_URL}logos/Trex.png`;
   const { settings } = useSettings();
   const editorView = shallowRef<EditorView | null>(null);
 
@@ -73,6 +75,7 @@ const useCodeEditor = (
   };
 
   return {
+    logoSrc,
     code,
     extensions,
     showSearch,

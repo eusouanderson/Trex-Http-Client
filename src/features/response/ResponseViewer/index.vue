@@ -13,6 +13,7 @@ const {
   formatDuration,
   getStatusColor,
   formatResponseData,
+  logoSrc,
 } = useResponseViewer();
 </script>
 
@@ -62,14 +63,14 @@ const {
 
     <div v-if="loading" class="flex-1 flex flex-col items-center justify-center p-8 space-y-3">
       <div class="w-12 h-12 rounded-full border-2 border-dino-500/20 border-t-dino-400 animate-spin flex items-center justify-center">
-        <img src="/logos/Trex.png" alt="T-Rex" class="w-8 h-8 object-contain" />
+        <img :src="logoSrc" alt="T-Rex" class="w-8 h-8 object-contain" />
       </div>
       <p class="text-xs font-semibold text-dino-300 animate-pulse">Aguardando resposta do T-Rex...</p>
     </div>
 
     <div v-else-if="!result" class="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-3">
       <div class="w-20 h-20 rounded-2xl bg-surface-ground border border-surface-border flex items-center justify-center">
-        <img src="/logos/Trex.png" alt="T-Rex" class="w-16 h-16 object-contain" />
+        <img :src="logoSrc" alt="T-Rex" class="w-16 h-16 object-contain" />
       </div>
       <div>
         <h3 class="text-sm font-semibold text-bone-200">Pronto para disparar</h3>

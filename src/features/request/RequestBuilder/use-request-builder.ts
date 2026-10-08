@@ -7,6 +7,7 @@ import type { RequestTabCategory } from './interfaces';
 const activeCategoryState = ref<RequestTabCategory>('params');
 
 interface UseRequestBuilderReturn {
+  logoSrc: string;
   activeCategory: typeof activeCategoryState;
   activeTab: ReturnType<typeof useRequest>['activeTab'];
   isLoading: ReturnType<typeof useRequest>['isLoading'];
@@ -25,6 +26,8 @@ interface UseRequestBuilderReturn {
 }
 
 const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
+  const logoSrc = `${import.meta.env.BASE_URL}logos/Trex.png`;
+
   const {
     activeTab,
     isLoading,
@@ -82,6 +85,7 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
   };
 
   return {
+    logoSrc,
     activeCategory: activeCategoryState,
     activeTab,
     isLoading,

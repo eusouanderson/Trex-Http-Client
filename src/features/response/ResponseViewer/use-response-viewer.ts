@@ -4,6 +4,7 @@ import type { ResponseViewTab } from '../interfaces';
 const activeTabState = ref<ResponseViewTab>('body');
 
 interface UseResponseViewerReturn {
+  logoSrc: string;
   activeTab: typeof activeTabState;
   setTab: (tab: ResponseViewTab) => void;
   formatBytes: (bytes: number) => string;
@@ -13,6 +14,7 @@ interface UseResponseViewerReturn {
 }
 
 const useResponseViewer = (): UseResponseViewerReturn => {
+  const logoSrc = `${import.meta.env.BASE_URL}logos/Trex.png`;
   const setTab = (tab: ResponseViewTab): void => {
     activeTabState.value = tab;
   };
@@ -63,6 +65,7 @@ const useResponseViewer = (): UseResponseViewerReturn => {
   };
 
   return {
+    logoSrc,
     activeTab: activeTabState,
     setTab,
     formatBytes,
