@@ -50,12 +50,12 @@ describe('useCodeEditor', () => {
     expect(editor.extensions.value.length).toBeGreaterThan(0);
   });
 
-  it('should support copyCode and showCopy logic', async () => {
-    const editorWithCopy = useCodeEditor({ modelValue: 'copy-me', showCopy: true });
-    expect(editorWithCopy.showCopy.value).toBe(true);
-    await expect(editorWithCopy.copyCode()).resolves.toBeUndefined();
-
-    const editorWithoutCopy = useCodeEditor({ modelValue: 'copy-me', showCopy: false });
-    expect(editorWithoutCopy.showCopy.value).toBe(false);
+  it('should support showCopy and handle copyCode', async () => {
+    const editor = useCodeEditor({ modelValue: 'copy-content', showCopy: true });
+    expect(editor.showCopy.value).toBe(true);
+    await expect(editor.copyCode()).resolves.toBeUndefined();
+    
+    const hiddenCopy = useCodeEditor({ modelValue: '', showCopy: false });
+    expect(hiddenCopy.showCopy.value).toBe(false);
   });
 });
