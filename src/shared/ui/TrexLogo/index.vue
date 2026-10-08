@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineOptions, defineProps, withDefaults, } from 'vue';
 import type { TrexLogoProps } from './interfaces';
 import { useTrexLogo } from './use-trex-logo';
 

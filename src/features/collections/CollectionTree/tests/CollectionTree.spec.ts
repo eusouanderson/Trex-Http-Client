@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { useCollections } from '../../use-collections';
 import CollectionTree from '../index.vue';
@@ -198,5 +198,47 @@ describe('CollectionTree Component', () => {
     if (delItemBtn.exists()) {
       await delItemBtn.trigger('dblclick');
     }
+  });
+
+  it('should trigger file input on import button click and handle file import', async () => {
+    const wrapper = mount(CollectionTree);
+    const importBtn = wrapper.findAll('button').find(btn => btn.text().includes('Importar'));
+    expect(importBtn).toBeDefined();
+
+    const fileInput = wrapper.find('input[type="file"]');
+    expect(fileInput.exists()).toBe(true);
+
+    // mock file click
+    const clickSpy = vi.spyOn(fileInput.element as HTMLInputElement, 'click');
+    await importBtn?.trigger('click');
+    expect(clickSpy).toHaveBeenCalled();
+
+    // mock file handle
+    const file = new File(['{"info": {"name": "Test"}, "item": []}'], 'collection.json', { type: 'application/json' });
+    Object.defineProperty(fileInput.element, 'files', {
+      value: [file],
+      configurable: true
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    await fileInput.trigger('change');
+    
+    // The reader reads file as text, we just need to wait a tick for reader onload
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    alertSpy.mockRestore();
+
+    const tree = useCollectionTree();
+    const imported = tree.filteredCollections.value.find(c => c.name === 'Test');
+    expect(imported).toBeDefined();
+
+    // Reset files for branch where no file is selected
+    Object.defineProperty(fileInput.element, 'files', {
+      value: [],
+      configurable: true
+    });
+    await fileInput.trigger('change');
   });
 });

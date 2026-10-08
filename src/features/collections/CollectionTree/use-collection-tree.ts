@@ -3,6 +3,8 @@ import { computed, ref, watch } from 'vue';
 import { useRequest } from '../../request';
 import type { Collection, CollectionItem } from '../interfaces';
 import { useCollections } from '../use-collections';
+import { PostmanParserService } from '../postman-parser.service';
+import { useEnvironments } from '../../environments/use-environments';
 
 const expandedSet = ref<Set<string>>(new Set(['col-default-trex']));
 const searchQueryState = ref<string>('');
@@ -33,6 +35,7 @@ interface UseCollectionTreeReturn {
   startRenamingCollection: (collection: Collection) => void;
   saveRenameCollection: (collectionId: string) => void;
   cancelRenameCollection: () => void;
+  importPostmanCollection: (jsonString: string) => void;
 }
 
 const useCollectionTree = (
@@ -49,6 +52,7 @@ const useCollectionTree = (
     deleteItem,
     selectItem,
   } = useCollections();
+  const { createEnvironment, updateEnvironment } = useEnvironments();
   const { renameTab, closeTab } = useRequest();
 
   watch(
@@ -213,6 +217,36 @@ const useCollectionTree = (
     editingCollectionNameState.value = '';
   };
 
+  const importPostmanCollection = (jsonString: string): void => {
+    try {
+      const parser = new PostmanParserService();
+      const parsed = parser.parse(jsonString);
+      
+      const newCol = createCollection(parsed.name);
+      
+      for (const reqItem of parsed.items) {
+        addItem(newCol.id, reqItem);
+      }
+
+      if (parsed.variables.length > 0) {
+        const env = createEnvironment(parsed.name);
+        env.variables = parsed.variables.map(v => ({
+          id: crypto.randomUUID(),
+          key: v.key,
+          value: v.value,
+          enabled: v.enabled
+        }));
+        updateEnvironment(env);
+      }
+      
+      const updated = new Set(expandedSet.value);
+      updated.add(newCol.id);
+      expandedSet.value = updated;
+    } catch {
+      window.alert('Erro ao importar collection do Postman.');
+    }
+  };
+
   return {
     searchQuery: searchQueryState,
     collections,
@@ -235,7 +269,9 @@ const useCollectionTree = (
     startRenamingCollection,
     saveRenameCollection,
     cancelRenameCollection,
+    importPostmanCollection,
   };
 };
 
 export { useCollectionTree };
+

@@ -2,6 +2,7 @@ import CollectionTree from './CollectionTree/index.vue';
 import { CollectionEntity } from './collection.entity';
 import { CollectionService } from './collection.service';
 import { CollectionRepository } from './collection.repository';
+import { PostmanParserService } from './postman-parser.service';
 import { useCollections } from './use-collections';
 
 export type {
@@ -18,6 +19,7 @@ export {
   CollectionService,
   CollectionRepository,
   CollectionTree,
+  PostmanParserService,
   useCollections,
 };
 
