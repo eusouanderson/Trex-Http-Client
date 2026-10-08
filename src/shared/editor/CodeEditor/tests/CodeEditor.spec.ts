@@ -143,7 +143,7 @@ describe('CodeEditor Component', () => {
       copied: computed(() => true),
       isSupported: computed(() => true),
       text: computed(() => ''),
-    } as any);
+    });
 
     wrapper = mount(CodeEditor, {
       props: {
