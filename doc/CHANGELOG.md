@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.2.0...v1.3.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **collections:** resolve ESLint and TS errors using optional chaining in tests ([73e6f02](https://github.com/eusouanderson/Trex-Http-Client/commit/73e6f023307284fba7823caaa292b97e31125904))
+* **collections:** resolve TS18048 undefined error in collection tree test ([cdca739](https://github.com/eusouanderson/Trex-Http-Client/commit/cdca739e9a613fe0e1045661be4a480d5ab4c8ae))
+* **tests:** resolve coverage and compiler macro warnings ([fd523a0](https://github.com/eusouanderson/Trex-Http-Client/commit/fd523a08e79a78b5eeee5e7217d589edabc45a58))
+
+
+### Features
+
+* **collections:** importação de collections do postman com extração de body e parametros ([b41a5eb](https://github.com/eusouanderson/Trex-Http-Client/commit/b41a5eb3cf2467b7a3bbe30c56d6f37b6a590d3a))
+
 # [1.2.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.1.0...v1.2.0) (2026-10-08)
 
 
