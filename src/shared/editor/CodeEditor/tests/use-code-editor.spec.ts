@@ -49,4 +49,13 @@ describe('useCodeEditor', () => {
     expect(editor.code.value).toBe('read-only-content');
     expect(editor.extensions.value.length).toBeGreaterThan(0);
   });
+
+  it('should support showCopy and handle copyCode', async () => {
+    const editor = useCodeEditor({ modelValue: 'copy-content', showCopy: true });
+    expect(editor.showCopy.value).toBe(true);
+    await expect(editor.copyCode()).resolves.toBeUndefined();
+    
+    const hiddenCopy = useCodeEditor({ modelValue: '', showCopy: false });
+    expect(hiddenCopy.showCopy.value).toBe(false);
+  });
 });

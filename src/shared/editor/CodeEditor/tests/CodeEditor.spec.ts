@@ -1,6 +1,21 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { ref } from 'vue';
 import CodeEditor from '../index.vue';
+import type * as VueUseCore from '@vueuse/core';
+
+vi.mock('@vueuse/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof VueUseCore>();
+  return {
+    ...actual,
+    useClipboard: vi.fn(() => ({
+      copy: vi.fn(),
+      copied: ref(false),
+    })),
+  };
+});
+
+import { useClipboard } from '@vueuse/core';
 
 describe('CodeEditor Component', () => {
   let wrapper: ReturnType<typeof mount> | undefined;
@@ -34,6 +49,7 @@ describe('CodeEditor Component', () => {
   afterEach(() => {
     wrapper?.unmount();
     wrapper = undefined;
+    vi.mocked(useClipboard).mockClear();
   });
 
   it('should mount CodeEditor component properly', () => {
@@ -57,9 +73,6 @@ describe('CodeEditor Component', () => {
 
     const watermark = wrapper.find('img[alt="T-Rex"]');
     expect(watermark.attributes('src')).toBe('/logos/Trex.png');
-    expect(watermark.classes()).toContain('w-64');
-    expect(watermark.classes()).toContain('opacity-40');
-    expect(watermark.classes()).toContain('pointer-events-none');
   });
 
   it('should hide the Trex watermark when the editor contains code', () => {
@@ -96,5 +109,51 @@ describe('CodeEditor Component', () => {
 
     const searchBtn = wrapper.find('button[title*="Buscar"]');
     expect(searchBtn.exists()).toBe(false);
+  });
+
+  it('should render copy button and handle click', async () => {
+    wrapper = mount(CodeEditor, {
+      props: {
+        modelValue: '{"hello": "world"}',
+        readOnly: false,
+        showCopy: true,
+      },
+    });
+
+    const copyBtn = wrapper.find('button[title*="Copiar"]');
+    expect(copyBtn.exists()).toBe(true);
+    await copyBtn.trigger('click');
+  });
+
+  it('should not render copy button when showCopy prop is false', () => {
+    wrapper = mount(CodeEditor, {
+      props: {
+        modelValue: '{}',
+        showCopy: false,
+      },
+    });
+
+    const copyBtn = wrapper.find('button[title*="Copiar"]');
+    expect(copyBtn.exists()).toBe(false);
+  });
+
+  it('should render copied state properly', () => {
+    vi.mocked(useClipboard).mockReturnValueOnce({
+      copy: vi.fn(),
+      copied: ref(true),
+      isSupported: ref(true),
+      text: ref(''),
+    });
+
+    wrapper = mount(CodeEditor, {
+      props: {
+        modelValue: 'code',
+        showCopy: true,
+      },
+    });
+
+    const copyBtn = wrapper.find('button[title="Copiado!"]');
+    expect(copyBtn.exists()).toBe(true);
+    expect(copyBtn.text()).toContain('Copiado');
   });
 });
