@@ -345,7 +345,7 @@ describe('useCollectionTree', () => {
     const imported = tree.filteredCollections.value.find(c => c.name === 'Postman Import Test');
     expect(imported).toBeDefined();
     expect(imported?.items).toHaveLength(1);
-    expect(imported?.items[0].name).toBe('Folder / Request');
+    expect(imported.items[0]?.name).toBe('Folder / Request');
   });
 
   it('should trigger alert when import fails', () => {

@@ -76,9 +76,9 @@ describe('PostmanParserService', () => {
 
     expect(result.name).toBe('Nested Collection');
     expect(result.items).toHaveLength(3);
-    expect(result.items[0].name).toBe('Folder 1 / Subfolder A / Nested Request');
-    expect(result.items[1].name).toBe('Folder 1 / Another Request');
-    expect(result.items[2].name).toBe('Folder 1 / Unnamed');
+    expect(result.items[0]?.name).toBe('Folder 1 / Subfolder A / Nested Request');
+    expect(result.items[1]?.name).toBe('Folder 1 / Another Request');
+    expect(result.items[2]?.name).toBe('Folder 1 / Unnamed');
   });
 
   it('should extract headers and body', () => {
@@ -107,8 +107,8 @@ describe('PostmanParserService', () => {
     const parser = new PostmanParserService();
     const result = parser.parse(JSON.stringify(postmanJson));
 
-    expect(result.items[0].headers).toEqual({ 'Content-Type': 'application/json', 'No-Value-Header': '' });
-    expect(result.items[0].body).toBe('{"key":"value"}');
+    expect(result.items[0]?.headers).toEqual({ 'Content-Type': 'application/json', 'No-Value-Header': '' });
+    expect(result.items[0]?.body).toBe('{"key":"value"}');
   });
   
   it('should throw an error for invalid JSON', () => {
@@ -161,11 +161,11 @@ describe('PostmanParserService', () => {
     const parser = new PostmanParserService();
     const result = parser.parse(JSON.stringify(postmanJson));
 
-    expect(result.items[0].url).toBe('https://api.example.com/users/123');
-    expect(result.items[0].params).toEqual({ page: '1', novalue: '' });
-    expect(result.items[1].url).toBe('https://api.example.com/simple');
-    expect(result.items[1].method).toBe('GET');
-    expect(result.variables[1].value).toBe('');
+    expect(result.items[0]?.url).toBe('https://api.example.com/users/123');
+    expect(result.items[0]?.params).toEqual({ page: '1', novalue: '' });
+    expect(result.items[1]?.url).toBe('https://api.example.com/simple');
+    expect(result.items[1]?.method).toBe('GET');
+    expect(result.variables[1]?.value).toBe('');
   });
 
   it('should handle urlencoded body and missing raw body', () => {
@@ -203,7 +203,7 @@ describe('PostmanParserService', () => {
     const parser = new PostmanParserService();
     const result = parser.parse(JSON.stringify(postmanJson));
 
-    expect(result.items[0].body).toBe(JSON.stringify({ field1: 'value1', novalue: '' }, null, 2));
-    expect(result.items[1].body).toBe('');
+    expect(result.items[0]?.body).toBe(JSON.stringify({ field1: 'value1', novalue: '' }, null, 2));
+    expect(result.items[1]?.body).toBe('');
   });
 });

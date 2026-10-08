@@ -209,8 +209,8 @@ describe('CollectionTree Component', () => {
     expect(fileInput.exists()).toBe(true);
 
     // mock file click
-    const clickSpy = vi.spyOn(fileInput.element, 'click');
-    await importBtn.trigger('click');
+    const clickSpy = vi.spyOn(fileInput.element as HTMLInputElement, 'click');
+    await importBtn?.trigger('click');
     expect(clickSpy).toHaveBeenCalled();
 
     // mock file handle
