@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.3.0...v1.3.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* **code-editor:** remove mock duplicado do clipboard ([e74177e](https://github.com/eusouanderson/Trex-Http-Client/commit/e74177ee5f772709fc4ad0f60ddead2f8c089d42))
+
 # [1.3.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.2.0...v1.3.0) (2026-10-08)
 
 
