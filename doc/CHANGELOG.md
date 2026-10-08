@@ -1,3 +1,18 @@
+# [1.2.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.1.0...v1.2.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* ajuste no editor ([5cd4899](https://github.com/eusouanderson/Trex-Http-Client/commit/5cd4899e12ea4b95498d862aec3dd5571b5d59d2))
+* **test:** use computed instead of ref for useClipboard mock ([6848711](https://github.com/eusouanderson/Trex-Http-Client/commit/6848711416b037791a3ab6a6e06833b79b8080b4))
+
+
+### Features
+
+* **editor:** add text selection support and copy to clipboard ([2695aba](https://github.com/eusouanderson/Trex-Http-Client/commit/2695aba6c36fc1b5048b64d3e22dbd8413ec28b9))
+* **ui:** add animated TrexLogo component ([3505e62](https://github.com/eusouanderson/Trex-Http-Client/commit/3505e62b179784782d0202734fd3ee4648ab6d9d))
+* **ui:** add animated TrexLogo component ([afee25c](https://github.com/eusouanderson/Trex-Http-Client/commit/afee25cc2376f9c35a9b80d742e1aa7058fa330a))
+
 # [1.1.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.0.1...v1.1.0) (2026-10-07)
 
 
