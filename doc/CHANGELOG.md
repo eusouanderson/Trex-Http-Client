@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.3.1...v1.3.2) (2026-10-08)
+
+
+### Bug Fixes
+
+* **ui:** resolve dynamic paths for trex logo using vite base url ([5f56503](https://github.com/eusouanderson/Trex-Http-Client/commit/5f565039254d9ea1e7db834b78721dc8a223172f))
+
 ## [1.3.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.3.0...v1.3.1) (2026-10-08)
 
 
