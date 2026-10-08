@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
+import type * as VueUseCore from '@vueuse/core';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { computed } from 'vue';
 import CodeEditor from '../index.vue';
-import type * as VueUseCore from '@vueuse/core';
 
 vi.mock('@vueuse/core', async (importOriginal) => {
   const actual = await importOriginal<typeof VueUseCore>();
