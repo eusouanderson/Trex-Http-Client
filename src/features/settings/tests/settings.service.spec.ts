@@ -89,6 +89,7 @@ describe('SettingsService', () => {
           nullColor: '#64748b',
           bracketColor: '#e2e8f0',
         },
+        customThemes: [],
       }),
       save: (s: ClientSettings) => {
         savedList.push(s);
@@ -113,6 +114,7 @@ describe('SettingsService', () => {
             nullColor: '#938d82',
             bracketColor: '#cdbca4',
           },
+          customThemes: [],
         };
       },
     };
@@ -128,4 +130,54 @@ describe('SettingsService', () => {
     expect(wasReset).toBe(true);
     expect(res.theme).toBe('dino');
   });
+
+  it('should manage custom themes directly and through repository', () => {
+    const dummyCustom = {
+      id: 'custom-velociraptor',
+      name: 'Velociraptor Teal',
+      icon: '🦖',
+      description: 'Teal velociraptor theme',
+      previewColors: ['#0f2b2b'],
+      colors: {
+        surfaceGround: '#0f2b2b',
+        surfacePanel: '#173d3d',
+        surfaceCard: '#1f4f4f',
+        surfaceBorder: '#296363',
+        surfaceHover: '#337878',
+        accent: '#2dd4bf',
+        accentLight: '#5eead4',
+        accentBorder: '#14b8a6',
+      },
+      jsonTheme: {
+        backgroundColor: '#0f2b2b',
+        keyColor: '#2dd4bf',
+        stringColor: '#fcd34d',
+        numberColor: '#60a5fa',
+        booleanColor: '#f87171',
+        nullColor: '#938d82',
+        bracketColor: '#cdbca4',
+      },
+    };
+
+    service.addCustomTheme(dummyCustom);
+    expect(service.getSettings().customThemes).toHaveLength(1);
+    expect(service.getCustomTheme('custom-velociraptor')).toEqual(dummyCustom);
+
+    service.removeCustomTheme('custom-velociraptor');
+    expect(service.getSettings().customThemes).toHaveLength(0);
+    expect(service.getCustomTheme('custom-velociraptor')).toBeUndefined();
+
+    const savedList: ClientSettings[] = [];
+    const mockRepo = {
+      load: async () => Promise.resolve(),
+      getSettings: () => ({ ...service.getSettings(), customThemes: [dummyCustom] }),
+      save: (s: ClientSettings) => {
+        savedList.push(s);
+      },
+      reset: () => ({ ...service.getSettings(), customThemes: [dummyCustom] }),
+    };
+    const repoService = new SettingsService(undefined, mockRepo);
+    expect(repoService.getCustomTheme('custom-velociraptor')).toEqual(dummyCustom);
+  });
 });
+

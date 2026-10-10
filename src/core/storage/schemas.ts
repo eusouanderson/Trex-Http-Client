@@ -52,15 +52,6 @@ const environmentSchema = z.object({
   updatedAt: z.number(),
 });
 
-const themePaletteSchema = z.enum([
-  'dino',
-  'trex-monokai',
-  'raptor-dracula',
-  'pterodactyl-midnight',
-  'triceratops-amber',
-  'brachiosaurus-light',
-]);
-
 const jsonPresetNameSchema = z.enum([
   'dino',
   'trex-monokai',
@@ -82,8 +73,39 @@ const jsonThemeSettingsSchema = z.object({
   bracketColor: z.string(),
 });
 
+const customThemeColorsSchema = z.object({
+  surfaceGround: z.string(),
+  surfacePanel: z.string(),
+  surfaceCard: z.string(),
+  surfaceBorder: z.string(),
+  surfaceHover: z.string(),
+  accent: z.string(),
+  accentLight: z.string(),
+  accentBorder: z.string(),
+});
+
+const customThemeJsonThemeSchema = z.object({
+  backgroundColor: z.string().min(1),
+  keyColor: z.string().min(1),
+  stringColor: z.string().min(1),
+  numberColor: z.string().min(1),
+  booleanColor: z.string().min(1),
+  nullColor: z.string().min(1),
+  bracketColor: z.string().min(1),
+});
+
+const customThemeSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  icon: z.string().min(1),
+  description: z.string(),
+  previewColors: z.array(z.string()),
+  colors: customThemeColorsSchema,
+  jsonTheme: customThemeJsonThemeSchema,
+});
+
 const clientSettingsSchema = z.object({
-  theme: themePaletteSchema,
+  theme: z.string().min(1),
   orientation: z.enum(['horizontal', 'vertical']),
   density: z.enum(['compact', 'comfortable']),
   defaultTimeout: z.number().positive(),
@@ -91,6 +113,7 @@ const clientSettingsSchema = z.object({
   followRedirects: z.boolean(),
   globalHeaders: z.record(z.string()),
   jsonTheme: jsonThemeSettingsSchema,
+  customThemes: z.array(customThemeSchema).default([]),
 });
 
 const requestHistoryItemSchema = z.object({
@@ -126,6 +149,8 @@ export {
   environmentVariableSchema,
   environmentSchema,
   jsonThemeSettingsSchema,
+  customThemeColorsSchema,
+  customThemeSchema,
   clientSettingsSchema,
   requestHistoryItemSchema,
   validateCollection,

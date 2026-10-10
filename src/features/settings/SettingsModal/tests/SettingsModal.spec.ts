@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSettings } from '../../use-settings';
 import SettingsModal from '../index.vue';
 
@@ -180,4 +180,117 @@ describe('SettingsModal Component', () => {
     await closeXBtn.trigger('click');
     expect(isOpen.value).toBe(false);
   });
+
+  it('should allow triggering file upload and template download in theme tab', async () => {
+    const wrapper = mount(SettingsModal);
+
+    const themeTabButton = wrapper
+      .findAll('nav button')
+      .find((btn) => btn.text().includes('Tema Jurássico'));
+    await themeTabButton?.trigger('click');
+
+    const downloadBtn = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Modelo JSON'));
+    expect(downloadBtn).toBeDefined();
+
+    const createObjectURL = vi.fn().mockReturnValue('blob:test');
+    const revokeObjectURL = vi.fn();
+    window.URL.createObjectURL = createObjectURL;
+    window.URL.revokeObjectURL = revokeObjectURL;
+
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
+      return undefined;
+    });
+    await downloadBtn?.trigger('click');
+    clickSpy.mockRestore();
+
+    const uploadBtn = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Importar Tema'));
+    expect(uploadBtn).toBeDefined();
+
+    const fileInput = wrapper.find('input[type="file"]');
+    expect(fileInput.exists()).toBe(true);
+
+    const inputClickSpy = vi.spyOn(fileInput.element as HTMLInputElement, 'click');
+    await uploadBtn?.trigger('click');
+    expect(inputClickSpy).toHaveBeenCalled();
+    inputClickSpy.mockRestore();
+
+    const validJson = JSON.stringify({
+      id: 'custom-velociraptor-neon',
+      name: 'Velociraptor Neon',
+      icon: '🦖',
+      description: 'Velociraptor custom',
+      colors: {
+        surfaceGround: '#0c1a10',
+        surfacePanel: '#14291a',
+        surfaceCard: '#1d3824',
+        surfaceBorder: '#27472f',
+        surfaceHover: '#33573c',
+        accent: '#22c55e',
+        accentLight: '#4ade80',
+        accentBorder: '#16a34a',
+      },
+    });
+
+    const file = new File([validJson], 'theme.json', { type: 'application/json' });
+    Object.defineProperty(fileInput.element, 'files', {
+      value: [file],
+      writable: true,
+    });
+    await fileInput.trigger('change');
+    await new Promise((r) => setTimeout(r, 20));
+
+    const { settings } = useSettings();
+    expect(settings.value.theme).toBe('custom-velociraptor-neon');
+    expect(settings.value.customThemes).toHaveLength(1);
+
+    await wrapper.vm.$nextTick();
+
+    const deleteBtn = wrapper.find('button[title="Excluir tema customizado"]');
+    if (deleteBtn.exists()) {
+      await deleteBtn.trigger('click');
+      expect(settings.value.customThemes).toHaveLength(0);
+    }
+
+    Object.defineProperty(fileInput.element, 'files', {
+      value: [],
+      writable: true,
+    });
+    await fileInput.trigger('change');
+
+    const invalidFile = new File(['not valid json'], 'bad.json', { type: 'application/json' });
+    Object.defineProperty(fileInput.element, 'files', {
+      value: [invalidFile],
+      writable: true,
+    });
+    await fileInput.trigger('change');
+    await new Promise((r) => setTimeout(r, 20));
+    await wrapper.vm.$nextTick();
+
+    const errorBanner = wrapper.find('.bg-magma-500\\/10');
+    expect(errorBanner.exists()).toBe(true);
+
+    const nonStringFile = new File([''], 'empty.json', { type: 'application/json' });
+    const originalFileReader = window.FileReader;
+    class MockFileReader {
+      public onload: ((e: { target: { result: ArrayBuffer } }) => void) | null = null;
+      public readAsText(): void {
+        if (this.onload) {
+          this.onload({ target: { result: new ArrayBuffer(0) } });
+        }
+      }
+    }
+    // @ts-expect-error mock FileReader
+    window.FileReader = MockFileReader;
+    Object.defineProperty(fileInput.element, 'files', {
+      value: [nonStringFile],
+      writable: true,
+    });
+    await fileInput.trigger('change');
+    window.FileReader = originalFileReader;
+  });
 });
+

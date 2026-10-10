@@ -1,15 +1,17 @@
-import { ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, ref } from 'vue';
 import type {
+  CustomTheme,
   JsonColorField,
   JsonPresetItem,
   JsonPresetName,
   JsonThemeSettings,
   JurassicThemeItem,
   PanelOrientation,
-  ThemePalette,
   UiDensity,
 } from '../interfaces';
 import { JSON_THEME_PRESETS } from '../settings.entity';
+import { ThemeParserService } from '../theme-parser.service';
 import { useSettings } from '../use-settings';
 
 type SettingsTab = 'general' | 'theme' | 'json' | 'network';
@@ -75,7 +77,7 @@ const JURASSIC_THEMES_LIST: JurassicThemeItem[] = [
   {
     id: 'brachiosaurus-light',
     label: 'Brachiosaurus Light',
-    icon: 'logos/Trex.png',
+    icon: '🦕',
     description: 'Um tema claro e tranquilo inspirado nas grandes planícies do jurássico, com tons azuis e esmeralda.',
     previewColors: ['#f8fafc', '#f1f5f9', '#0ea5e9', '#38bdf8', '#8b5cf6'],
   },
@@ -87,7 +89,7 @@ const JSON_PRESETS_LIST: JsonPresetItem[] = [
   { id: 'raptor-dracula', label: 'Raptor Dracula', icon: '🩸' },
   { id: 'pterodactyl-midnight', label: 'Pterodactyl Midnight', icon: '🌌' },
   { id: 'triceratops-amber', label: 'Triceratops Amber', icon: '🪨' },
-  { id: 'brachiosaurus-light', label: 'Brachiosaurus Light', icon: 'logos/Trex.png' },
+  { id: 'brachiosaurus-light', label: 'Brachiosaurus Light', icon: '🦕' },
 ];
 
 const JSON_COLOR_FIELDS: JsonColorField[] = [
@@ -100,15 +102,19 @@ const JSON_COLOR_FIELDS: JsonColorField[] = [
   { key: 'nullColor', label: 'Nulos (null)' },
 ];
 
+const themeParser = new ThemeParserService();
+
 interface UseSettingsModalReturn {
   activeTab: typeof activeTabState;
   settings: ReturnType<typeof useSettings>['settings'];
-  jurassicThemes: JurassicThemeItem[];
+  jurassicThemes: ComputedRef<JurassicThemeItem[]>;
+  customThemes: ComputedRef<CustomTheme[]>;
+  customThemeError: Ref<string | null>;
   jsonPreviewCode: string;
   jsonPresets: JsonPresetItem[];
   jsonColorFields: JsonColorField[];
   setTab: (tab: SettingsTab) => void;
-  setTheme: (theme: ThemePalette) => void;
+  setTheme: (themeId: string) => void;
   setOrientation: (orientation: PanelOrientation) => void;
   setDensity: (density: UiDensity) => void;
   setTimeoutValue: (timeoutMs: number) => void;
@@ -116,28 +122,72 @@ interface UseSettingsModalReturn {
   toggleFollowRedirects: () => void;
   setJsonColor: (field: keyof Omit<JsonThemeSettings, 'preset'>, color: string) => void;
   setJsonPreset: (preset: JsonPresetName) => void;
+  importCustomTheme: (jsonString: string) => { success: boolean; error?: string };
+  deleteCustomTheme: (themeId: string) => void;
+  downloadThemeTemplate: () => void;
   resetAll: () => void;
   close: () => void;
 }
 
 const activeTabState = ref<SettingsTab>('general');
+const customThemeErrorState = ref<string | null>(null);
 
 const useSettingsModal = (): UseSettingsModalReturn => {
-  const { settings, updateSettings, resetSettings, closeSettings } = useSettings();
+  const {
+    settings,
+    updateSettings,
+    resetSettings,
+    closeSettings,
+    addCustomTheme,
+    removeCustomTheme,
+  } = useSettings();
+
+  const jurassicThemes = computed<JurassicThemeItem[]>(() => {
+    const customItems: JurassicThemeItem[] = settings.value.customThemes.map((c) => ({
+      id: c.id,
+      label: c.name,
+      icon: c.icon,
+      description: c.description,
+      previewColors: c.previewColors,
+    }));
+    return [...JURASSIC_THEMES_LIST, ...customItems];
+  });
+
+  const customThemes = computed<CustomTheme[]>(() => settings.value.customThemes);
 
   const setTab = (tab: SettingsTab): void => {
     activeTabState.value = tab;
   };
 
-  const setTheme = (theme: ThemePalette): void => {
-    const presetConfig = JSON_THEME_PRESETS[theme];
-    updateSettings({
-      theme,
-      jsonTheme: {
-        preset: theme,
-        ...presetConfig,
-      },
-    });
+  const setTheme = (themeId: string): void => {
+    if (Object.prototype.hasOwnProperty.call(JSON_THEME_PRESETS, themeId)) {
+      const builtinPreset = JSON_THEME_PRESETS[themeId as keyof typeof JSON_THEME_PRESETS];
+      updateSettings({
+        theme: themeId,
+        jsonTheme: {
+          preset: themeId as JsonPresetName,
+          ...builtinPreset,
+        },
+      });
+      return;
+    }
+
+    const custom = settings.value.customThemes.find((t) => t.id === themeId);
+    if (custom) {
+      updateSettings({
+        theme: themeId,
+        jsonTheme: {
+          preset: 'custom',
+          backgroundColor: custom.jsonTheme.backgroundColor,
+          keyColor: custom.jsonTheme.keyColor,
+          stringColor: custom.jsonTheme.stringColor,
+          numberColor: custom.jsonTheme.numberColor,
+          booleanColor: custom.jsonTheme.booleanColor,
+          nullColor: custom.jsonTheme.nullColor,
+          bracketColor: custom.jsonTheme.bracketColor,
+        },
+      });
+    }
   };
 
   const setOrientation = (orientation: PanelOrientation): void => {
@@ -187,8 +237,43 @@ const useSettingsModal = (): UseSettingsModalReturn => {
     setTheme(preset);
   };
 
+  const importCustomTheme = (
+    jsonString: string,
+  ): { success: boolean; error?: string } => {
+    try {
+      const parsed = themeParser.parse(jsonString);
+      addCustomTheme(parsed);
+      setTheme(parsed.id);
+      customThemeErrorState.value = null;
+      return { success: true };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Falha ao processar o arquivo JSON de tema.';
+      customThemeErrorState.value = msg;
+      return { success: false, error: msg };
+    }
+  };
+
+  const deleteCustomTheme = (themeId: string): void => {
+    removeCustomTheme(themeId);
+  };
+
+  const downloadThemeTemplate = (): void => {
+    if (typeof window === 'undefined' || typeof window.URL.createObjectURL !== 'function') return;
+    const templateContent = themeParser.generateTemplate();
+    const blob = new Blob([templateContent], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'trex-theme-template.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
   const resetAll = (): void => {
     resetSettings();
+    customThemeErrorState.value = null;
   };
 
   const close = (): void => {
@@ -198,7 +283,9 @@ const useSettingsModal = (): UseSettingsModalReturn => {
   return {
     activeTab: activeTabState,
     settings,
-    jurassicThemes: JURASSIC_THEMES_LIST,
+    jurassicThemes,
+    customThemes,
+    customThemeError: customThemeErrorState,
     jsonPreviewCode: JSON_PREVIEW_CODE,
     jsonPresets: JSON_PRESETS_LIST,
     jsonColorFields: JSON_COLOR_FIELDS,
@@ -211,6 +298,9 @@ const useSettingsModal = (): UseSettingsModalReturn => {
     toggleFollowRedirects,
     setJsonColor,
     setJsonPreset,
+    importCustomTheme,
+    deleteCustomTheme,
+    downloadThemeTemplate,
     resetAll,
     close,
   };
@@ -218,4 +308,3 @@ const useSettingsModal = (): UseSettingsModalReturn => {
 
 export { useSettingsModal };
 export type { SettingsTab };
-

@@ -86,6 +86,7 @@ describe('SqlitePersistenceStorage', () => {
           nullColor: '#938d82',
           bracketColor: '#cdbca4',
         },
+        customThemes: [],
       };
 
       await storage.settings.saveSettings(settings);

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useCollections } from '../../../features/collections';
+import { useSettings } from '../../../features/settings';
 import { useAppLayout } from '../use-app-layout';
 
 describe('useAppLayout', () => {
@@ -126,5 +127,47 @@ describe('useAppLayout', () => {
     });
 
     expect(layout.tabs.value.some((t) => t.id === 'custom-item-2')).toBe(true);
+  });
+
+  it('should compute customThemeStyles when a custom theme is selected', () => {
+    const layout = useAppLayout();
+    const { addCustomTheme, updateSettings, resetSettings } = useSettings();
+
+    resetSettings();
+    expect(layout.customThemeStyles.value).toEqual({});
+
+    addCustomTheme({
+      id: 'custom-layout-test',
+      name: 'Custom Layout Test',
+      icon: '🎨',
+      description: 'Desc',
+      previewColors: ['#123456'],
+      colors: {
+        surfaceGround: '#112233',
+        surfacePanel: '#223344',
+        surfaceCard: '#334455',
+        surfaceBorder: '#445566',
+        surfaceHover: '#556677',
+        accent: '#667788',
+        accentLight: '#778899',
+        accentBorder: '#8899aa',
+      },
+      jsonTheme: {
+        backgroundColor: '#112233',
+        keyColor: '#667788',
+        stringColor: '#fcd34d',
+        numberColor: '#60a5fa',
+        booleanColor: '#f87171',
+        nullColor: '#938d82',
+        bracketColor: '#cdbca4',
+      },
+    });
+
+    updateSettings({ theme: 'custom-layout-test' });
+    expect(layout.customThemeStyles.value['--color-surface-ground-rgb']).toBeDefined();
+    expect(layout.customThemeStyles.value['--color-accent-rgb']).toBeDefined();
+
+    resetSettings();
+    expect(layout.customThemeStyles.value).toEqual({});
   });
 });

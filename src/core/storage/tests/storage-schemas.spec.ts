@@ -133,9 +133,63 @@ describe('Storage Schemas (Zod)', () => {
     expect(parsed.orientation).toBe('horizontal');
   });
 
+  it('should validate client settings with custom themes', () => {
+    const raw = {
+      theme: 'my-custom-theme',
+      orientation: 'vertical',
+      density: 'compact',
+      defaultTimeout: 5000,
+      defaultRetryAttempts: 1,
+      followRedirects: false,
+      globalHeaders: {},
+      jsonTheme: {
+        preset: 'custom',
+        backgroundColor: '#000000',
+        keyColor: '#111111',
+        stringColor: '#222222',
+        numberColor: '#333333',
+        booleanColor: '#444444',
+        nullColor: '#555555',
+        bracketColor: '#666666',
+      },
+      customThemes: [
+        {
+          id: 'my-custom-theme',
+          name: 'Custom Theme',
+          icon: '🎨',
+          description: 'Desc',
+          previewColors: ['#000', '#111'],
+          colors: {
+            surfaceGround: '#000',
+            surfacePanel: '#111',
+            surfaceCard: '#222',
+            surfaceBorder: '#333',
+            surfaceHover: '#444',
+            accent: '#555',
+            accentLight: '#666',
+            accentBorder: '#777',
+          },
+          jsonTheme: {
+            backgroundColor: '#000',
+            keyColor: '#555',
+            stringColor: '#fcd34d',
+            numberColor: '#60a5fa',
+            booleanColor: '#f87171',
+            nullColor: '#938d82',
+            bracketColor: '#cdbca4',
+          },
+        },
+      ],
+    };
+
+    const parsed = validateClientSettings(raw);
+    expect(parsed.theme).toBe('my-custom-theme');
+    expect(parsed.customThemes).toHaveLength(1);
+  });
+
   it('should throw error when client settings are invalid', () => {
     const invalid = {
-      theme: 'unknown-theme',
+      theme: '',
       defaultTimeout: -1,
     };
     expect(() => validateClientSettings(invalid)).toThrow();

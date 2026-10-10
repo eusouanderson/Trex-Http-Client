@@ -123,6 +123,7 @@ describe('DexiePersistenceStorage (IndexedDB)', () => {
           nullColor: '#a8a29e',
           bracketColor: '#fed7aa',
         },
+        customThemes: [],
       };
 
       await storage.settings.saveSettings(settings);
