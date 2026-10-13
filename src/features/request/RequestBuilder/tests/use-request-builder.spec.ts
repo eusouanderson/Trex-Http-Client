@@ -64,6 +64,9 @@ describe('useRequestBuilder', () => {
 
     builder.setBodyType('text');
     expect(builder.activeTab.value?.bodyType).toBe('text');
+
+    builder.setAuth({ type: 'bearer', token: 'token-builder', prefix: 'Bearer', enabled: true });
+    expect(builder.activeTab.value?.auth?.type).toBe('bearer');
   });
 
   it('should invoke send and handle callback', async () => {

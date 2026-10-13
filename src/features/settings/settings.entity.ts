@@ -1,6 +1,14 @@
-import type { ClientSettings, JsonPresetName, JsonThemeSettings } from './interfaces';
+import type {
+  ClientSettings,
+  CustomTheme,
+  JsonPresetName,
+  JsonThemeSettings,
+} from './interfaces';
 
-const JSON_THEME_PRESETS: Record<Exclude<JsonPresetName, 'custom'>, Omit<JsonThemeSettings, 'preset'>> = {
+const JSON_THEME_PRESETS: Record<
+  Exclude<JsonPresetName, 'custom'>,
+  Omit<JsonThemeSettings, 'preset'>
+> = {
   dino: {
     backgroundColor: '#141311',
     keyColor: '#86efac',
@@ -70,6 +78,7 @@ class SettingsEntity {
       preset: 'dino',
       ...JSON_THEME_PRESETS.dino,
     },
+    customThemes: [],
   };
 
   private currentSettings: ClientSettings;
@@ -82,6 +91,7 @@ class SettingsEntity {
         ...SettingsEntity.DEFAULT_SETTINGS.jsonTheme,
         ...(initial?.jsonTheme ?? {}),
       },
+      customThemes: initial?.customThemes ? [...initial.customThemes] : [],
     };
   }
 
@@ -89,28 +99,68 @@ class SettingsEntity {
     return {
       ...this.currentSettings,
       jsonTheme: { ...this.currentSettings.jsonTheme },
+      customThemes: [...this.currentSettings.customThemes],
     };
   }
 
-  public update(partial: Partial<ClientSettings>): ClientSettings {
+  public readonly update = (partial: Partial<ClientSettings>): ClientSettings => {
     this.currentSettings = {
       ...this.currentSettings,
       ...partial,
       jsonTheme: partial.jsonTheme
         ? { ...this.currentSettings.jsonTheme, ...partial.jsonTheme }
         : this.currentSettings.jsonTheme,
+      customThemes: partial.customThemes
+        ? [...partial.customThemes]
+        : this.currentSettings.customThemes,
     };
-    return { ...this.currentSettings };
-  }
+    return { ...this.value };
+  };
 
-  public reset(): ClientSettings {
+  public readonly addCustomTheme = (theme: CustomTheme): ClientSettings => {
+    const existingIndex = this.currentSettings.customThemes.findIndex(
+      (t) => t.id === theme.id,
+    );
+    if (existingIndex >= 0) {
+      const nextThemes = [...this.currentSettings.customThemes];
+      nextThemes[existingIndex] = theme;
+      this.currentSettings.customThemes = nextThemes;
+    } else {
+      this.currentSettings.customThemes = [
+        ...this.currentSettings.customThemes,
+        theme,
+      ];
+    }
+    return { ...this.value };
+  };
+
+  public readonly removeCustomTheme = (themeId: string): ClientSettings => {
+    this.currentSettings.customThemes = this.currentSettings.customThemes.filter(
+      (t) => t.id !== themeId,
+    );
+    if (this.currentSettings.theme === themeId) {
+      this.currentSettings.theme = SettingsEntity.DEFAULT_SETTINGS.theme;
+      this.currentSettings.jsonTheme = {
+        ...SettingsEntity.DEFAULT_SETTINGS.jsonTheme,
+      };
+    }
+    return { ...this.value };
+  };
+
+  public readonly getCustomTheme = (
+    themeId: string,
+  ): CustomTheme | undefined => {
+    return this.currentSettings.customThemes.find((t) => t.id === themeId);
+  };
+
+  public readonly reset = (): ClientSettings => {
     this.currentSettings = {
       ...SettingsEntity.DEFAULT_SETTINGS,
       jsonTheme: { ...SettingsEntity.DEFAULT_SETTINGS.jsonTheme },
+      customThemes: [],
     };
-    return { ...this.currentSettings };
-  }
+    return { ...this.value };
+  };
 }
 
 export { JSON_THEME_PRESETS, SettingsEntity };
-

@@ -1,10 +1,13 @@
 import type { ComputedRef } from 'vue';
 import { computed, ref } from 'vue';
 import { useCollections } from '../collections';
-import type { CollectionItem } from '../collections/interfaces';
+import type { Collection, CollectionItem } from '../collections/interfaces';
 import type { ExecutionResult, KeyValuePair, RequestTab } from './interfaces';
 import { RequestRunnerService } from './request-runner.service';
 import { useEnvironments } from '../environments';
+import { createDefaultAuthRegistry } from '../../core/security';
+import { VariableResolverService } from '../../core/variables';
+import { RequestPreparationService } from './request-preparation.service';
 
 const defaultTab: RequestTab = {
   id: 'req-dino-1',
@@ -15,6 +18,7 @@ const defaultTab: RequestTab = {
   headers: [{ id: 'h1', key: 'Accept', value: 'application/json', enabled: true }],
   bodyType: 'none',
   body: '',
+  auth: { type: 'none' },
   isDirty: false,
 };
 
@@ -23,6 +27,9 @@ const activeTabIdState = ref<string>(defaultTab.id);
 const executionResultState = ref<ExecutionResult | null>(null);
 const isLoadingState = ref<boolean>(false);
 const requestRunner = new RequestRunnerService();
+const authRegistry = createDefaultAuthRegistry();
+const variableResolver = new VariableResolverService();
+const requestPreparationService = new RequestPreparationService(authRegistry, variableResolver);
 
 interface UseRequestReturn {
   tabs: typeof tabsState;
@@ -94,6 +101,7 @@ const useRequest = (): UseRequestReturn => {
       headers: [],
       bodyType: 'none',
       body: '',
+      auth: { type: 'none' },
       isDirty: false,
       ...initial,
     };
@@ -124,6 +132,9 @@ const useRequest = (): UseRequestReturn => {
     }
     if (patch.status !== undefined) {
       collectionPatch.status = patch.status;
+    }
+    if (patch.auth !== undefined) {
+      collectionPatch.auth = patch.auth;
     }
 
     if (Object.keys(collectionPatch).length > 0) {
@@ -186,25 +197,21 @@ const useRequest = (): UseRequestReturn => {
     }
     isLoadingState.value = true;
     try {
-      const { interpolate } = useEnvironments();
-      
-      const tabToExecute = { ...activeTab.value };
-      tabToExecute.url = interpolate(tabToExecute.url);
-      tabToExecute.body = interpolate(tabToExecute.body);
-      
-      tabToExecute.params = tabToExecute.params.map((p) => ({
-        ...p,
-        key: interpolate(p.key),
-        value: interpolate(p.value),
-      }));
+      const { activeEnvironment } = useEnvironments();
+      const { collections } = useCollections();
 
-      tabToExecute.headers = tabToExecute.headers.map((h) => ({
-        ...h,
-        key: interpolate(h.key),
-        value: interpolate(h.value),
-      }));
+      const activeEnv = activeEnvironment.value;
+      let parentCollection: Collection | null = null;
+      if (activeTab.value.collectionId !== undefined && activeTab.value.collectionId.length > 0) {
+        parentCollection = collections.value.find((c) => c.id === activeTab.value?.collectionId) ?? null;
+      }
 
-      const result = await requestRunner.execute(tabToExecute, timeoutMs);
+      const prepared = await requestPreparationService.prepare(activeTab.value, {
+        environment: activeEnv,
+        collection: parentCollection,
+      });
+
+      const result = await requestRunner.execute(activeTab.value, timeoutMs, prepared);
       executionResultState.value = result;
       updateActiveTab({ status: result.status });
     } finally {

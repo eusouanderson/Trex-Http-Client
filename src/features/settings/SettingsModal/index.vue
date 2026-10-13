@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
+import { ThemeIcon } from '../../../shared/ui/ThemeIcon';
 import { TrexLogo } from '../../../shared/ui/TrexLogo';
 import { useSettings } from '../use-settings';
 import { useSettingsModal } from './use-settings-modal';
@@ -11,6 +13,7 @@ const {
   activeTab,
   settings,
   jurassicThemes,
+  customThemeError,
   jsonPreviewCode,
   jsonColorFields,
   setTab,
@@ -21,9 +24,38 @@ const {
   setRetryAttempts,
   toggleFollowRedirects,
   setJsonColor,
+  importCustomTheme,
+  deleteCustomTheme,
+  downloadThemeTemplate,
   resetAll,
   close,
 } = useSettingsModal();
+
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+const triggerFileInput = (): void => {
+  fileInputRef.value?.click();
+};
+
+const handleFileImport = (event: Event): void => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const result = e.target?.result;
+    if (typeof result === 'string') {
+      importCustomTheme(result);
+    }
+  };
+  reader.readAsText(file);
+  target.value = '';
+};
+
+const isCustomTheme = (themeId: string): boolean => {
+  return settings.value.customThemes.some((t) => t.id === themeId);
+};
 </script>
 
 <template>
@@ -140,39 +172,89 @@ const {
           </div>
 
           <div v-if="activeTab === 'theme'" class="space-y-4">
-            <div class="flex items-center justify-between mb-2">
-              <label class="block text-xs font-semibold text-bone-200">Temas Predefinidos Jurássicos</label>
-              <span class="text-[11px] text-fossil-400">
-                Tema ativo: <strong class="font-mono uppercase text-dino-400">{{ settings.theme }}</strong>
-              </span>
+            <div class="flex items-center justify-between pb-2 border-b border-surface-border">
+              <div>
+                <label class="block text-xs font-semibold text-bone-200">Temas Jurássicos & Customizados</label>
+                <span class="text-[11px] text-fossil-400">
+                  Tema ativo: <strong class="font-mono uppercase text-dino-400">{{ settings.theme }}</strong>
+                </span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input
+                  ref="fileInputRef"
+                  type="file"
+                  accept=".json,application/json"
+                  class="hidden"
+                  @change="handleFileImport"
+                />
+                <button
+                  type="button"
+                  class="px-2.5 py-1.5 text-xs bg-surface-card hover:bg-surface-hover border border-surface-border text-bone-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+                  title="Baixar modelo JSON para criar seu próprio tema"
+                  @click="downloadThemeTemplate"
+                >
+                  <span>📄</span>
+                  <span>Modelo JSON</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1.5 text-xs bg-dino-500 hover:bg-dino-600 text-surface-ground font-semibold rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+                  title="Carregar arquivo JSON com seu tema personalizado"
+                  @click="triggerFileInput"
+                >
+                  <span>📥</span>
+                  <span>Importar Tema</span>
+                </button>
+              </div>
             </div>
+
+            <div
+              v-if="customThemeError"
+              class="p-3 text-xs border rounded-lg bg-magma-500/10 border-magma-500/30 text-magma-400 flex items-center justify-between"
+            >
+              <span>{{ customThemeError }}</span>
+            </div>
+
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <button
                 v-for="themeItem in jurassicThemes"
                 :key="themeItem.id"
                 type="button"
-                class="p-3.5 rounded-xl border text-left transition-all flex items-start gap-3"
+                class="p-3.5 rounded-xl border text-left transition-all flex items-start gap-3 relative group"
                 :class="settings.theme === themeItem.id ? 'border-dino-400 bg-dino-500/10 shadow-sm' : 'border-surface-border hover:bg-surface-hover'"
                 @click="setTheme(themeItem.id)"
               >
-                <img
-                  v-if="themeItem.icon.startsWith('logos/')"
-                  :src="`/${themeItem.icon}`"
-                  alt="T-Rex"
-                  class="w-8 h-8 object-contain shrink-0"
-                />
-                <span v-else class="text-2xl shrink-0">{{ themeItem.icon }}</span>
+                <theme-icon :icon="themeItem.icon" size="md" />
+
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-bold text-bone-100">{{ themeItem.label }}</span>
-                    <span
-                      v-if="settings.theme === themeItem.id"
-                      class="text-[10px] text-dino-400 font-semibold uppercase"
-                    >
-                      Ativo
-                    </span>
+                    <span class="text-xs font-bold text-bone-100 truncate">{{ themeItem.label }}</span>
+                    <div class="flex items-center gap-1.5 shrink-0 ml-1">
+                      <span
+                        v-if="isCustomTheme(themeItem.id)"
+                        class="text-[9px] px-1.5 py-0.5 rounded bg-surface-border text-fossil-300 font-mono"
+                      >
+                        Custom
+                      </span>
+                      <span
+                        v-if="settings.theme === themeItem.id"
+                        class="text-[10px] text-dino-400 font-semibold uppercase"
+                      >
+                        Ativo
+                      </span>
+                      <button
+                        v-if="isCustomTheme(themeItem.id)"
+                        type="button"
+                        title="Excluir tema customizado"
+                        class="p-0.5 text-fossil-400 hover:text-magma-400 opacity-60 hover:opacity-100 transition-opacity"
+                        @click.stop="deleteCustomTheme(themeItem.id)"
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   </div>
-                  <p class="text-[11px] text-fossil-400 mb-2 leading-relaxed">{{ themeItem.description }}</p>
+                  <p class="text-[11px] text-fossil-400 mb-2 leading-relaxed line-clamp-2">{{ themeItem.description }}</p>
                   <div class="flex items-center gap-1.5">
                     <span
                       v-for="color in themeItem.previewColors"
@@ -229,8 +311,6 @@ const {
           </div>
 
           <div v-if="activeTab === 'json'" class="space-y-6">
-          
-
             <div>
               <label class="block mb-2 text-xs font-semibold text-bone-200">Personalizar Cores de Sintaxe</label>
               <div class="grid grid-cols-1 gap-3 p-4 border sm:grid-cols-2 bg-surface-ground/40 rounded-xl border-surface-border">
@@ -297,5 +377,3 @@ const {
     </div>
   </div>
 </template>
-
-

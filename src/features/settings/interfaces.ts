@@ -1,10 +1,13 @@
-type ThemePalette =
+type BuiltinThemePalette =
   | 'dino'
   | 'trex-monokai'
   | 'raptor-dracula'
   | 'pterodactyl-midnight'
   | 'triceratops-amber'
   | 'brachiosaurus-light';
+
+type ThemePalette = BuiltinThemePalette | (string & {});
+
 type PanelOrientation = 'horizontal' | 'vertical';
 type UiDensity = 'compact' | 'comfortable';
 type JsonPresetName =
@@ -39,15 +42,46 @@ interface JsonPresetItem {
 }
 
 interface JurassicThemeItem {
-  id: ThemePalette;
+  id: string;
   label: string;
   icon: string;
   description: string;
   previewColors: string[];
 }
 
+interface CustomThemeColors {
+  surfaceGround: string;
+  surfacePanel: string;
+  surfaceCard: string;
+  surfaceBorder: string;
+  surfaceHover: string;
+  accent: string;
+  accentLight: string;
+  accentBorder: string;
+}
+
+interface CustomThemeJsonTheme {
+  backgroundColor: string;
+  keyColor: string;
+  stringColor: string;
+  numberColor: string;
+  booleanColor: string;
+  nullColor: string;
+  bracketColor: string;
+}
+
+interface CustomTheme {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  previewColors: string[];
+  colors: CustomThemeColors;
+  jsonTheme: CustomThemeJsonTheme;
+}
+
 interface ClientSettings {
-  theme: ThemePalette;
+  theme: string;
   orientation: PanelOrientation;
   density: UiDensity;
   defaultTimeout: number;
@@ -55,12 +89,16 @@ interface ClientSettings {
   followRedirects: boolean;
   globalHeaders: Record<string, string>;
   jsonTheme: JsonThemeSettings;
+  customThemes: CustomTheme[];
 }
 
 interface ISettingsService {
   getSettings(): ClientSettings;
   updateSettings(partial: Partial<ClientSettings>): ClientSettings;
   resetSettings(): ClientSettings;
+  addCustomTheme(theme: CustomTheme): ClientSettings;
+  removeCustomTheme(themeId: string): ClientSettings;
+  getCustomTheme(themeId: string): CustomTheme | undefined;
 }
 
 interface ILocalSettingsRepository {
@@ -71,6 +109,7 @@ interface ILocalSettingsRepository {
 }
 
 export type {
+  BuiltinThemePalette,
   ThemePalette,
   PanelOrientation,
   UiDensity,
@@ -79,8 +118,10 @@ export type {
   JsonColorField,
   JsonPresetItem,
   JurassicThemeItem,
+  CustomThemeColors,
+  CustomThemeJsonTheme,
+  CustomTheme,
   ClientSettings,
   ISettingsService,
   ILocalSettingsRepository,
 };
-

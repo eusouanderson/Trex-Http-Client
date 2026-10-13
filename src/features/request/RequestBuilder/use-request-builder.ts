@@ -4,6 +4,8 @@ import type { BodyType } from '../interfaces';
 import { useRequest } from '../use-request';
 import type { RequestTabCategory } from './interfaces';
 
+import type { AuthConfig } from '../../../core/security/interfaces';
+
 const activeCategoryState = ref<RequestTabCategory>('params');
 
 interface UseRequestBuilderReturn {
@@ -16,6 +18,7 @@ interface UseRequestBuilderReturn {
   setUrl: (url: string) => void;
   setBody: (body: string) => void;
   setBodyType: (type: BodyType) => void;
+  setAuth: (auth: AuthConfig) => void;
   formatJsonBody: () => void;
   addParam: () => void;
   removeParam: (id: string) => void;
@@ -60,6 +63,10 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
     updateActiveTab({ bodyType });
   };
 
+  const setAuth = (auth: AuthConfig): void => {
+    updateActiveTab({ auth });
+  };
+
   const formatJsonBody = (): void => {
     if (!activeTab.value) {
       return;
@@ -94,6 +101,7 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
     setUrl,
     setBody,
     setBodyType,
+    setAuth,
     formatJsonBody,
     addParam,
     removeParam,

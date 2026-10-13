@@ -6,6 +6,8 @@ import type {
   RequestTab,
 } from './interfaces';
 
+import type { PreparedRequest } from './request-preparation.service';
+
 class RequestRunnerService implements IRequestRunnerService {
   private readonly fetchFn?: typeof fetch;
 
@@ -16,6 +18,7 @@ class RequestRunnerService implements IRequestRunnerService {
   public async execute(
     tab: RequestTab,
     timeoutMs?: number,
+    prepared?: PreparedRequest,
   ): Promise<ExecutionResult> {
     const startTime = performance.now();
     const client = createTrexClient({
@@ -36,17 +39,21 @@ class RequestRunnerService implements IRequestRunnerService {
       return res;
     });
 
-    const params: QueryParams = {};
-    for (const p of tab.params) {
-      if (p.enabled && p.key.trim().length > 0) {
-        params[p.key] = p.value;
+    const params: QueryParams = prepared ? { ...prepared.params } : {};
+    if (!prepared) {
+      for (const p of tab.params) {
+        if (p.enabled && p.key.trim().length > 0) {
+          params[p.key] = p.value;
+        }
       }
     }
 
-    const headers: Record<string, string> = {};
-    for (const h of tab.headers) {
-      if (h.enabled && h.key.trim().length > 0) {
-        headers[h.key] = h.value;
+    const headers: Record<string, string> = prepared ? { ...prepared.headers } : {};
+    if (!prepared) {
+      for (const h of tab.headers) {
+        if (h.enabled && h.key.trim().length > 0) {
+          headers[h.key] = h.value;
+        }
       }
     }
 
@@ -69,8 +76,10 @@ class RequestRunnerService implements IRequestRunnerService {
       data: requestData,
     };
 
+    const targetUrl = prepared ? prepared.url : tab.url;
+
     try {
-      const response = await client.request(tab.method, tab.url, config);
+      const response = await client.request(tab.method, targetUrl, config);
       const durationMs = Math.round(performance.now() - startTime);
 
       const responseString =

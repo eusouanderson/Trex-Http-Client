@@ -84,8 +84,9 @@ describe('EnvironmentService', () => {
     expect(result).toBe('https://api.com/api/v2/users?key={{secret}}&other={{unknown}}');
   });
 
-  it('should return original text if no active environment', () => {
+  it('should return original text if no active environment or empty text', () => {
     const text = '{{url}}/endpoint';
     expect(service.interpolate(text)).toBe(text);
+    expect(service.interpolate('')).toBe('');
   });
 });

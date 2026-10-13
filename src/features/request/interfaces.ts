@@ -1,4 +1,5 @@
 import type { HttpMethod } from '../../core/http/interfaces';
+import type { AuthConfig } from '../../core/security/interfaces';
 
 interface KeyValuePair {
   id: string;
@@ -18,6 +19,8 @@ interface RequestTab {
   headers: KeyValuePair[];
   bodyType: BodyType;
   body: string;
+  auth?: AuthConfig;
+  collectionId?: string;
   isDirty: boolean;
   status?: number;
 }

@@ -12,6 +12,7 @@ import { useAppLayout } from './use-app-layout';
 const {
   isSidebarOpen,
   settings,
+  customThemeStyles,
   tabs,
   activeTabId,
   executionResult,
@@ -31,6 +32,7 @@ const {
   <div
     class="h-screen w-screen flex flex-col bg-surface-ground text-bone-100 overflow-hidden font-sans select-none"
     :class="`theme-${settings.theme}`"
+    :style="customThemeStyles"
   >
     <header class="h-11 border-b border-surface-border bg-surface-panel flex items-center justify-between px-2 shrink-0 z-20 gap-2">
       <div class="flex items-center gap-2 shrink-0">

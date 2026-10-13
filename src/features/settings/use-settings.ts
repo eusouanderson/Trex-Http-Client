@@ -1,9 +1,9 @@
 import { ref } from 'vue';
-import type { ClientSettings, ThemePalette } from './interfaces';
+import type { ClientSettings, CustomTheme } from './interfaces';
 import { SettingsService } from './settings.service';
 import { SettingsRepository } from './settings.repository';
 
-const THEME_COLORS: Record<ThemePalette, string> = {
+const THEME_COLORS: Record<string, string> = {
   dino: '#141311',
   'trex-monokai': '#23221c',
   'raptor-dracula': '#1e1d27',
@@ -12,11 +12,26 @@ const THEME_COLORS: Record<ThemePalette, string> = {
   'brachiosaurus-light': '#f8fafc',
 };
 
-const updateThemeMeta = (theme: ThemePalette): void => {
+const resolveThemeMetaColor = (
+  theme: string,
+  settings: ClientSettings,
+): string => {
+  const builtin = THEME_COLORS[theme];
+  if (typeof builtin === 'string') {
+    return builtin;
+  }
+  const custom = settings.customThemes.find((t) => t.id === theme);
+  if (custom) {
+    return custom.colors.surfaceGround;
+  }
+  return '#141311';
+};
+
+const updateThemeMeta = (theme: string, currentSettings: ClientSettings): void => {
   if (typeof document === 'undefined') return;
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    meta.setAttribute('content', THEME_COLORS[theme]);
+    meta.setAttribute('content', resolveThemeMetaColor(theme, currentSettings));
   }
 };
 
@@ -25,11 +40,11 @@ const settingsService = new SettingsService(undefined, settingsRepository);
 const settingsState = ref<ClientSettings>(settingsService.getSettings());
 const isSettingsOpen = ref<boolean>(false);
 
-updateThemeMeta(settingsState.value.theme);
+updateThemeMeta(settingsState.value.theme, settingsState.value);
 
 void settingsRepository.load().then(() => {
   settingsState.value = settingsService.getSettings();
-  updateThemeMeta(settingsState.value.theme);
+  updateThemeMeta(settingsState.value.theme, settingsState.value);
 });
 
 interface UseSettingsReturn {
@@ -39,6 +54,8 @@ interface UseSettingsReturn {
   closeSettings: () => void;
   updateSettings: (partial: Partial<ClientSettings>) => void;
   resetSettings: () => void;
+  addCustomTheme: (theme: CustomTheme) => void;
+  removeCustomTheme: (themeId: string) => void;
 }
 
 const useSettings = (): UseSettingsReturn => {
@@ -52,14 +69,23 @@ const useSettings = (): UseSettingsReturn => {
 
   const updateSettings = (partial: Partial<ClientSettings>): void => {
     settingsState.value = settingsService.updateSettings(partial);
-    if (partial.theme) {
-      updateThemeMeta(partial.theme);
+    if (typeof partial.theme === 'string') {
+      updateThemeMeta(partial.theme, settingsState.value);
     }
   };
 
   const resetSettings = (): void => {
     settingsState.value = settingsService.resetSettings();
-    updateThemeMeta(settingsState.value.theme);
+    updateThemeMeta(settingsState.value.theme, settingsState.value);
+  };
+
+  const addCustomTheme = (theme: CustomTheme): void => {
+    settingsState.value = settingsService.addCustomTheme(theme);
+  };
+
+  const removeCustomTheme = (themeId: string): void => {
+    settingsState.value = settingsService.removeCustomTheme(themeId);
+    updateThemeMeta(settingsState.value.theme, settingsState.value);
   };
 
   return {
@@ -69,6 +95,8 @@ const useSettings = (): UseSettingsReturn => {
     closeSettings,
     updateSettings,
     resetSettings,
+    addCustomTheme,
+    removeCustomTheme,
   };
 };
 

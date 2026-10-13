@@ -1,18 +1,22 @@
-import { ref, type Ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useCollections } from '../../features/collections';
 import type { CollectionItem } from '../../features/collections/interfaces';
 import { useRequest } from '../../features/request';
 import { useSettings } from '../../features/settings';
+import { ThemeStyleService } from '../../features/settings/theme-style.service';
 import type { SidebarTab } from './interfaces';
 
 const isSidebarOpenState = ref<boolean>(true);
 const activeSidebarTabState = ref<SidebarTab>('collections');
+const themeStyleService = new ThemeStyleService();
 
 interface UseAppLayoutReturn {
   isSidebarOpen: typeof isSidebarOpenState;
   activeSidebarTab: typeof activeSidebarTabState;
   isSettingsOpen: ReturnType<typeof useSettings>['isOpen'];
   settings: ReturnType<typeof useSettings>['settings'];
+  customThemeStyles: ComputedRef<Record<string, string>>;
   tabs: ReturnType<typeof useRequest>['tabs'];
   activeTabId: ReturnType<typeof useRequest>['activeTabId'];
   executionResult: ReturnType<typeof useRequest>['executionResult'];
@@ -43,7 +47,17 @@ const useAppLayout = (): UseAppLayoutReturn => {
     setActiveTab,
     createTab,
   } = useRequest();
-  const { selectItem } = useCollections();
+  const { collections, selectItem } = useCollections();
+
+  const customThemeStyles = computed<Record<string, string>>(() => {
+    const current = settings.value.customThemes.find(
+      (t) => t.id === settings.value.theme,
+    );
+    if (!current) {
+      return {};
+    }
+    return themeStyleService.getThemeStyle(current);
+  });
 
   const toggleSidebar = (): void => {
     isSidebarOpenState.value = !isSidebarOpenState.value;
@@ -100,9 +114,13 @@ const useAppLayout = (): UseAppLayoutReturn => {
         : [];
 
     const hasBody = item.body !== undefined && item.body.length > 0;
+    const parentCol = collections.value.find((c) =>
+      c.items.some((i) => i.id === item.id),
+    );
 
     openTab({
       id: item.id,
+      collectionId: parentCol?.id,
       name: item.name,
       method: item.method ?? 'GET',
       url: item.url ?? 'https://jsonplaceholder.typicode.com/posts',
@@ -110,19 +128,25 @@ const useAppLayout = (): UseAppLayoutReturn => {
       headers: headersList,
       bodyType: hasBody ? 'json' : 'none',
       body: item.body ?? '',
+      auth: item.auth ? { ...item.auth } : { type: 'none' },
       isDirty: false,
     });
   };
 
   const isEnvManagerOpen = ref(false);
-  const openEnvironmentManager = (): void => { isEnvManagerOpen.value = true; };
-  const closeEnvironmentManager = (): void => { isEnvManagerOpen.value = false; };
+  const openEnvironmentManager = (): void => {
+    isEnvManagerOpen.value = true;
+  };
+  const closeEnvironmentManager = (): void => {
+    isEnvManagerOpen.value = false;
+  };
 
   return {
     isSidebarOpen: isSidebarOpenState,
     activeSidebarTab: activeSidebarTabState,
     isSettingsOpen,
     settings,
+    customThemeStyles,
     tabs,
     activeTabId,
     executionResult,

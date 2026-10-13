@@ -119,4 +119,22 @@ describe('RequestBuilder Component', () => {
     expect(wrapper.text()).toContain('Nenhuma requisição aberta');
     expect(wrapper.find('img[alt="T-Rex"]').attributes('src')).toContain('/logos/Trex.png');
   });
+
+  it('should render auth indicator and allow switching to auth tab', async () => {
+    const { createTab, updateActiveTab } = useRequest();
+    createTab();
+    updateActiveTab({
+      auth: { type: 'bearer', token: 'token-test', prefix: 'Bearer', enabled: true },
+    });
+    const wrapper = mount(RequestBuilder);
+
+    const authBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Autorização'));
+    expect(authBtn).toBeDefined();
+    expect(authBtn?.find('span.bg-amber-400').exists()).toBe(true);
+
+    await authBtn?.trigger('click');
+    expect(wrapper.text()).toContain('Tipo de Auth:');
+  });
 });

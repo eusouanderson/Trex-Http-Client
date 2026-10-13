@@ -58,5 +58,58 @@ describe('useSettings', () => {
     
     globalThis.document = originalDoc;
   });
+
+  it('should add and remove custom themes and update meta tag accordingly', () => {
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    meta.setAttribute('content', '#141311');
+    document.head.appendChild(meta);
+
+    const { settings, addCustomTheme, removeCustomTheme, updateSettings } = useSettings();
+
+    const dummyCustom = {
+      id: 'custom-aqua',
+      name: 'Aqua Marine',
+      icon: '🌊',
+      description: 'Aqua theme',
+      previewColors: ['#001122'],
+      colors: {
+        surfaceGround: '#001122',
+        surfacePanel: '#002233',
+        surfaceCard: '#003344',
+        surfaceBorder: '#004455',
+        surfaceHover: '#005566',
+        accent: '#00e5ff',
+        accentLight: '#80f2ff',
+        accentBorder: '#00b4cc',
+      },
+      jsonTheme: {
+        backgroundColor: '#001122',
+        keyColor: '#00e5ff',
+        stringColor: '#fcd34d',
+        numberColor: '#60a5fa',
+        booleanColor: '#f87171',
+        nullColor: '#938d82',
+        bracketColor: '#cdbca4',
+      },
+    };
+
+    addCustomTheme(dummyCustom);
+    expect(settings.value.customThemes).toHaveLength(1);
+
+    updateSettings({ theme: 'custom-aqua' });
+    expect(settings.value.theme).toBe('custom-aqua');
+    expect(meta.getAttribute('content')).toBe('#001122');
+
+    removeCustomTheme('custom-aqua');
+    expect(settings.value.customThemes).toHaveLength(0);
+    expect(settings.value.theme).toBe('dino');
+    expect(meta.getAttribute('content')).toBe('#141311');
+
+    updateSettings({ theme: 'unknown-nonexistent-theme' });
+    expect(meta.getAttribute('content')).toBe('#141311');
+
+    meta.remove();
+  });
 });
 
