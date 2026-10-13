@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch } from 'vue';
 import type {
   ApiKeyAuthConfig,
   ApiKeyPlacement,
@@ -26,6 +27,14 @@ const {
   updateApiKeyAuth,
   updateOAuth2,
 } = useAuthEditor(props.modelValue, props.inheritedAuth, emit);
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    currentAuth.value = newVal ? structuredClone(newVal) : { type: 'none' };
+  },
+  { deep: true },
+);
 </script>
 
 <template>

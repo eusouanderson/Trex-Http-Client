@@ -47,7 +47,7 @@ const useAppLayout = (): UseAppLayoutReturn => {
     setActiveTab,
     createTab,
   } = useRequest();
-  const { selectItem } = useCollections();
+  const { collections, selectItem } = useCollections();
 
   const customThemeStyles = computed<Record<string, string>>(() => {
     const current = settings.value.customThemes.find(
@@ -114,9 +114,13 @@ const useAppLayout = (): UseAppLayoutReturn => {
         : [];
 
     const hasBody = item.body !== undefined && item.body.length > 0;
+    const parentCol = collections.value.find((c) =>
+      c.items.some((i) => i.id === item.id),
+    );
 
     openTab({
       id: item.id,
+      collectionId: parentCol?.id,
       name: item.name,
       method: item.method ?? 'GET',
       url: item.url ?? 'https://jsonplaceholder.typicode.com/posts',
@@ -124,6 +128,7 @@ const useAppLayout = (): UseAppLayoutReturn => {
       headers: headersList,
       bodyType: hasBody ? 'json' : 'none',
       body: item.body ?? '',
+      auth: item.auth ? structuredClone(item.auth) : { type: 'none' },
       isDirty: false,
     });
   };

@@ -153,5 +153,27 @@ describe('AuthEditor Component', () => {
     await prefixInput.setValue('Token');
     expect(wrapper.emitted('update:modelValue')).toBeDefined();
   });
+
+  it('should reactively update when modelValue prop changes', async () => {
+    const wrapper = mount(AuthEditor, {
+      props: {
+        modelValue: { type: 'none' },
+      },
+    });
+
+    expect(wrapper.text()).toContain('Nenhum cabeçalho ou parâmetro de autenticação');
+
+    await wrapper.setProps({
+      modelValue: { type: 'bearer', token: 'dynamic-token', prefix: 'Bearer', enabled: true },
+    });
+
+    expect(wrapper.text()).toContain('Prefixo:');
+    expect(wrapper.find('input[type="password"]').exists()).toBe(true);
+
+    await wrapper.setProps({
+      modelValue: undefined,
+    });
+    expect(wrapper.text()).toContain('Nenhum cabeçalho ou parâmetro de autenticação');
+  });
 });
 

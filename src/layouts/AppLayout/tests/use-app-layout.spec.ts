@@ -124,9 +124,18 @@ describe('useAppLayout', () => {
       id: 'custom-item-2',
       name: 'Custom Item 2',
       type: 'request',
+      auth: { type: 'bearer', token: 'saved-token', prefix: 'Bearer', enabled: true },
     });
 
-    expect(layout.tabs.value.some((t) => t.id === 'custom-item-2')).toBe(true);
+    const openedTab2 = layout.tabs.value.find((t) => t.id === 'custom-item-2');
+    expect(openedTab2?.auth?.type).toBe('bearer');
+
+    const { collections } = useCollections();
+    const realItem = collections.value[0]?.items[0];
+    if (realItem) {
+      layout.handleSelectItem(realItem);
+      expect(layout.tabs.value.some((t) => t.id === realItem.id)).toBe(true);
+    }
   });
 
   it('should compute customThemeStyles when a custom theme is selected', () => {

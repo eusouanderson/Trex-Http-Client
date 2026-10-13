@@ -311,6 +311,7 @@ const {
 
       <div v-else-if="activeCategory === 'auth'">
         <auth-editor
+          :key="activeTab.id"
           :model-value="activeTab.auth"
           @update:model-value="setAuth"
         />

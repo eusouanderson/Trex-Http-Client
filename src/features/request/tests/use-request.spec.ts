@@ -181,4 +181,42 @@ describe('useRequest', () => {
       updateActiveTab({ name: 'Outro' });
     }).not.toThrow();
   });
+
+  it('should persist auth in collection item and keep auth isolated per tab', () => {
+    const { createTab, setActiveTab, updateActiveTab, tabs } = useRequest();
+    const { collections } = useCollections();
+
+    const targetItem = collections.value[0]?.items[0];
+    expect(targetItem).toBeDefined();
+    if (!targetItem) {
+      return;
+    }
+
+    const tab1 = createTab({
+      id: targetItem.id,
+      name: 'Req 1',
+      auth: { type: 'none' },
+    });
+    setActiveTab(tab1.id);
+    updateActiveTab({
+      auth: { type: 'bearer', token: 'secret-bearer-tab1', prefix: 'Bearer', enabled: true },
+    });
+
+    const updatedCol = collections.value[0];
+    const updatedItem = updatedCol?.items.find((i) => i.id === targetItem.id);
+    expect(updatedItem?.auth?.type).toBe('bearer');
+
+    const tab2 = createTab({
+      id: 'tab-distinct-2',
+      name: 'Req 2',
+      auth: { type: 'none' },
+    });
+    setActiveTab(tab2.id);
+
+    const foundTab1 = tabs.value.find((t) => t.id === tab1.id);
+    const foundTab2 = tabs.value.find((t) => t.id === tab2.id);
+
+    expect(foundTab1?.auth?.type).toBe('bearer');
+    expect(foundTab2?.auth?.type).toBe('none');
+  });
 });

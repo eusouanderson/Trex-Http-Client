@@ -18,6 +18,7 @@ const defaultTab: RequestTab = {
   headers: [{ id: 'h1', key: 'Accept', value: 'application/json', enabled: true }],
   bodyType: 'none',
   body: '',
+  auth: { type: 'none' },
   isDirty: false,
 };
 
@@ -100,6 +101,7 @@ const useRequest = (): UseRequestReturn => {
       headers: [],
       bodyType: 'none',
       body: '',
+      auth: { type: 'none' },
       isDirty: false,
       ...initial,
     };
@@ -130,6 +132,9 @@ const useRequest = (): UseRequestReturn => {
     }
     if (patch.status !== undefined) {
       collectionPatch.status = patch.status;
+    }
+    if (patch.auth !== undefined) {
+      collectionPatch.auth = patch.auth;
     }
 
     if (Object.keys(collectionPatch).length > 0) {
