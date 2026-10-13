@@ -1,3 +1,11 @@
+# [1.5.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.4.0...v1.5.0) (2026-10-13)
+
+
+### Features
+
+* **request:** expandir assercoes numericas e catalogo de snippets de teste com tx ([7f6a146](https://github.com/eusouanderson/Trex-Http-Client/commit/7f6a146ce93305cc7d2afbd8aa25d1bacb4941ff))
+* **request:** implementar scripts de testes e extracao de variaveis com tx e pm ([ea218bb](https://github.com/eusouanderson/Trex-Http-Client/commit/ea218bb18131342fbdf618ace487af464d806291))
+
 # [1.4.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.3.2...v1.4.0) (2026-10-13)
 
 
