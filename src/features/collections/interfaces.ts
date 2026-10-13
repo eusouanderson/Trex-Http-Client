@@ -1,5 +1,7 @@
 import type { HttpMethod } from '../../core/http/interfaces';
 
+import type { AuthConfig } from '../../core/security/interfaces';
+
 type CollectionItemType = 'request' | 'folder';
 
 interface CollectionItem {
@@ -12,6 +14,7 @@ interface CollectionItem {
   headers?: Record<string, string>;
   params?: Record<string, string>;
   body?: string;
+  auth?: AuthConfig;
   status?: number;
   children?: CollectionItem[];
 }
@@ -20,6 +23,7 @@ interface Collection {
   id: string;
   name: string;
   description?: string;
+  auth?: AuthConfig;
   items: CollectionItem[];
 }
 

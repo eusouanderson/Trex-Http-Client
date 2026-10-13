@@ -14,6 +14,67 @@ const httpMethodSchema = z.enum([
   'OPTIONS',
 ]);
 
+const authConfigSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('none') }),
+  z.object({ type: z.literal('inherit') }),
+  z.object({
+    type: z.literal('bearer'),
+    token: z.string(),
+    prefix: z.string().optional(),
+    enabled: z.boolean(),
+  }),
+  z.object({
+    type: z.literal('basic'),
+    username: z.string(),
+    password: z.string(),
+    enabled: z.boolean(),
+  }),
+  z.object({
+    type: z.literal('apiKey'),
+    key: z.string(),
+    value: z.string(),
+    addTo: z.enum(['header', 'query']),
+    enabled: z.boolean(),
+  }),
+  z.object({
+    type: z.literal('custom'),
+    headers: z.array(
+      z.object({
+        id: z.string(),
+        key: z.string(),
+        value: z.string(),
+        enabled: z.boolean(),
+      }),
+    ),
+    params: z.array(
+      z.object({
+        id: z.string(),
+        key: z.string(),
+        value: z.string(),
+        enabled: z.boolean(),
+      }),
+    ),
+    enabled: z.boolean(),
+  }),
+  z.object({
+    type: z.literal('oauth2'),
+    grantType: z.enum(['client_credentials', 'authorization_code']),
+    authUrl: z.string().optional(),
+    tokenUrl: z.string(),
+    clientId: z.string(),
+    clientSecret: z.string().optional(),
+    scope: z.string().optional(),
+    redirectUri: z.string().optional(),
+    clientAuthMethod: z.enum(['body', 'basic_header']).optional(),
+    accessToken: z.string().optional(),
+    refreshToken: z.string().optional(),
+    expiresAt: z.number().optional(),
+    codeVerifier: z.string().optional(),
+    state: z.string().optional(),
+    enabled: z.boolean(),
+  }),
+]);
+
 const collectionItemSchema: z.ZodType<CollectionItem> = z.lazy(() =>
   z.object({
     id: z.string().min(1),
@@ -25,6 +86,7 @@ const collectionItemSchema: z.ZodType<CollectionItem> = z.lazy(() =>
     headers: z.record(z.string()).optional(),
     params: z.record(z.string()).optional(),
     body: z.string().optional(),
+    auth: authConfigSchema.optional(),
     status: z.number().optional(),
     children: z.array(collectionItemSchema).optional(),
   }),
@@ -34,6 +96,7 @@ const collectionSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   description: z.string().optional(),
+  auth: authConfigSchema.optional(),
   items: z.array(collectionItemSchema),
 });
 

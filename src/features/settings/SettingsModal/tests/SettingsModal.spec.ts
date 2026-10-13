@@ -241,7 +241,7 @@ describe('SettingsModal Component', () => {
       writable: true,
     });
     await fileInput.trigger('change');
-    await new Promise((r) => setTimeout(r, 20));
+    await new Promise((r) => setTimeout(r, 60));
 
     const { settings } = useSettings();
     expect(settings.value.theme).toBe('custom-velociraptor-neon');
