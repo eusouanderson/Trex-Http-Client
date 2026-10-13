@@ -1,4 +1,4 @@
-type RequestTabCategory = 'params' | 'headers' | 'body' | 'auth';
+type RequestTabCategory = 'params' | 'headers' | 'body' | 'auth' | 'tests';
 
 interface RequestBuilderProps {
   modelValue?: string;

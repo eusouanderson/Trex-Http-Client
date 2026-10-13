@@ -29,6 +29,7 @@ interface IEnvironmentService {
   updateEnvironment(environment: Environment): Environment;
   deleteEnvironment(id: string): void;
   interpolate(text: string): string;
+  setVariable(key: string, value: string): void;
 }
 
 export type {

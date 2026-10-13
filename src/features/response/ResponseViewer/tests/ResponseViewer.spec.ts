@@ -124,4 +124,68 @@ describe('ResponseViewer Component', () => {
 
     expect(wrapper.text()).toContain('Nenhum header retornado pela resposta.');
   });
+
+  it('should switch to tests tab and display test results report', async () => {
+    const wrapper = mount(ResponseViewer, {
+      props: {
+        loading: false,
+        result: {
+          status: 200,
+          statusText: 'OK',
+          durationMs: 45,
+          sizeBytes: 120,
+          headers: {},
+          data: { success: true },
+          testResults: {
+            results: [
+              { name: 'Status é 200', passed: true, durationMs: 2 },
+            ],
+            environmentMutations: [],
+            totalPassed: 1,
+            totalFailed: 0,
+            durationMs: 2,
+          },
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('1/1');
+    const testsBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Testes'));
+    expect(testsBtn).toBeDefined();
+    await testsBtn?.trigger('click');
+
+    expect(wrapper.text()).toContain('Status é 200');
+    expect(wrapper.text()).toContain('PASSOU (1)');
+  });
+
+  it('should display failed badge color when totalFailed is greater than zero', () => {
+    const wrapper = mount(ResponseViewer, {
+      props: {
+        loading: false,
+        result: {
+          status: 500,
+          statusText: 'Internal Server Error',
+          durationMs: 30,
+          sizeBytes: 40,
+          headers: {},
+          data: null,
+          testResults: {
+            results: [
+              { name: 'Status 200', passed: false, error: 'Expected 200, got 500', durationMs: 1 },
+            ],
+            environmentMutations: [],
+            totalPassed: 0,
+            totalFailed: 1,
+            durationMs: 1,
+          },
+        },
+      },
+    });
+
+    const badge = wrapper.find('span.bg-magma-500\\/30');
+    expect(badge.exists()).toBe(true);
+    expect(badge.text()).toBe('0/1');
+  });
 });

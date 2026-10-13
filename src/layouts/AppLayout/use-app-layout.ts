@@ -129,6 +129,7 @@ const useAppLayout = (): UseAppLayoutReturn => {
       bodyType: hasBody ? 'json' : 'none',
       body: item.body ?? '',
       auth: item.auth ? { ...item.auth } : { type: 'none' },
+      testScript: item.testScript ?? '',
       isDirty: false,
     });
   };

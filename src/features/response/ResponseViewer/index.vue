@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
+import { TestResultsViewer } from '../TestResultsViewer';
 import type { ResponseViewerProps } from './interfaces';
 import { useResponseViewer } from './use-response-viewer';
 
@@ -57,6 +58,21 @@ const {
           @click="setTab('headers')"
         >
           Headers ({{ Object.keys(result.headers).length }})
+        </button>
+        <button
+          type="button"
+          class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors flex items-center gap-1"
+          :class="activeTab === 'tests' ? 'bg-surface-border text-bone-100' : 'text-fossil-400 hover:text-bone-200'"
+          @click="setTab('tests')"
+        >
+          <span>Testes</span>
+          <span
+            v-if="result.testResults && result.testResults.results.length > 0"
+            class="text-[10px] px-1.5 py-0.2 rounded-full font-bold"
+            :class="result.testResults.totalFailed > 0 ? 'bg-magma-500/30 text-magma-300' : 'bg-dino-500/30 text-dino-300'"
+          >
+            {{ result.testResults.totalPassed }}/{{ result.testResults.results.length }}
+          </span>
         </button>
       </div>
     </div>
@@ -115,6 +131,10 @@ const {
             Nenhum header retornado pela resposta.
           </div>
         </div>
+      </div>
+
+      <div v-else-if="activeTab === 'tests'" class="h-full">
+        <test-results-viewer :report="result.testResults" />
       </div>
     </div>
   </div>

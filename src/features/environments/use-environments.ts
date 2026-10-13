@@ -21,6 +21,7 @@ interface UseEnvironmentsReturn {
   updateEnvironment: (environment: Environment) => void;
   deleteEnvironment: (id: string) => void;
   interpolate: (text: string) => string;
+  setVariable: (key: string, value: string) => void;
   environmentService: EnvironmentService;
 }
 
@@ -58,6 +59,11 @@ const useEnvironments = (): UseEnvironmentsReturn => {
     return environmentService.interpolate(text);
   };
 
+  const setVariable = (key: string, value: string): void => {
+    environmentService.setVariable(key, value);
+    refreshState();
+  };
+
   return {
     environments: getEnvironments,
     activeEnvironment: getActiveEnvironment,
@@ -66,6 +72,7 @@ const useEnvironments = (): UseEnvironmentsReturn => {
     updateEnvironment,
     deleteEnvironment,
     interpolate,
+    setVariable,
     environmentService,
   };
 };
