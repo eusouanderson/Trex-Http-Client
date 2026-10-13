@@ -128,7 +128,7 @@ const useAppLayout = (): UseAppLayoutReturn => {
       headers: headersList,
       bodyType: hasBody ? 'json' : 'none',
       body: item.body ?? '',
-      auth: item.auth ? structuredClone(item.auth) : { type: 'none' },
+      auth: item.auth ? { ...item.auth } : { type: 'none' },
       isDirty: false,
     });
   };

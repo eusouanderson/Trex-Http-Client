@@ -31,7 +31,7 @@ const {
 watch(
   () => props.modelValue,
   (newVal) => {
-    currentAuth.value = newVal ? structuredClone(newVal) : { type: 'none' };
+    currentAuth.value = newVal ? { ...newVal } : { type: 'none' };
   },
   { deep: true },
 );
