@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.3.2...v1.4.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **request:** ajustar clonagem reativa de auth sem proxies ([11463a1](https://github.com/eusouanderson/Trex-Http-Client/commit/11463a1c35b6913f808c1c46f9207ffc0132f066))
+* **request:** persistir auth por requisicao e isolar estado entre abas ([a3d0dd6](https://github.com/eusouanderson/Trex-Http-Client/commit/a3d0dd6ed65af950ad7dc8eedc9118bf285d64b8))
+
+
+### Features
+
+* **security:** implementar sistema de autorizacao e gerenciamento de segredos ([bbfb3d9](https://github.com/eusouanderson/Trex-Http-Client/commit/bbfb3d98d8c5d93557d54edfda656c18505adaf2))
+* **settings:** adicionar upload de tema json e organizacao de icones com persistencia ([a4e2de0](https://github.com/eusouanderson/Trex-Http-Client/commit/a4e2de070fb733801d026abd1d785e7334102e72))
+
 ## [1.3.2](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.3.1...v1.3.2) (2026-10-08)
 
 
