@@ -109,4 +109,13 @@ describe('PmContextService', () => {
     expect(report.results[0]?.passed).toBe(false);
     expect(report.results[0]?.error).toBe('Falha em string');
   });
+
+  it('deve repassar mensagem customizada de expect para o AssertionChain', () => {
+    const service = new PmContextService(mockContext);
+    const pm = service.createContext();
+
+    expect(() => {
+      pm.expect(5, 'Meu campo').to.be.greaterThan(10);
+    }).toThrow('Meu campo: Expected 5 to be greater than 10');
+  });
 });

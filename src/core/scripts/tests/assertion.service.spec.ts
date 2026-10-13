@@ -62,6 +62,30 @@ describe('AssertionChain', () => {
     expect(() => new AssertionChain([1, 2, 3]).to.include(9)).toThrow();
   });
 
+  it('deve validar comparacoes numericas greaterThan, lessThan, atLeast, atMost e within', () => {
+    expect(() => new AssertionChain(10).to.be.greaterThan(5)).not.toThrow();
+    expect(() => new AssertionChain(5).to.be.greaterThan(10)).toThrow();
+    expect(() => new AssertionChain('10').to.be.greaterThan(5)).toThrow();
+
+    expect(() => new AssertionChain(5).to.be.lessThan(10)).not.toThrow();
+    expect(() => new AssertionChain(10).to.be.lessThan(5)).toThrow();
+
+    expect(() => new AssertionChain(10).to.be.atLeast(10)).not.toThrow();
+    expect(() => new AssertionChain(9).to.be.atLeast(10)).toThrow();
+
+    expect(() => new AssertionChain(10).to.be.atMost(10)).not.toThrow();
+    expect(() => new AssertionChain(11).to.be.atMost(10)).toThrow();
+
+    expect(() => new AssertionChain(5).to.be.within(1, 10)).not.toThrow();
+    expect(() => new AssertionChain(0).to.be.within(1, 10)).toThrow();
+    expect(() => new AssertionChain(11).to.be.within(1, 10)).toThrow();
+  });
+
+  it('deve incluir mensagem customizada de erro no AssertionError e suportar negacao', () => {
+    expect(() => new AssertionChain(5, false, 'Campo ID').to.be.greaterThan(10)).toThrow('Campo ID: Expected 5 to be greater than 10');
+    expect(() => new AssertionChain(15, false, 'Campo ID').not.to.be.greaterThan(10)).toThrow('Campo ID: Not: Expected 15 to be greater than 10');
+  });
+
   it('deve validar empty com null e undefined e tipo null', () => {
     expect(() => new AssertionChain(null).to.be.empty).not.toThrow();
     expect(() => new AssertionChain(undefined).to.be.empty).not.toThrow();

@@ -50,6 +50,11 @@ interface IAssertionChain {
   property(name: string, value?: unknown): IAssertionChain;
   lengthOf(expectedLength: number): IAssertionChain;
   include(expectedItem: unknown): IAssertionChain;
+  greaterThan(expected: number): IAssertionChain;
+  lessThan(expected: number): IAssertionChain;
+  atLeast(expected: number): IAssertionChain;
+  atMost(expected: number): IAssertionChain;
+  within(min: number, max: number): IAssertionChain;
 }
 
 interface IPmEnvironment {
@@ -73,7 +78,7 @@ interface IPmResponse {
 
 interface IPmContext {
   test(name: string, fn: () => void): void;
-  expect(actual: unknown): IAssertionChain;
+  expect(actual: unknown, message?: string): IAssertionChain;
   response: IPmResponse;
   environment: IPmEnvironment;
 }

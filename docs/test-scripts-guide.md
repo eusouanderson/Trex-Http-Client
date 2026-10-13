@@ -51,7 +51,17 @@ Encadeamentos suportados:
 - `.to.have.property(key, optionalValue?)`: Verifica se o objeto possui uma propriedade (e opcionalmente o valor correspondente).
 - `.to.have.lengthOf(length)`: Verifica o tamanho de strings ou arrays.
 - `.to.include(item)`: Verifica se a string contém uma substring ou se o array contém o item informado.
+- `.to.be.greaterThan(number)`: Verifica se o valor é estritamente maior que o esperado.
+- `.to.be.lessThan(number)`: Verifica se o valor é estritamente menor que o esperado.
+- `.to.be.atLeast(number)`: Verifica se o valor é maior ou igual ao esperado.
+- `.to.be.atMost(number)`: Verifica se o valor é menor ou igual ao esperado.
+- `.to.be.within(min, max)`: Verifica se o valor está dentro do intervalo fechado `[min, max]`.
 - `.not`: Inverte a condição de asserção (ex: `tx.expect(x).to.not.be.empty`).
+
+Além disso, é possível passar uma mensagem contextual de erro no `tx.expect(target, message)`:
+```javascript
+tx.expect(post.userId, `userId do post ${index + 1}`).to.be.a("number");
+```
 
 ### 2.4. `tx.environment` (ou `pm.environment`)
 Gerenciamento reativo de variáveis no ambiente atualmente selecionado.
@@ -70,21 +80,25 @@ tx.test("Status é 200 OK", () => {
 });
 
 tx.test("Tempo de resposta menor que 500ms", () => {
-  tx.expect(tx.response.responseTime < 500).to.be.true;
+  tx.expect(tx.response.responseTime).to.be.lessThan(500);
 });
 ```
 
-### Validar Estrutura de Lista (Array) e Propriedades de Itens
+### Validar Estrutura de Lista (Array) e Iteração Completa
 ```javascript
-tx.test("Resposta é uma lista com itens válidos", () => {
+tx.test("Validação completa de lista de posts", () => {
   const posts = tx.response.json();
 
   tx.expect(posts).to.be.a("array");
   tx.expect(posts).to.have.lengthOf(100);
 
-  tx.expect(posts[0]).to.have.property("userId");
-  tx.expect(posts[0].userId).to.be.a("number");
-  tx.expect(posts[0].userId).to.equal(1);
+  posts.forEach((post, index) => {
+    tx.expect(post, `Post ${index + 1}`).to.have.property("userId");
+    tx.expect(post, `Post ${index + 1}`).to.have.property("id");
+    tx.expect(post.userId, `userId do post ${index + 1}`).to.be.within(1, 10);
+    tx.expect(post.id, `id do post ${index + 1}`).to.be.greaterThan(0);
+    tx.expect(post.title.trim(), `title do post ${index + 1}`).to.not.be.empty;
+  });
 });
 ```
 
@@ -100,12 +114,6 @@ tx.test("Login efetuado e token extraído", () => {
   tx.environment.set("token", res.access_token);
   tx.environment.set("userId", String(res.user.id));
 });
-```
-
-Nas requisições seguintes, basta configurar:
-```
-Authorization: Bearer {{token}}
-URL: https://api.exemplo.com/users/{{userId}}
 ```
 
 Nas requisições seguintes, basta configurar:

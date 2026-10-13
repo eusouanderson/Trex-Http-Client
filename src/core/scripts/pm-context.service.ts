@@ -60,8 +60,8 @@ class PmContextService {
       },
     };
 
-    const expect = (actual: unknown): IAssertionChain => {
-      return new AssertionChain(actual);
+    const expect = (actual: unknown, message?: string): IAssertionChain => {
+      return new AssertionChain(actual, false, message);
     };
 
     const test = (name: string, fn: () => void): void => {

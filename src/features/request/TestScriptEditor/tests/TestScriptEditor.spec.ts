@@ -29,7 +29,7 @@ describe('TestScriptEditor Component', () => {
 
     expect(wrapper.text()).toContain('Snippets Rápidos');
     expect(wrapper.text()).toContain('Status: 200 OK');
-    expect(wrapper.text()).toContain('Validar JSON');
+    expect(wrapper.text()).toContain('Validar Array');
     expect(wrapper.text()).toContain('Salvar Variável de Ambiente');
   });
 
@@ -46,7 +46,7 @@ describe('TestScriptEditor Component', () => {
 
     const emitted = wrapper.emitted('update:modelValue');
     expect(emitted).toBeDefined();
-    expect(emitted?.[0]?.[0]).toContain('tx.test("Status deve ser 200"');
+    expect(emitted?.[0]?.[0]).toContain('tx.test("Status HTTP deve ser 200"');
   });
 });
 

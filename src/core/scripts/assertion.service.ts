@@ -2,12 +2,15 @@ import type { IAssertionChain } from './interfaces';
 
 class AssertionChain implements IAssertionChain {
   private readonly isNegated: boolean;
+  private readonly customMessage?: string;
 
   constructor(
     private readonly actual: unknown,
     isNegated = false,
+    customMessage?: string,
   ) {
     this.isNegated = isNegated;
+    this.customMessage = customMessage;
   }
 
   public get to(): IAssertionChain {
@@ -23,7 +26,7 @@ class AssertionChain implements IAssertionChain {
   }
 
   public get not(): IAssertionChain {
-    return new AssertionChain(this.actual, !this.isNegated);
+    return new AssertionChain(this.actual, !this.isNegated, this.customMessage);
   }
 
   public get ok(): IAssertionChain {
@@ -137,6 +140,54 @@ class AssertionChain implements IAssertionChain {
     return this;
   }
 
+  public greaterThan(expected: number): IAssertionChain {
+    const passed = typeof this.actual === 'number' && this.actual > expected;
+    this.assert(
+      passed,
+      `Expected ${String(this.actual)} to be greater than ${String(expected)}`,
+    );
+    return this;
+  }
+
+  public lessThan(expected: number): IAssertionChain {
+    const passed = typeof this.actual === 'number' && this.actual < expected;
+    this.assert(
+      passed,
+      `Expected ${String(this.actual)} to be less than ${String(expected)}`,
+    );
+    return this;
+  }
+
+  public atLeast(expected: number): IAssertionChain {
+    const passed = typeof this.actual === 'number' && this.actual >= expected;
+    this.assert(
+      passed,
+      `Expected ${String(this.actual)} to be at least ${String(expected)}`,
+    );
+    return this;
+  }
+
+  public atMost(expected: number): IAssertionChain {
+    const passed = typeof this.actual === 'number' && this.actual <= expected;
+    this.assert(
+      passed,
+      `Expected ${String(this.actual)} to be at most ${String(expected)}`,
+    );
+    return this;
+  }
+
+  public within(min: number, max: number): IAssertionChain {
+    const passed =
+      typeof this.actual === 'number' &&
+      this.actual >= min &&
+      this.actual <= max;
+    this.assert(
+      passed,
+      `Expected ${String(this.actual)} to be within ${String(min)} and ${String(max)}`,
+    );
+    return this;
+  }
+
   private validateType(expectedType: string): IAssertionChain {
     const lowerType = expectedType.toLowerCase();
     let actualType: string = typeof this.actual;
@@ -154,7 +205,11 @@ class AssertionChain implements IAssertionChain {
     const finalCondition = this.isNegated ? !condition : condition;
     if (!finalCondition) {
       const prefix = this.isNegated ? 'Not: ' : '';
-      throw new Error(`${prefix}${message}`);
+      const customPrefix =
+        typeof this.customMessage === 'string' && this.customMessage.length > 0
+          ? `${this.customMessage}: `
+          : '';
+      throw new Error(`${customPrefix}${prefix}${message}`);
     }
   }
 }
