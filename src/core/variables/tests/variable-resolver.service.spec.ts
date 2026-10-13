@@ -80,5 +80,33 @@ describe('VariableResolverService', () => {
     expect(res.resolved['X-Static']).toBe('123');
     expect(res.unresolvedKeys).toEqual([]);
   });
+
+  it('should capture remaining matches when recursion depth limit is reached', () => {
+    const chain: Record<string, string> = {};
+    for (let i = 0; i < 15; i++) {
+      chain[`v${String(i)}`] = `{{v${String(i + 1)}}}`;
+    }
+    const scopes: VariableScope[] = [{ name: 'env', variables: chain }];
+    const res = service.resolve('{{v0}}', scopes);
+    expect(res.unresolvedKeys.length).toBeGreaterThan(0);
+  });
+
+  it('should collect unresolved keys from both record keys and values', () => {
+    const scopes: VariableScope[] = [];
+    const record = {
+      '{{missing_key}}': '{{missing_val}}',
+    };
+    const res = service.resolveRecord(record, scopes);
+    expect(res.unresolvedKeys).toContain('missing_key');
+    expect(res.unresolvedKeys).toContain('missing_val');
+  });
+
+  it('should fallback to match when variable value in mergedVariables is undefined', () => {
+    const scopes: VariableScope[] = [
+      { name: 'env', variables: { undefinedVar: undefined as unknown as string } },
+    ];
+    const res = service.resolve('prefix-{{undefinedVar}}-suffix', scopes);
+    expect(res.resolved).toBe('prefix-{{undefinedVar}}-suffix');
+  });
 });
 

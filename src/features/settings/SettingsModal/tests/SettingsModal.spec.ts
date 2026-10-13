@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSettings } from '../../use-settings';
 import SettingsModal from '../index.vue';
@@ -267,7 +267,8 @@ describe('SettingsModal Component', () => {
       writable: true,
     });
     await fileInput.trigger('change');
-    await new Promise((r) => setTimeout(r, 20));
+    await new Promise((r) => setTimeout(r, 100));
+    await flushPromises();
     await wrapper.vm.$nextTick();
 
     const errorBanner = wrapper.find('.bg-magma-500\\/10');

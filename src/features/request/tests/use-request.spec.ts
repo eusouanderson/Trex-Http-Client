@@ -136,6 +136,16 @@ describe('useRequest', () => {
     expect(isLoading.value).toBe(false);
     expect(executionResult.value).not.toBeNull();
     expect(activeTab.value?.status).toBe(executionResult.value?.status);
+
+    const { collections } = useCollections();
+    const existingColId = collections.value[0]?.id;
+    if (existingColId !== undefined && existingColId.length > 0) {
+      updateActiveTab({ collectionId: existingColId });
+      await sendRequest();
+    }
+
+    updateActiveTab({ collectionId: 'non-existing-col-xyz' });
+    await sendRequest();
   });
 
   it('should safely handle operations when no active tab exists and support reordering tabs', async () => {

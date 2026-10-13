@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import type {
   ApiKeyAuthConfig,
   ApiKeyPlacement,
@@ -28,15 +28,6 @@ const useAuthEditor = (
 ): UseAuthEditorReturn => {
   const currentAuth = ref<AuthConfig>(initialValue ?? { type: 'none' });
   const isSecretVisible = ref<boolean>(false);
-
-  watch(
-    () => initialValue,
-    (newVal) => {
-      if (newVal) {
-        currentAuth.value = newVal;
-      }
-    },
-  );
 
   const authType = computed<AuthType>(() => currentAuth.value.type);
 

@@ -77,5 +77,44 @@ describe('useAuthEditor', () => {
     expect((emitted as unknown as ApiKeyAuthConfig).value).toBe('secret-val');
     expect((emitted as unknown as ApiKeyAuthConfig).addTo).toBe('query');
   });
+
+  it('should update oauth2 and custom configurations', () => {
+    const state = { emitted: null as AuthConfig | null };
+    const emit = (_event: 'update:modelValue', val: AuthConfig): void => {
+      state.emitted = val;
+    };
+
+    const { setAuthType, updateOAuth2, updateCustom } = useAuthEditor(undefined, undefined, emit);
+
+    setAuthType('inherit');
+    expect(state.emitted?.type).toBe('inherit');
+
+    setAuthType('basic');
+    expect(state.emitted?.type).toBe('basic');
+
+    setAuthType('apiKey');
+    expect(state.emitted?.type).toBe('apiKey');
+
+    setAuthType('none');
+    expect(state.emitted?.type).toBe('none');
+
+    setAuthType('custom');
+    expect(state.emitted?.type).toBe('custom');
+    updateCustom({ headers: [{ id: '1', key: 'h', value: 'v', enabled: true }] });
+    expect(state.emitted?.type).toBe('custom');
+
+    setAuthType('oauth2');
+    expect(state.emitted?.type).toBe('oauth2');
+    updateOAuth2({ clientId: 'oauth-client-id' });
+    expect(state.emitted?.type).toBe('oauth2');
+
+    setAuthType('none');
+    updateOAuth2({ clientId: 'fallback-client' });
+    expect(state.emitted?.type).toBe('oauth2');
+
+    setAuthType('none');
+    updateCustom({ headers: [{ id: '9', key: 'h', value: 'v', enabled: true }] });
+    expect(state.emitted?.type).toBe('custom');
+  });
 });
 

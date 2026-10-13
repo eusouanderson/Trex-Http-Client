@@ -76,5 +76,91 @@ describe('OAuth2Provider', () => {
     expect(result.headers.Authorization).toBe('Bearer valid-token-xyz');
     expect(result.secrets).toContain('valid-token-xyz');
   });
+
+  it('should support basic_header clientAuthMethod and handle fetch failures', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          access_token: 'basic-auth-token',
+        }),
+    });
+
+    const result = await provider.fetchClientCredentialsToken({
+      type: 'oauth2',
+      grantType: 'client_credentials',
+      tokenUrl: 'https://auth.example.com/oauth/token',
+      clientId: 'id',
+      clientSecret: 'secret',
+      clientAuthMethod: 'basic_header',
+      enabled: true,
+    }, mockFetch);
+
+    expect(result.accessToken).toBe('basic-auth-token');
+
+    const failingFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+    });
+
+    await expect(
+      provider.fetchClientCredentialsToken({
+        type: 'oauth2',
+        grantType: 'client_credentials',
+        tokenUrl: 'https://auth.example.com/token',
+        clientId: 'id',
+        enabled: true,
+      }, failingFetch),
+    ).rejects.toThrow('OAuth 2.0 token request failed with status 401');
+
+    const emptyApply = await provider.apply({
+      config: {
+        type: 'oauth2',
+        grantType: 'client_credentials',
+        tokenUrl: 'https://auth.example.com/token',
+        clientId: 'id',
+        enabled: false,
+      },
+      resolveVariable: (v: string) => v,
+    });
+    expect(emptyApply.headers).toEqual({});
+
+    const noTokenApply = await provider.apply({
+      config: {
+        type: 'oauth2',
+        grantType: 'client_credentials',
+        tokenUrl: 'https://auth.example.com/token',
+        clientId: 'id',
+        enabled: true,
+      },
+      resolveVariable: (v: string) => v,
+    });
+    expect(noTokenApply.headers).toEqual({});
+
+    expect(() =>
+      provider.buildAuthorizationUrl({
+        type: 'oauth2',
+        grantType: 'authorization_code',
+        tokenUrl: 'https://auth.example.com/token',
+        clientId: 'id',
+        enabled: true,
+      }),
+    ).toThrow('OAuth 2.0 authorization URL is required');
+
+    const globalFetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ access_token: 'global-fetch-tok', expires_in: 1800 }), { status: 200 }),
+    );
+
+    const defaultFetchRes = await provider.fetchClientCredentialsToken({
+      type: 'oauth2',
+      grantType: 'client_credentials',
+      tokenUrl: 'https://auth.example.com/token',
+      clientId: 'id',
+      clientAuthMethod: 'basic_header',
+      enabled: true,
+    });
+    expect(defaultFetchRes.accessToken).toBe('global-fetch-tok');
+    globalFetchSpy.mockRestore();
+  });
 });
 

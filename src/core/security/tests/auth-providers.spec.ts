@@ -38,6 +38,15 @@ describe('Auth Providers', () => {
       expect(result.secrets).toContain('trex-super-secret-token');
     });
 
+    it('should use default Bearer prefix when prefix is undefined', async () => {
+      const result = await provider.apply({
+        config: { type: 'bearer', token: 'raw-token', enabled: true },
+        resolveVariable: resolveVar,
+      });
+
+      expect(result.headers.Authorization).toBe('Bearer raw-token');
+    });
+
     it('should handle custom prefix without duplicating', async () => {
       const result = await provider.apply({
         config: { type: 'bearer', token: 'trex-super-secret-token', prefix: 'Token', enabled: true },
@@ -63,6 +72,12 @@ describe('Auth Providers', () => {
       });
 
       expect(result.headers).toEqual({});
+
+      const emptyRes = await provider.apply({
+        config: { type: 'bearer', token: '', enabled: true },
+        resolveVariable: resolveVar,
+      });
+      expect(emptyRes.headers).toEqual({});
     });
   });
 
@@ -97,6 +112,19 @@ describe('Auth Providers', () => {
       });
 
       expect(result.headers).toEqual({});
+
+      const emptyRes = await provider.apply({
+        config: { type: 'basic', username: '', password: '', enabled: true },
+        resolveVariable: resolveVar,
+      });
+      expect(emptyRes.headers).toEqual({});
+
+      const noPasswordRes = await provider.apply({
+        config: { type: 'basic', username: 'useronly', password: '', enabled: true },
+        resolveVariable: resolveVar,
+      });
+      expect(noPasswordRes.headers.Authorization).toBeDefined();
+      expect(noPasswordRes.secrets).toEqual([]);
     });
   });
 
@@ -133,13 +161,40 @@ describe('Auth Providers', () => {
 
       expect(result.headers).toEqual({});
       expect(result.params).toEqual({});
+
+      const emptyKeyRes = await provider.apply({
+        config: { type: 'apiKey', key: '', value: 'val', addTo: 'header', enabled: true },
+        resolveVariable: resolveVar,
+      });
+      expect(emptyKeyRes.headers).toEqual({});
+
+      const emptyValueRes = await provider.apply({
+        config: { type: 'apiKey', key: 'X-Key', value: '', addTo: 'header', enabled: true },
+        resolveVariable: resolveVar,
+      });
+      expect(emptyValueRes.headers['X-Key']).toBe('');
+      expect(emptyValueRes.secrets).toEqual([]);
     });
   });
 
   describe('CustomAuthProvider', () => {
     const provider = new CustomAuthProvider();
 
-    it('should populate enabled custom headers and params', async () => {
+    it('should return empty when disabled', async () => {
+      const result = await provider.apply({
+        config: {
+          type: 'custom',
+          enabled: false,
+          headers: [{ id: '1', key: 'X-Key', value: 'val', enabled: true }],
+          params: [],
+        },
+        resolveVariable: resolveVar,
+      });
+      expect(result.headers).toEqual({});
+      expect(result.secrets).toEqual([]);
+    });
+
+    it('should populate enabled custom headers and params and capture secret keys', async () => {
       const result = await provider.apply({
         config: {
           type: 'custom',
@@ -147,9 +202,11 @@ describe('Auth Providers', () => {
           headers: [
             { id: '1', key: 'X-Tenant', value: 'dino-corp', enabled: true },
             { id: '2', key: 'X-Disabled', value: 'noop', enabled: false },
+            { id: '3', key: 'X-Auth-Token', value: 'tok123', enabled: true },
           ],
           params: [
-            { id: '3', key: 'auth_sign', value: '{{key}}', enabled: true },
+            { id: '4', key: 'auth_sign', value: '{{key}}', enabled: true },
+            { id: '5', key: 'api_key_param', value: 'secret_query', enabled: true },
           ],
         },
         resolveVariable: resolveVar,
@@ -157,7 +214,11 @@ describe('Auth Providers', () => {
 
       expect(result.headers['X-Tenant']).toBe('dino-corp');
       expect(result.headers['X-Disabled']).toBeUndefined();
+      expect(result.headers['X-Auth-Token']).toBe('tok123');
       expect(result.params.auth_sign).toBe('apikey-123');
+      expect(result.params.api_key_param).toBe('secret_query');
+      expect(result.secrets).toContain('tok123');
+      expect(result.secrets).toContain('secret_query');
     });
   });
 

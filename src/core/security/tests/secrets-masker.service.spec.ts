@@ -20,6 +20,18 @@ describe('SecretsMaskerService', () => {
     expect(masked.Authorization).toBe('Bearer ••••••••');
     expect(masked['Content-Type']).toBe('application/json');
     expect(masked['X-API-Key']).toBe('••••••••');
+
+    const basicHeaders = {
+      Authorization: 'Basic dXNlcjpwYXNz',
+    };
+    const maskedBasic = masker.maskRecord(basicHeaders, []);
+    expect(maskedBasic.Authorization).toBe('Basic ••••••••');
+
+    const otherAuthHeaders = {
+      Authorization: 'Digest otherauthcredentials',
+    };
+    const maskedOther = masker.maskRecord(otherAuthHeaders, []);
+    expect(maskedOther.Authorization).toBe('••••••••');
   });
 
   it('should mask secrets inside URL query parameters', () => {
@@ -31,6 +43,19 @@ describe('SecretsMaskerService', () => {
     expect(masked).not.toContain('my_key_999');
     expect(masked).toContain('token=••••••••');
     expect(masked).toContain('apikey=••••••••');
+  });
+
+  it('should handle empty or invalid URLs without throwing', () => {
+    expect(masker.maskUrl('', [])).toBe('');
+    expect(masker.maskUrl('://', [])).toBe('://');
+  });
+
+  it('should mask occurrences of valid secrets in general headers', () => {
+    const headers = {
+      'Custom-Header': 'prefix-supersecret-suffix',
+    };
+    const masked = masker.maskRecord(headers, ['supersecret']);
+    expect(masked['Custom-Header']).toBe('prefix-••••••••-suffix');
   });
 });
 
