@@ -219,4 +219,62 @@ describe('useRequest', () => {
     expect(foundTab1?.auth?.type).toBe('bearer');
     expect(foundTab2?.auth?.type).toBe('none');
   });
+
+  it('should execute testScript and update environment variables after sendRequest', async () => {
+    const { updateActiveTab, sendRequest, executionResult } = useRequest();
+    const { createEnvironment, setActiveEnvironment, activeEnvironment } = (await import('../../environments')).useEnvironments();
+
+    const env = createEnvironment('TestEnv');
+    setActiveEnvironment(env.id);
+
+    const testScript = `
+      pm.test("Status deve ser 200", () => {
+        pm.response.to.have.status(200);
+      });
+      pm.test("Salvar variavel de teste", () => {
+        pm.environment.set("auth_token", "jwt-12345");
+      });
+    `;
+
+    updateActiveTab({
+      testScript,
+      url: 'https://jsonplaceholder.typicode.com/posts/1',
+      method: 'GET',
+    });
+
+    await sendRequest();
+
+    expect(executionResult.value?.testResults).toBeDefined();
+    expect(executionResult.value?.testResults?.totalPassed).toBe(2);
+    expect(executionResult.value?.testResults?.results[0]?.passed).toBe(true);
+    expect(activeEnvironment.value?.variables.find((v) => v.key === 'auth_token')?.value).toBe('jwt-12345');
+  });
+
+  it('should inject existing active environment variables into testScript execution', async () => {
+    const { updateActiveTab, sendRequest, executionResult } = useRequest();
+    const { createEnvironment, setActiveEnvironment, updateEnvironment } = (await import('../../environments')).useEnvironments();
+
+    const env = createEnvironment('ExistingVarsEnv');
+    env.variables.push({ id: 'v1', key: 'api_host', value: 'trex.dev', enabled: true });
+    env.variables.push({ id: 'v2', key: 'disabled_key', value: 'ignore', enabled: false });
+    updateEnvironment(env);
+    setActiveEnvironment(env.id);
+
+    const testScript = `
+      pm.test("Ler variavel existente", () => {
+        pm.expect(pm.environment.get("api_host")).to.equal("trex.dev");
+        pm.expect(pm.environment.get("disabled_key")).to.be.undefined;
+      });
+    `;
+
+    updateActiveTab({
+      testScript,
+      url: 'https://jsonplaceholder.typicode.com/posts/1',
+      method: 'GET',
+    });
+
+    await sendRequest();
+
+    expect(executionResult.value?.testResults?.totalPassed).toBe(1);
+  });
 });

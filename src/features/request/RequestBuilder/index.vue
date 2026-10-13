@@ -1,8 +1,8 @@
 <script setup lang="ts">
-
 import type { HttpMethod } from '../../../core/http/interfaces';
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
 import { AuthEditor } from '../AuthEditor';
+import { TestScriptEditor } from '../TestScriptEditor';
 import type { RequestBuilderEmits, RequestBuilderProps } from './interfaces';
 import { useRequestBuilder } from './use-request-builder';
 
@@ -23,6 +23,7 @@ const {
   setBody,
   setBodyType,
   setAuth,
+  setTestScript,
   formatJsonBody,
   addParam,
   removeParam,
@@ -134,6 +135,19 @@ const {
         <span
           v-if="activeTab.auth && activeTab.auth.type !== 'none'"
           class="w-1.5 h-1.5 rounded-full bg-amber-400"
+        ></span>
+      </button>
+
+      <button
+        type="button"
+        class="py-2.5 px-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5"
+        :class="activeCategory === 'tests' ? 'border-dino-400 text-dino-300' : 'border-transparent text-fossil-400 hover:text-bone-200'"
+        @click="setCategory('tests')"
+      >
+        <span>Testes</span>
+        <span
+          v-if="activeTab.testScript && activeTab.testScript.trim().length > 0"
+          class="w-1.5 h-1.5 rounded-full bg-dino-400"
         ></span>
       </button>
     </div>
@@ -314,6 +328,14 @@ const {
           :key="activeTab.id"
           :model-value="activeTab.auth"
           @update:model-value="setAuth"
+        />
+      </div>
+
+      <div v-else-if="activeCategory === 'tests'" class="h-full">
+        <test-script-editor
+          :key="activeTab.id"
+          :model-value="activeTab.testScript ?? ''"
+          @update:model-value="setTestScript"
         />
       </div>
     </div>

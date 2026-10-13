@@ -89,4 +89,24 @@ describe('EnvironmentService', () => {
     expect(service.interpolate(text)).toBe(text);
     expect(service.interpolate('')).toBe('');
   });
+
+  it('should set or update variable in active environment', () => {
+    service.setVariable('token', 'abc');
+    expect(service.getActiveEnvironment()).toBeNull();
+
+    const env = service.createEnvironment('Dev');
+    service.setActiveEnvironment(env.id);
+
+    service.setVariable('token', '123456');
+    const updated = service.getActiveEnvironment();
+    expect(updated?.variables).toHaveLength(1);
+    expect(updated?.variables[0]?.key).toBe('token');
+    expect(updated?.variables[0]?.value).toBe('123456');
+    expect(updated?.variables[0]?.enabled).toBe(true);
+
+    service.setVariable('token', '654321');
+    const reupdated = service.getActiveEnvironment();
+    expect(reupdated?.variables).toHaveLength(1);
+    expect(reupdated?.variables[0]?.value).toBe('654321');
+  });
 });

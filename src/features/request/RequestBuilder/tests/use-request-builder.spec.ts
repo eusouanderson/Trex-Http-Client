@@ -67,6 +67,9 @@ describe('useRequestBuilder', () => {
 
     builder.setAuth({ type: 'bearer', token: 'token-builder', prefix: 'Bearer', enabled: true });
     expect(builder.activeTab.value?.auth?.type).toBe('bearer');
+
+    builder.setTestScript('pm.test("Dino", () => {});');
+    expect(builder.activeTab.value?.testScript).toBe('pm.test("Dino", () => {});');
   });
 
   it('should invoke send and handle callback', async () => {

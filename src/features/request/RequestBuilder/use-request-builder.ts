@@ -19,6 +19,7 @@ interface UseRequestBuilderReturn {
   setBody: (body: string) => void;
   setBodyType: (type: BodyType) => void;
   setAuth: (auth: AuthConfig) => void;
+  setTestScript: (script: string) => void;
   formatJsonBody: () => void;
   addParam: () => void;
   removeParam: (id: string) => void;
@@ -67,6 +68,10 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
     updateActiveTab({ auth });
   };
 
+  const setTestScript = (testScript: string): void => {
+    updateActiveTab({ testScript });
+  };
+
   const formatJsonBody = (): void => {
     if (!activeTab.value) {
       return;
@@ -102,6 +107,7 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
     setBody,
     setBodyType,
     setAuth,
+    setTestScript,
     formatJsonBody,
     addParam,
     removeParam,

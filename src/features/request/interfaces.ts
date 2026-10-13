@@ -1,5 +1,6 @@
 import type { HttpMethod } from '../../core/http/interfaces';
 import type { AuthConfig } from '../../core/security/interfaces';
+import type { TestExecutionReport } from '../../core/scripts';
 
 interface KeyValuePair {
   id: string;
@@ -20,6 +21,7 @@ interface RequestTab {
   bodyType: BodyType;
   body: string;
   auth?: AuthConfig;
+  testScript?: string;
   collectionId?: string;
   isDirty: boolean;
   status?: number;
@@ -33,6 +35,7 @@ interface ExecutionResult {
   headers: Record<string, string>;
   data: unknown;
   error?: string;
+  testResults?: TestExecutionReport;
 }
 
 interface IRequestRunnerService {

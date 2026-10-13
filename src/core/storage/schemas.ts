@@ -87,6 +87,7 @@ const collectionItemSchema: z.ZodType<CollectionItem> = z.lazy(() =>
     params: z.record(z.string()).optional(),
     body: z.string().optional(),
     auth: authConfigSchema.optional(),
+    testScript: z.string().optional(),
     status: z.number().optional(),
     children: z.array(collectionItemSchema).optional(),
   }),

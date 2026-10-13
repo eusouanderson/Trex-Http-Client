@@ -1,4 +1,4 @@
-type ResponseViewTab = 'body' | 'headers';
+type ResponseViewTab = 'body' | 'headers' | 'tests';
 
 interface ResponseMeta {
   status: number;

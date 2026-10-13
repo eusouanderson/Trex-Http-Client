@@ -15,6 +15,7 @@ interface CollectionItem {
   params?: Record<string, string>;
   body?: string;
   auth?: AuthConfig;
+  testScript?: string;
   status?: number;
   children?: CollectionItem[];
 }
@@ -36,6 +37,8 @@ interface CreateItemInput {
   headers?: Record<string, string>;
   params?: Record<string, string>;
   body?: string;
+  auth?: AuthConfig;
+  testScript?: string;
   status?: number;
 }
 

@@ -9,6 +9,8 @@ import { createDefaultAuthRegistry } from '../../core/security';
 import { VariableResolverService } from '../../core/variables';
 import { RequestPreparationService } from './request-preparation.service';
 
+import { ScriptSandboxService } from '../../core/scripts';
+
 const defaultTab: RequestTab = {
   id: 'req-dino-1',
   name: 'Listar Dinossauros',
@@ -19,6 +21,7 @@ const defaultTab: RequestTab = {
   bodyType: 'none',
   body: '',
   auth: { type: 'none' },
+  testScript: '',
   isDirty: false,
 };
 
@@ -30,6 +33,7 @@ const requestRunner = new RequestRunnerService();
 const authRegistry = createDefaultAuthRegistry();
 const variableResolver = new VariableResolverService();
 const requestPreparationService = new RequestPreparationService(authRegistry, variableResolver);
+const scriptSandboxService = new ScriptSandboxService();
 
 interface UseRequestReturn {
   tabs: typeof tabsState;
@@ -102,6 +106,7 @@ const useRequest = (): UseRequestReturn => {
       bodyType: 'none',
       body: '',
       auth: { type: 'none' },
+      testScript: '',
       isDirty: false,
       ...initial,
     };
@@ -135,6 +140,9 @@ const useRequest = (): UseRequestReturn => {
     }
     if (patch.auth !== undefined) {
       collectionPatch.auth = patch.auth;
+    }
+    if (patch.testScript !== undefined) {
+      collectionPatch.testScript = patch.testScript;
     }
 
     if (Object.keys(collectionPatch).length > 0) {
@@ -212,6 +220,41 @@ const useRequest = (): UseRequestReturn => {
       });
 
       const result = await requestRunner.execute(activeTab.value, timeoutMs, prepared);
+
+      if (
+        activeTab.value.testScript !== undefined &&
+        activeTab.value.testScript.trim().length > 0
+      ) {
+        const envVarsRecord: Record<string, string> = {};
+        if (activeEnv) {
+          activeEnv.variables.forEach((v) => {
+            if (v.enabled) {
+              envVarsRecord[v.key] = v.value;
+            }
+          });
+        }
+
+        const testReport = await scriptSandboxService.execute(activeTab.value.testScript, {
+          response: {
+            status: result.status,
+            statusText: result.statusText,
+            headers: result.headers,
+            data: result.data,
+            durationMs: result.durationMs,
+          },
+          environmentVariables: envVarsRecord,
+        });
+
+        result.testResults = testReport;
+
+        if (testReport.environmentMutations.length > 0) {
+          const { setVariable } = useEnvironments();
+          testReport.environmentMutations.forEach((m) => {
+            setVariable(m.key, m.value);
+          });
+        }
+      }
+
       executionResultState.value = result;
       updateActiveTab({ status: result.status });
     } finally {

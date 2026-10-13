@@ -61,6 +61,34 @@ class EnvironmentService implements IEnvironmentService {
       return resolvedValue ?? match;
     });
   }
+
+  public setVariable(key: string, value: string): void {
+    const activeEnv = this.getActiveEnvironment();
+    if (activeEnv === null) return;
+
+    const existingIndex = activeEnv.variables.findIndex((v) => v.key === key);
+    const updatedVariables = [...activeEnv.variables];
+
+    if (existingIndex >= 0 && updatedVariables[existingIndex]) {
+      updatedVariables[existingIndex] = {
+        ...updatedVariables[existingIndex],
+        value,
+        enabled: true,
+      };
+    } else {
+      updatedVariables.push({
+        id: `var-${Date.now().toString()}-${Math.random().toString(36).slice(2, 7)}`,
+        key,
+        value,
+        enabled: true,
+      });
+    }
+
+    this.updateEnvironment({
+      ...activeEnv,
+      variables: updatedVariables,
+    });
+  }
 }
 
 export { EnvironmentService };

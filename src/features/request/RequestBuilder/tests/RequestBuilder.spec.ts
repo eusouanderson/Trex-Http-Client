@@ -2,6 +2,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRequest } from '../../use-request';
 import RequestBuilder from '../index.vue';
+import { TestScriptEditor } from '../../TestScriptEditor';
 
 describe('RequestBuilder Component', () => {
   beforeEach(() => {
@@ -136,5 +137,45 @@ describe('RequestBuilder Component', () => {
 
     await authBtn?.trigger('click');
     expect(wrapper.text()).toContain('Tipo de Auth:');
+  });
+
+  it('should render tests indicator and allow switching to tests tab', async () => {
+    const { createTab, updateActiveTab } = useRequest();
+    createTab();
+    updateActiveTab({
+      testScript: 'pm.test("Status", () => {});',
+    });
+    const wrapper = mount(RequestBuilder);
+
+    const testsBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Testes'));
+    expect(testsBtn).toBeDefined();
+    expect(testsBtn?.find('span.bg-dino-400').exists()).toBe(true);
+
+    await testsBtn?.trigger('click');
+    expect(wrapper.text()).toContain('Snippets Rápidos');
+
+    const testEditor = wrapper.findComponent(TestScriptEditor);
+    expect(testEditor.exists()).toBe(true);
+    testEditor.vm.$emit('update:modelValue', 'pm.test("Novo", () => {});');
+    expect(wrapper.vm).toBeDefined();
+  });
+
+  it('should render tests tab when testScript is empty or undefined', async () => {
+    const { createTab, updateActiveTab } = useRequest();
+    createTab();
+    updateActiveTab({
+      testScript: undefined,
+    });
+    const wrapper = mount(RequestBuilder);
+
+    const testsBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Testes'));
+    expect(testsBtn?.find('span.bg-dino-400').exists()).toBe(false);
+
+    await testsBtn?.trigger('click');
+    expect(wrapper.text()).toContain('Snippets Rápidos');
   });
 });
