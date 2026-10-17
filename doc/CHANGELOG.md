@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.5.0...v1.6.0) (2026-10-17)
+
+
+### Features
+
+* **collections:** permitir reorganizar colecoes e requisicoes por drag and drop ([228e9d4](https://github.com/eusouanderson/Trex-Http-Client/commit/228e9d48734d163e0ead9d9204f00ce7f282f4b0))
+
 # [1.5.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.4.0...v1.5.0) (2026-10-13)
 
 
