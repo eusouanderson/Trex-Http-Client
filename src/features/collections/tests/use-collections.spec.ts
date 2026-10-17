@@ -74,5 +74,33 @@ describe('useCollections', () => {
     expect(collections.value[0]?.id).toBe(c2.id);
     expect(collections.value[1]?.id).toBe(c1.id);
   });
+
+  it('should duplicate collection reactively', () => {
+    const { collections, createCollection, duplicateCollection } = useCollections();
+    const c1 = createCollection('Original');
+    expect(collections.value).toHaveLength(1);
+
+    const dup = duplicateCollection(c1.id);
+    expect(collections.value).toHaveLength(2);
+    expect(dup.name).toBe('Original (Cópia)');
+    expect(collections.value[1]?.name).toBe('Original (Cópia)');
+  });
+
+  it('should clear collection statuses reactively', () => {
+    const { collections, createCollection, addItem, clearCollectionStatuses } = useCollections();
+    const col = createCollection('With Status');
+    addItem(col.id, { name: 'Item', type: 'request', status: 200 });
+    expect(collections.value[0]?.items[0]?.status).toBe(200);
+
+    clearCollectionStatuses(col.id);
+    expect(collections.value[0]?.items[0]?.status).toBeUndefined();
+  });
+
+  it('should export collection', () => {
+    const { createCollection, exportCollection } = useCollections();
+    const col = createCollection('To Export');
+    const json = exportCollection(col.id);
+    expect(json).toContain('To Export');
+  });
 });
 

@@ -60,6 +60,9 @@ interface ICollectionService {
   deleteItem(collectionId: string, itemId: string): void;
   reorderItems(collectionId: string, items: CollectionItem[]): void;
   reorderCollections(collections: Collection[]): void;
+  duplicateCollection(collectionId: string): Collection;
+  clearCollectionStatuses(collectionId: string): void;
+  exportCollection(collectionId: string): string;
 }
 
 interface ILocalCollectionRepository {
@@ -71,6 +74,43 @@ interface ILocalCollectionRepository {
   load(): Promise<void>;
 }
 
+interface CollectionRunItemTestResult {
+  name: string;
+  passed: boolean;
+  error?: string;
+}
+
+interface CollectionRunItemResult {
+  itemId: string;
+  name: string;
+  method: string;
+  url: string;
+  status?: number;
+  statusText?: string;
+  durationMs: number;
+  sizeBytes?: number;
+  error?: string;
+  tests: CollectionRunItemTestResult[];
+}
+
+interface CollectionRunReport {
+  collectionId: string;
+  collectionName: string;
+  total: number;
+  passed: number;
+  failed: number;
+  totalDurationMs: number;
+  items: CollectionRunItemResult[];
+}
+
+interface ICollectionRunnerService {
+  run(
+    collection: Collection,
+    onProgress?: (result: CollectionRunItemResult, index: number, total: number) => void,
+    signal?: AbortSignal,
+  ): Promise<CollectionRunReport>;
+}
+
 export type {
   CollectionItemType,
   CollectionItem,
@@ -78,4 +118,8 @@ export type {
   CreateItemInput,
   ICollectionService,
   ILocalCollectionRepository,
+  CollectionRunItemTestResult,
+  CollectionRunItemResult,
+  CollectionRunReport,
+  ICollectionRunnerService,
 };

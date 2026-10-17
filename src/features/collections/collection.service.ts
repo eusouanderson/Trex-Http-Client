@@ -96,6 +96,21 @@ class CollectionService implements ICollectionService {
     this.entity.reorder(collections);
     this.repository?.reorder(this.entity.all);
   }
+
+  public duplicateCollection(collectionId: string): Collection {
+    const duplicated = this.entity.duplicate(collectionId);
+    this.repository?.save(duplicated);
+    return duplicated;
+  }
+
+  public clearCollectionStatuses(collectionId: string): void {
+    this.entity.clearStatuses(collectionId);
+    this.syncRepository(collectionId);
+  }
+
+  public exportCollection(collectionId: string): string {
+    return this.entity.export(collectionId);
+  }
 }
 
 export { CollectionService };
