@@ -148,6 +148,53 @@ class CollectionEntity {
   public reorder(collections: Collection[]): void {
     this.collections = [...collections];
   }
+
+  public duplicate(collectionId: string): Collection {
+    const target = this.collections.find((col) => col.id === collectionId);
+    if (!target) {
+      throw new Error(`Collection not found: ${collectionId}`);
+    }
+
+    const newId = `col-${Date.now().toString()}-${Math.random().toString(36).substring(2, 7)}`;
+    const clonedItems: CollectionItem[] = target.items.map((item) => ({
+      ...item,
+      id: `item-${Date.now().toString()}-${Math.random().toString(36).substring(2, 7)}`,
+      headers: item.headers ? { ...item.headers } : undefined,
+      params: item.params ? { ...item.params } : undefined,
+      auth: item.auth ? JSON.parse(JSON.stringify(item.auth)) as typeof item.auth : undefined,
+    }));
+
+    const duplicated: Collection = {
+      ...target,
+      id: newId,
+      name: `${target.name} (Cópia)`,
+      auth: target.auth ? JSON.parse(JSON.stringify(target.auth)) as typeof target.auth : undefined,
+      items: clonedItems,
+    };
+
+    this.collections.push(duplicated);
+    return { ...duplicated };
+  }
+
+  public clearStatuses(collectionId: string): void {
+    const target = this.collections.find((col) => col.id === collectionId);
+    if (!target) {
+      return;
+    }
+    target.items = target.items.map((item) => {
+      const copy = { ...item };
+      delete copy.status;
+      return copy;
+    });
+  }
+
+  public export(collectionId: string): string {
+    const target = this.collections.find((col) => col.id === collectionId);
+    if (!target) {
+      throw new Error(`Collection not found: ${collectionId}`);
+    }
+    return JSON.stringify(target, null, 2);
+  }
 }
 
 export { CollectionEntity };

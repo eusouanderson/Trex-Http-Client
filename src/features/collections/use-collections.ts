@@ -35,6 +35,9 @@ interface UseCollectionsReturn {
   deleteItem: (collectionId: string, itemId: string) => void;
   reorderItems: (collectionId: string, items: CollectionItem[]) => void;
   reorderCollections: (collections: Collection[]) => void;
+  duplicateCollection: (collectionId: string) => Collection;
+  clearCollectionStatuses: (collectionId: string) => void;
+  exportCollection: (collectionId: string) => string;
   selectItem: (itemId: string | null) => void;
 }
 
@@ -117,6 +120,21 @@ const useCollections = (): UseCollectionsReturn => {
     collectionsState.value = [...collections];
   };
 
+  const duplicateCollection = (collectionId: string): Collection => {
+    const duplicated = collectionService.duplicateCollection(collectionId);
+    syncState();
+    return duplicated;
+  };
+
+  const clearCollectionStatuses = (collectionId: string): void => {
+    collectionService.clearCollectionStatuses(collectionId);
+    syncState();
+  };
+
+  const exportCollection = (collectionId: string): string => {
+    return collectionService.exportCollection(collectionId);
+  };
+
   const selectItem = (itemId: string | null): void => {
     selectedItemIdState.value = itemId;
   };
@@ -133,6 +151,9 @@ const useCollections = (): UseCollectionsReturn => {
     deleteItem,
     reorderItems,
     reorderCollections,
+    duplicateCollection,
+    clearCollectionStatuses,
+    exportCollection,
     selectItem,
   };
 };

@@ -402,4 +402,71 @@ describe('useCollectionTree', () => {
     expect(updatedCol?.items[0]?.id).toBe(item2.id);
     expect(updatedCol?.items[1]?.id).toBe(item1.id);
   });
+
+  it('should manage context menu and execute its actions', () => {
+    const createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url');
+    window.URL.createObjectURL = createObjectURLMock;
+    window.URL.revokeObjectURL = vi.fn();
+    const linkClickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+
+    const tree = useCollectionTree();
+    const col = tree.collections.value[0];
+    expect(col).toBeDefined();
+    if (!col) return;
+
+    expect(tree.isContextMenuOpen.value).toBe(false);
+
+    const mockEvent = new MouseEvent('contextmenu', { clientX: 250, clientY: 350 });
+    tree.openCollectionContextMenu(mockEvent, col);
+
+    expect(tree.isContextMenuOpen.value).toBe(true);
+    expect(tree.contextMenuPos.value).toEqual({ x: 250, y: 350 });
+    expect(tree.contextMenuCollection.value?.id).toBe(col.id);
+
+    const items = tree.contextMenuItems.value;
+    expect(items).toHaveLength(7);
+
+    const runAction = items.find((i) => i.id === 'run-collection');
+    runAction?.action();
+    expect(tree.isRunnerModalOpen.value).toBe(true);
+    expect(tree.runnerModalCollection.value?.id).toBe(col.id);
+    tree.closeRunnerModal();
+    expect(tree.isRunnerModalOpen.value).toBe(false);
+
+    const addAction = items.find((i) => i.id === 'add-request');
+    addAction?.action();
+
+    const dupAction = items.find((i) => i.id === 'duplicate-collection');
+    dupAction?.action();
+    expect(tree.collections.value.some((c) => c.name.includes('(Cópia)'))).toBe(true);
+
+    const renameAction = items.find((i) => i.id === 'rename-collection');
+    renameAction?.action();
+    expect(tree.editingCollectionId.value).toBe(col.id);
+
+    const exportAction = items.find((i) => i.id === 'export-collection');
+    exportAction?.action();
+    expect(createObjectURLMock).toHaveBeenCalled();
+    expect(linkClickSpy).toHaveBeenCalled();
+
+    tree.exportCol('unknown-col');
+
+    const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockImplementationOnce(() => {
+      throw new Error('ObjectURL failed');
+    });
+    tree.exportCol(col.id);
+    createObjectURLSpy.mockRestore();
+
+    const clearAction = items.find((i) => i.id === 'clear-statuses');
+    clearAction?.action();
+
+    const deleteAction = items.find((i) => i.id === 'delete-collection');
+    deleteAction?.action();
+
+    tree.closeContextMenu();
+    expect(tree.isContextMenuOpen.value).toBe(false);
+    expect(tree.contextMenuItems.value).toEqual([]);
+
+    linkClickSpy.mockRestore();
+  });
 });

@@ -4,6 +4,8 @@ import { VueDraggable } from 'vue-draggable-plus';
 import type { CollectionItem } from '../interfaces';
 import type { CollectionTreeProps, CollectionTreeEmits } from './interfaces';
 import { useCollectionTree } from './use-collection-tree';
+import { ContextMenu } from '../../../shared/ui/ContextMenu';
+import { CollectionRunnerModal } from '../CollectionRunnerModal';
 
 defineProps<CollectionTreeProps>();
 const emit = defineEmits<CollectionTreeEmits>();
@@ -38,6 +40,14 @@ const {
   isDraggableDisabled,
   handleReorderCollections,
   handleReorderItems,
+  isContextMenuOpen,
+  contextMenuPos,
+  contextMenuItems,
+  openCollectionContextMenu,
+  closeContextMenu,
+  isRunnerModalOpen,
+  runnerModalCollection,
+  closeRunnerModal,
 } = useCollectionTree(handleSelect);
 
 const fileInputRef = ref<HTMLInputElement | null>(null);
@@ -126,6 +136,7 @@ const handleFileImport = (event: Event): void => {
         <div
           class="flex items-center justify-between px-2.5 py-1.5 hover:bg-surface-hover cursor-pointer group transition-colors select-none"
           @click="toggleExpand(collection.id)"
+          @contextmenu.prevent="openCollectionContextMenu($event, collection)"
         >
           <div class="flex items-center gap-1.5 truncate flex-1 min-w-0 mr-1">
             <span
@@ -338,6 +349,20 @@ const handleFileImport = (event: Event): void => {
         </transition>
       </div>
     </vue-draggable>
+
+    <context-menu
+      :is-open="isContextMenuOpen"
+      :x="contextMenuPos.x"
+      :y="contextMenuPos.y"
+      :items="contextMenuItems"
+      @close="closeContextMenu"
+    />
+
+    <collection-runner-modal
+      :is-open="isRunnerModalOpen"
+      :collection="runnerModalCollection"
+      @close="closeRunnerModal"
+    />
   </div>
 </template>
 
