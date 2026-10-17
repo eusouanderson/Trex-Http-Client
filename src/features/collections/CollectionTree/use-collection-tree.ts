@@ -36,6 +36,9 @@ interface UseCollectionTreeReturn {
   saveRenameCollection: (collectionId: string) => void;
   cancelRenameCollection: () => void;
   importPostmanCollection: (jsonString: string) => void;
+  isDraggableDisabled: ComputedRef<boolean>;
+  handleReorderCollections: (newCollections: Collection[]) => void;
+  handleReorderItems: (colId: string, newItems: CollectionItem[]) => void;
 }
 
 const useCollectionTree = (
@@ -50,6 +53,8 @@ const useCollectionTree = (
     updateCollection,
     deleteCollection,
     deleteItem,
+    reorderItems,
+    reorderCollections,
     selectItem,
   } = useCollections();
   const { createEnvironment, updateEnvironment } = useEnvironments();
@@ -247,6 +252,18 @@ const useCollectionTree = (
     }
   };
 
+  const isDraggableDisabled = computed<boolean>(() => {
+    return searchQueryState.value.trim().length > 0;
+  });
+
+  const handleReorderCollections = (newCollections: Collection[]): void => {
+    reorderCollections(newCollections);
+  };
+
+  const handleReorderItems = (colId: string, newItems: CollectionItem[]): void => {
+    reorderItems(colId, newItems);
+  };
+
   return {
     searchQuery: searchQueryState,
     collections,
@@ -270,6 +287,9 @@ const useCollectionTree = (
     saveRenameCollection,
     cancelRenameCollection,
     importPostmanCollection,
+    isDraggableDisabled,
+    handleReorderCollections,
+    handleReorderItems,
   };
 };
 

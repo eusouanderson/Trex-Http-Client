@@ -356,4 +356,50 @@ describe('useCollectionTree', () => {
     expect(alertMock).toHaveBeenCalledWith('Erro ao importar collection do Postman.');
     alertMock.mockRestore();
   });
+
+  it('should disable drag and drop when search query is active', () => {
+    const tree = useCollectionTree();
+    expect(tree.isDraggableDisabled.value).toBe(false);
+
+    tree.searchQuery.value = 'teste';
+    expect(tree.isDraggableDisabled.value).toBe(true);
+
+    tree.searchQuery.value = '   ';
+    expect(tree.isDraggableDisabled.value).toBe(false);
+  });
+
+  it('should handle reordering collections', () => {
+    const tree = useCollectionTree();
+    tree.addNewCollection('Col Alpha');
+    tree.addNewCollection('Col Beta');
+
+    const cols = [...tree.collections.value];
+    const alphaIndex = cols.findIndex((c) => c.name === 'Col Alpha');
+    const betaIndex = cols.findIndex((c) => c.name === 'Col Beta');
+    expect(alphaIndex).toBeGreaterThanOrEqual(0);
+    expect(betaIndex).toBeGreaterThanOrEqual(0);
+
+    const reversed = [...cols].reverse();
+    tree.handleReorderCollections(reversed);
+    expect(tree.collections.value[0]?.id).toBe(reversed[0]?.id);
+  });
+
+  it('should handle reordering items within a collection', () => {
+    const tree = useCollectionTree();
+    const col = tree.filteredCollections.value[0];
+    expect(col).toBeDefined();
+    if (!col) return;
+
+    const item1 = tree.addNewRequest(col.id, 'Req 1');
+    const item2 = tree.addNewRequest(col.id, 'Req 2');
+
+    const currentCol = tree.collections.value.find((c) => c.id === col.id);
+    expect(currentCol).toBeDefined();
+    if (!currentCol) return;
+
+    tree.handleReorderItems(col.id, [item2, item1]);
+    const updatedCol = tree.collections.value.find((c) => c.id === col.id);
+    expect(updatedCol?.items[0]?.id).toBe(item2.id);
+    expect(updatedCol?.items[1]?.id).toBe(item1.id);
+  });
 });

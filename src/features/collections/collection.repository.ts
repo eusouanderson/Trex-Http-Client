@@ -90,6 +90,12 @@ class CollectionRepository implements ILocalCollectionRepository {
     this.writeStorage(this.cache);
     void this.persistentRepo.delete(id);
   };
+
+  public readonly reorder = (collections: Collection[]): void => {
+    this.cache = [...collections];
+    this.writeStorage(this.cache);
+    void this.persistentRepo.bulkSave(collections);
+  };
 }
 
 export { CollectionRepository, DEFAULT_COLLECTIONS };

@@ -59,6 +59,7 @@ interface ICollectionService {
   ): CollectionItem | null;
   deleteItem(collectionId: string, itemId: string): void;
   reorderItems(collectionId: string, items: CollectionItem[]): void;
+  reorderCollections(collections: Collection[]): void;
 }
 
 interface ILocalCollectionRepository {
@@ -66,6 +67,7 @@ interface ILocalCollectionRepository {
   getById(id: string): Collection | null;
   save(collection: Collection): void;
   delete(id: string): void;
+  reorder(collections: Collection[]): void;
   load(): Promise<void>;
 }
 

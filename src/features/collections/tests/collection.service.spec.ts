@@ -125,6 +125,7 @@ describe('CollectionService', () => {
   it('should delegate getCollections to repository when provided', () => {
     let saved = false;
     let deleted = false;
+    let reordered = false;
     const mockRepo = {
       load: () => Promise.resolve(),
       getAll: () => [{ id: 'col-mock', name: 'Mock Col', items: [] }],
@@ -135,11 +136,49 @@ describe('CollectionService', () => {
       delete: () => {
         deleted = true;
       },
+      reorder: () => {
+        reordered = true;
+      },
     };
     const serviceWithRepo = new CollectionService(undefined, mockRepo);
     expect(serviceWithRepo.getCollections()).toHaveLength(1);
     expect(serviceWithRepo.getCollections()[0]?.id).toBe('col-mock');
     expect(saved).toBe(false);
     expect(deleted).toBe(false);
+    expect(reordered).toBe(false);
+  });
+
+  it('should reorder collections and sync with repository', () => {
+    let savedCol: unknown = null;
+    let deletedId: string | null = null;
+    let reorderedList: unknown[] = [];
+    const mockRepo = {
+      load: () => Promise.resolve(),
+      getAll: () => [
+        { id: 'col-1', name: 'Col 1', items: [] },
+        { id: 'col-2', name: 'Col 2', items: [] },
+      ],
+      getById: () => null,
+      save: (c: unknown) => {
+        savedCol = c;
+      },
+      delete: (id: string) => {
+        deletedId = id;
+      },
+      reorder: (cols: unknown[]) => {
+        reorderedList = cols;
+      },
+    };
+
+    const s = new CollectionService(undefined, mockRepo);
+    const [c1, c2] = s.getCollections();
+    expect(c1).toBeDefined();
+    expect(c2).toBeDefined();
+    if (!c1 || !c2) return;
+
+    s.reorderCollections([c2, c1]);
+    expect(reorderedList).toEqual([c2, c1]);
+    expect(savedCol).toBeNull();
+    expect(deletedId).toBeNull();
   });
 });

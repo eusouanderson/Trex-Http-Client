@@ -118,5 +118,17 @@ describe('CollectionEntity', () => {
 
     entity.reorderItems('missing-col', []);
   });
+
+  it('should reorder collections array', () => {
+    const entity = new CollectionEntity([]);
+    const colA = entity.create('Collection A');
+    const colB = entity.create('Collection B');
+    expect(entity.all[0]?.id).toBe(colA.id);
+    expect(entity.all[1]?.id).toBe(colB.id);
+
+    entity.reorder([colB, colA]);
+    expect(entity.all[0]?.id).toBe(colB.id);
+    expect(entity.all[1]?.id).toBe(colA.id);
+  });
 });
 

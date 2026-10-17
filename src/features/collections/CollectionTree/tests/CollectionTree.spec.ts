@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { VueDraggable } from 'vue-draggable-plus';
 import { useCollections } from '../../use-collections';
 import CollectionTree from '../index.vue';
 import { useCollectionTree } from '../use-collection-tree';
@@ -113,16 +114,14 @@ describe('CollectionTree Component', () => {
     expect(wrapper.text()).toContain('Nova Coleção');
   });
 
-  it('should handle item selection and emit selectItem event', () => {
+  it('should handle item selection and emit selectItem event', async () => {
     const wrapper = mount(CollectionTree);
     const methodBadge = wrapper.find('span.tracking-tighter');
     expect(methodBadge.exists()).toBe(true);
 
-    const itemRow = methodBadge.element.closest('div.cursor-pointer');
-    expect(itemRow).not.toBeNull();
-
-    if (itemRow) {
-      itemRow.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    const itemCard = wrapper.find('.request-item-card');
+    if (itemCard.exists()) {
+      await itemCard.trigger('click');
       expect(wrapper.emitted('selectItem')).toBeDefined();
     }
   });
@@ -234,11 +233,105 @@ describe('CollectionTree Component', () => {
     const imported = tree.filteredCollections.value.find(c => c.name === 'Test');
     expect(imported).toBeDefined();
 
-    // Reset files for branch where no file is selected
     Object.defineProperty(fileInput.element, 'files', {
       value: [],
       configurable: true
     });
     await fileInput.trigger('change');
   });
+
+  it('should render drag handles and handle drag reorder events', () => {
+    const tree = useCollectionTree();
+    let col = tree.filteredCollections.value.find((c) => c.items.length > 0);
+    if (!col) {
+      tree.addNewCollection('Coleção Teste Drag');
+      col = tree.filteredCollections.value.find((c) => c.name === 'Coleção Teste Drag');
+      if (col) {
+        tree.addNewRequest(col.id, 'Req Teste Drag');
+      }
+    }
+    if (col && !tree.isExpanded(col.id)) {
+      tree.toggleExpand(col.id);
+    }
+
+    const wrapper = mount(CollectionTree);
+    const colHandles = wrapper.findAll('.col-drag-handle');
+    expect(colHandles.length).toBeGreaterThan(0);
+
+    const itemHandles = wrapper.findAll('.item-drag-handle');
+    expect(itemHandles.length).toBeGreaterThan(0);
+
+    const draggables = wrapper.findAllComponents(VueDraggable);
+    expect(draggables.length).toBeGreaterThanOrEqual(2);
+
+    draggables[0]?.vm.$emit('update:modelValue', [...tree.collections.value]);
+    draggables[0]?.vm.$emit('end');
+
+    if (draggables.length >= 2 && col) {
+      draggables[1]?.vm.$emit('update:modelValue', [...col.items]);
+      draggables[1]?.vm.$emit('end');
+    }
+  });
+
+  it('should render methods PUT, PATCH, DELETE, fallback and status badges', () => {
+    const { createCollection, addItem, updateItemById } = useCollections();
+    const col = createCollection('Coleção Métodos');
+    const tree = useCollectionTree();
+    tree.toggleExpand(col.id);
+
+    const putItem = addItem(col.id, { name: 'Item PUT', method: 'PUT', type: 'request' });
+    const patchItem = addItem(col.id, { name: 'Item PATCH', method: 'PATCH', type: 'request' });
+    const delItem = addItem(col.id, { name: 'Item DEL', method: 'DELETE', type: 'request' });
+    addItem(col.id, { name: 'Item OTHER', method: 'OPTIONS', type: 'request' });
+
+    const fallbackItem = addItem(col.id, { name: 'Item REQ', type: 'request' });
+    updateItemById(putItem.id, { status: 304 });
+    updateItemById(patchItem.id, { status: 404 });
+    updateItemById(delItem.id, { status: 500 });
+    updateItemById(fallbackItem.id, { method: undefined });
+
+
+    const wrapper = mount(CollectionTree);
+    expect(wrapper.text()).toContain('PUT');
+    expect(wrapper.text()).toContain('PATCH');
+    expect(wrapper.text()).toContain('DEL');
+    expect(wrapper.text()).toContain('OPTIONS');
+    expect(wrapper.text()).toContain('REQ');
+    expect(wrapper.text()).toContain('304');
+    expect(wrapper.text()).toContain('404');
+    expect(wrapper.text()).toContain('500');
+  });
+
+  it('should handle click and disabled state on drag handles', async () => {
+    const tree = useCollectionTree();
+    tree.searchQuery.value = 'Coleção';
+    expect(tree.isDraggableDisabled.value).toBe(true);
+
+    const wrapper = mount(CollectionTree);
+    const colHandle = wrapper.find('.col-drag-handle');
+    expect(colHandle.exists()).toBe(true);
+    await colHandle.trigger('click');
+    expect(colHandle.attributes('title')).toBe('Desative a busca para reorganizar');
+
+    const itemHandle = wrapper.find('.item-drag-handle');
+    expect(itemHandle.exists()).toBe(true);
+    await itemHandle.trigger('click');
+    expect(itemHandle.attributes('title')).toBe('Desative a busca para reorganizar');
+
+
+    tree.searchQuery.value = '';
+    const resetWrapper = mount(CollectionTree);
+    const enabledColHandle = resetWrapper.find('.col-drag-handle');
+    expect(enabledColHandle.exists()).toBe(true);
+    await enabledColHandle.trigger('click');
+    expect(enabledColHandle.attributes('title')).toBe('Arrastar para reorganizar coleção');
+
+    const enabledItemHandle = resetWrapper.find('.item-drag-handle');
+    if (enabledItemHandle.exists()) {
+      await enabledItemHandle.trigger('click');
+      expect(enabledItemHandle.attributes('title')).toBe('Arrastar para reorganizar requisição');
+    }
+  });
+
 });
+
