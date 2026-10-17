@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { VueDraggable } from 'vue-draggable-plus';
 import type { CollectionItem } from '../interfaces';
 import type { CollectionTreeProps, CollectionTreeEmits } from './interfaces';
 import { useCollectionTree } from './use-collection-tree';
@@ -13,6 +14,7 @@ const handleSelect = (item: CollectionItem): void => {
 
 const {
   searchQuery,
+  collections,
   filteredCollections,
   selectedItemId,
   editingItemId,
@@ -33,6 +35,9 @@ const {
   saveRenameCollection,
   cancelRenameCollection,
   importPostmanCollection,
+  isDraggableDisabled,
+  handleReorderCollections,
+  handleReorderItems,
 } = useCollectionTree(handleSelect);
 
 const fileInputRef = ref<HTMLInputElement | null>(null);
@@ -55,7 +60,6 @@ const handleFileImport = (event: Event): void => {
   };
   reader.readAsText(file);
   
-  // Reset input
   target.value = '';
 };
 </script>
@@ -103,11 +107,20 @@ const handleFileImport = (event: Event): void => {
       </div>
     </div>
 
-    <div class="flex-1 overflow-y-auto p-2 space-y-1">
+    <vue-draggable
+      v-model="collections"
+      :animation="150"
+      :disabled="isDraggableDisabled"
+      handle=".col-drag-handle"
+      draggable=".collection-card"
+      item-key="id"
+      class="flex-1 overflow-y-auto p-2 space-y-1"
+      @end="handleReorderCollections(collections)"
+    >
       <div
-        v-for="collection in filteredCollections"
+        v-for="collection in (isDraggableDisabled ? filteredCollections : collections)"
         :key="collection.id"
-        class="rounded-lg overflow-hidden border transition-all duration-200 mb-2"
+        class="collection-card rounded-lg overflow-hidden border transition-all duration-200 mb-2"
         :class="isExpanded(collection.id) ? 'border-surface-border bg-surface-panel/40 shadow-sm' : 'border-surface-border/50 bg-surface-ground/30 hover:border-surface-border'"
       >
         <div
@@ -115,6 +128,21 @@ const handleFileImport = (event: Event): void => {
           @click="toggleExpand(collection.id)"
         >
           <div class="flex items-center gap-1.5 truncate flex-1 min-w-0 mr-1">
+            <span
+              class="col-drag-handle w-5 h-5 flex items-center justify-center text-fossil-400 hover:text-dino-400 cursor-grab active:cursor-grabbing shrink-0 rounded hover:bg-surface-border/60 transition-colors select-none"
+              :class="{ 'opacity-30 cursor-not-allowed': isDraggableDisabled }"
+              :title="isDraggableDisabled ? 'Desative a busca para reorganizar' : 'Arrastar para reorganizar coleção'"
+              @click.stop
+            >
+              <svg class="w-3.5 h-3.5 fill-current pointer-events-none" viewBox="0 0 16 16">
+                <circle cx="5" cy="3" r="1.3" />
+                <circle cx="11" cy="3" r="1.3" />
+                <circle cx="5" cy="8" r="1.3" />
+                <circle cx="11" cy="8" r="1.3" />
+                <circle cx="5" cy="13" r="1.3" />
+                <circle cx="11" cy="13" r="1.3" />
+              </svg>
+            </span>
             <span
               class="w-3.5 h-3.5 flex items-center justify-center text-fossil-400 transition-transform duration-200 shrink-0 group-hover:text-bone-100"
               :class="isExpanded(collection.id) ? 'rotate-90 text-dino-400' : ''"
@@ -182,108 +210,134 @@ const handleFileImport = (event: Event): void => {
         </div>
 
         <transition name="trex-collapse-content">
-          <div v-if="isExpanded(collection.id)" class="pl-3 pr-1 py-1 space-y-0.5 border-t border-surface-border/30">
-          <div
-            v-for="item in collection.items"
-            :key="item.id"
-            class="flex items-center justify-between px-2 py-1.5 rounded-md cursor-pointer group text-xs transition-colors"
-            :class="selectedItemId === item.id ? 'bg-dino-500/20 text-dino-200 border border-dino-500/40' : 'text-fossil-300 hover:bg-surface-hover'"
-            @click="select(item)"
+          <vue-draggable
+            v-if="isExpanded(collection.id)"
+            v-model="collection.items"
+            :animation="150"
+            :disabled="isDraggableDisabled"
+            handle=".item-drag-handle"
+            draggable=".request-item-card"
+            item-key="id"
+            class="pl-3 pr-1 py-1 space-y-0.5 border-t border-surface-border/30 min-h-[8px]"
+            @end="handleReorderItems(collection.id, collection.items)"
           >
-            <div class="flex items-center gap-2 truncate flex-1 min-w-0 mr-1">
-              <span
-                v-if="item.method === 'GET'"
-                class="text-[10px] font-black text-dino-400 w-7 tracking-tighter shrink-0"
-              >
-                GET
-              </span>
-              <span
-                v-else-if="item.method === 'POST'"
-                class="text-[10px] font-black text-amber-400 w-7 tracking-tighter shrink-0"
-              >
-                POST
-              </span>
-              <span
-                v-else-if="item.method === 'PUT'"
-                class="text-[10px] font-black text-blue-400 w-7 tracking-tighter shrink-0"
-              >
-                PUT
-              </span>
-              <span
-                v-else-if="item.method === 'PATCH'"
-                class="text-[10px] font-black text-purple-400 w-7 tracking-tighter shrink-0"
-              >
-                PATCH
-              </span>
-              <span
-                v-else-if="item.method === 'DELETE'"
-                class="text-[10px] font-black text-magma-400 w-7 tracking-tighter shrink-0"
-              >
-                DEL
-              </span>
-              <span
-                v-else
-                class="text-[10px] font-black text-fossil-400 w-7 tracking-tighter shrink-0"
-              >
-                {{ item.method ?? 'REQ' }}
-              </span>
+            <div
+              v-for="item in collection.items"
+              :key="item.id"
+              class="request-item-card flex items-center justify-between px-2 py-1.5 rounded-md cursor-pointer group text-xs transition-colors"
+              :class="selectedItemId === item.id ? 'bg-dino-500/20 text-dino-200 border border-dino-500/40' : 'text-fossil-300 hover:bg-surface-hover'"
+              @click="select(item)"
+            >
+              <div class="flex items-center gap-1.5 truncate flex-1 min-w-0 mr-1">
+                <span
+                  class="item-drag-handle w-4 h-4 flex items-center justify-center text-fossil-500 hover:text-dino-400 cursor-grab active:cursor-grabbing shrink-0 rounded hover:bg-surface-border/40 transition-colors mr-0.5 select-none"
+                  :class="{ 'opacity-30 cursor-not-allowed': isDraggableDisabled }"
+                  :title="isDraggableDisabled ? 'Desative a busca para reorganizar' : 'Arrastar para reorganizar requisição'"
+                  @click.stop
+                >
+                  <svg class="w-2.5 h-2.5 fill-current pointer-events-none" viewBox="0 0 16 16">
+                    <circle cx="5" cy="4" r="1.2" />
+                    <circle cx="11" cy="4" r="1.2" />
+                    <circle cx="5" cy="8" r="1.2" />
+                    <circle cx="11" cy="8" r="1.2" />
+                    <circle cx="5" cy="12" r="1.2" />
+                    <circle cx="11" cy="12" r="1.2" />
+                  </svg>
+                </span>
 
-              <span
-                v-if="item.status"
-                class="text-[9px] font-bold px-1 py-0.5 rounded font-mono shrink-0"
-                :class="{
-                  'text-dino-400 bg-dino-500/10': item.status >= 200 && item.status < 300,
-                  'text-amber-400 bg-amber-500/10': item.status >= 300 && item.status < 400,
-                  'text-magma-400 bg-magma-500/10': item.status >= 400,
-                }"
-              >
-                {{ item.status }}
-              </span>
+                <span
+                  v-if="item.method === 'GET'"
+                  class="text-[10px] font-black text-dino-400 w-7 tracking-tighter shrink-0"
+                >
+                  GET
+                </span>
+                <span
+                  v-else-if="item.method === 'POST'"
+                  class="text-[10px] font-black text-amber-400 w-7 tracking-tighter shrink-0"
+                >
+                  POST
+                </span>
+                <span
+                  v-else-if="item.method === 'PUT'"
+                  class="text-[10px] font-black text-blue-400 w-7 tracking-tighter shrink-0"
+                >
+                  PUT
+                </span>
+                <span
+                  v-else-if="item.method === 'PATCH'"
+                  class="text-[10px] font-black text-purple-400 w-7 tracking-tighter shrink-0"
+                >
+                  PATCH
+                </span>
+                <span
+                  v-else-if="item.method === 'DELETE'"
+                  class="text-[10px] font-black text-magma-400 w-7 tracking-tighter shrink-0"
+                >
+                  DEL
+                </span>
+                <span
+                  v-else
+                  class="text-[10px] font-black text-fossil-400 w-7 tracking-tighter shrink-0"
+                >
+                  {{ item.method ?? 'REQ' }}
+                </span>
 
-              <input
-                v-if="editingItemId === item.id"
-                v-model="editingItemName"
-                type="text"
-                autofocus
-                class="bg-surface-ground border border-dino-400 rounded px-1.5 py-0.5 text-xs text-bone-100 focus:outline-none w-full font-sans shadow-sm"
-                @click.stop
+                <span
+                  v-if="item.status"
+                  class="text-[9px] font-bold px-1 py-0.5 rounded font-mono shrink-0"
+                  :class="{
+                    'text-dino-400 bg-dino-500/10': item.status >= 200 && item.status < 300,
+                    'text-amber-400 bg-amber-500/10': item.status >= 300 && item.status < 400,
+                    'text-magma-400 bg-magma-500/10': item.status >= 400,
+                  }"
+                >
+                  {{ item.status }}
+                </span>
+
+                <input
+                  v-if="editingItemId === item.id"
+                  v-model="editingItemName"
+                  type="text"
+                  autofocus
+                  class="bg-surface-ground border border-dino-400 rounded px-1.5 py-0.5 text-xs text-bone-100 focus:outline-none w-full font-sans shadow-sm"
+                  @click.stop
+                  @dblclick.stop
+                  @keydown.enter.stop="saveRename(collection.id, item.id)"
+                  @keydown.esc.stop="cancelRename"
+                  @blur="saveRename(collection.id, item.id)"
+                />
+                <span
+                  v-else
+                  class="truncate text-xs select-none"
+                  title="Clique duas vezes para renomear"
+                  @dblclick.stop="startRenaming(item)"
+                >
+                  {{ item.name }}
+                </span>
+              </div>
+
+              <button
+                v-if="editingItemId !== item.id"
+                type="button"
+                title="Excluir"
+                class="w-4 h-4 flex items-center justify-center text-[10px] text-fossil-500 hover:text-magma-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                @click.stop="deleteItm(collection.id, item.id)"
                 @dblclick.stop
-                @keydown.enter.stop="saveRename(collection.id, item.id)"
-                @keydown.esc.stop="cancelRename"
-                @blur="saveRename(collection.id, item.id)"
-              />
-              <span
-                v-else
-                class="truncate text-xs select-none"
-                title="Clique duas vezes para renomear"
-                @dblclick.stop="startRenaming(item)"
               >
-                {{ item.name }}
-              </span>
+                ✕
+              </button>
             </div>
 
-            <button
-              v-if="editingItemId !== item.id"
-              type="button"
-              title="Excluir"
-              class="w-4 h-4 flex items-center justify-center text-[10px] text-fossil-500 hover:text-magma-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-              @click.stop="deleteItm(collection.id, item.id)"
-              @dblclick.stop
+            <div
+              v-if="collection.items.length === 0"
+              class="p-2 text-center text-[11px] text-fossil-500"
             >
-              ✕
-            </button>
-          </div>
-
-          <div
-            v-if="collection.items.length === 0"
-            class="p-2 text-center text-[11px] text-fossil-500"
-          >
-            Nenhuma requisição criada
-          </div>
-        </div>
+              Nenhuma requisição criada
+            </div>
+          </vue-draggable>
         </transition>
       </div>
-    </div>
+    </vue-draggable>
   </div>
 </template>
 

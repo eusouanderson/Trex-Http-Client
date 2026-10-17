@@ -60,5 +60,19 @@ describe('useCollections', () => {
     deleteItem(col.id, item2.id);
     expect(selectedItemId.value).toBeNull();
   });
+
+  it('should reorder collections reactively', () => {
+    const { collections, createCollection, reorderCollections } = useCollections();
+    const c1 = createCollection('Col 1');
+    const c2 = createCollection('Col 2');
+
+    expect(collections.value[0]?.id).toBe(c1.id);
+    expect(collections.value[1]?.id).toBe(c2.id);
+
+    reorderCollections([c2, c1]);
+
+    expect(collections.value[0]?.id).toBe(c2.id);
+    expect(collections.value[1]?.id).toBe(c1.id);
+  });
 });
 

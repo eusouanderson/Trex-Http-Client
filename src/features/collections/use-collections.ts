@@ -34,6 +34,7 @@ interface UseCollectionsReturn {
   ) => CollectionItem | null;
   deleteItem: (collectionId: string, itemId: string) => void;
   reorderItems: (collectionId: string, items: CollectionItem[]) => void;
+  reorderCollections: (collections: Collection[]) => void;
   selectItem: (itemId: string | null) => void;
 }
 
@@ -105,7 +106,15 @@ const useCollections = (): UseCollectionsReturn => {
     items: CollectionItem[],
   ): void => {
     collectionService.reorderItems(collectionId, items);
-    syncState();
+    const target = collectionsState.value.find((c) => c.id === collectionId);
+    if (target) {
+      target.items = [...items];
+    }
+  };
+
+  const reorderCollections = (collections: Collection[]): void => {
+    collectionService.reorderCollections(collections);
+    collectionsState.value = [...collections];
   };
 
   const selectItem = (itemId: string | null): void => {
@@ -123,6 +132,7 @@ const useCollections = (): UseCollectionsReturn => {
     updateItemById,
     deleteItem,
     reorderItems,
+    reorderCollections,
     selectItem,
   };
 };

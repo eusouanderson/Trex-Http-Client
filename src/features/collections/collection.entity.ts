@@ -144,6 +144,10 @@ class CollectionEntity {
     }
     target.items = [...items];
   }
+
+  public reorder(collections: Collection[]): void {
+    this.collections = [...collections];
+  }
 }
 
 export { CollectionEntity };

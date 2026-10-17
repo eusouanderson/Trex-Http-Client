@@ -91,6 +91,11 @@ class CollectionService implements ICollectionService {
     this.entity.reorderItems(collectionId, items);
     this.syncRepository(collectionId);
   }
+
+  public reorderCollections(collections: Collection[]): void {
+    this.entity.reorder(collections);
+    this.repository?.reorder(this.entity.all);
+  }
 }
 
 export { CollectionService };

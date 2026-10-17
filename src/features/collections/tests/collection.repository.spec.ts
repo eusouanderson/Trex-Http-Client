@@ -97,5 +97,24 @@ describe('CollectionRepository', () => {
     await emptyStorage.clearAll();
     await emptyStorage.close();
   });
+
+  it('should reorder collections and persist to cache and storage', () => {
+    const colA: Collection = { id: 'col-a', name: 'Collection A', items: [] };
+    const colB: Collection = { id: 'col-b', name: 'Collection B', items: [] };
+    repository.save(colA);
+    repository.save(colB);
+
+    repository.reorder([colB, colA]);
+    const reordered = repository.getAll();
+    expect(reordered[0]?.id).toBe('col-b');
+    expect(reordered[1]?.id).toBe('col-a');
+
+    const raw = localStorage.getItem('trex_collections');
+    expect(raw).not.toBeNull();
+    if (typeof raw !== 'string') return;
+    const parsed = JSON.parse(raw) as Collection[];
+    expect(parsed[0]?.id).toBe('col-b');
+    expect(parsed[1]?.id).toBe('col-a');
+  });
 });
 
