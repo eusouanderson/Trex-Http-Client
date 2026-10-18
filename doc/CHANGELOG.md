@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.6.0...v1.7.0) (2026-10-18)
+
+
+### Features
+
+* **collections:** adicionar menu de contexto e executor de colecoes ([e628c90](https://github.com/eusouanderson/Trex-Http-Client/commit/e628c90c8709fbe175c45dcdc16af79ab7409edc))
+
 # [1.6.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.5.0...v1.6.0) (2026-10-17)
 
 
