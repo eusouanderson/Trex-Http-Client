@@ -4,6 +4,8 @@ import { VueDraggable } from 'vue-draggable-plus';
 import { useCollections } from '../../use-collections';
 import CollectionTree from '../index.vue';
 import { useCollectionTree } from '../use-collection-tree';
+import { ContextMenu } from '../../../../shared/ui/ContextMenu';
+import { CollectionRunnerModal } from '../../CollectionRunnerModal';
 
 describe('CollectionTree Component', () => {
   beforeEach(() => {
@@ -333,5 +335,32 @@ describe('CollectionTree Component', () => {
     }
   });
 
+  it('should open context menu on right click on collection card', async () => {
+    const wrapper = mount(CollectionTree, {
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
+    });
+
+    const colHeader = wrapper.find('.collection-card .cursor-pointer');
+    expect(colHeader.exists()).toBe(true);
+
+    await colHeader.trigger('contextmenu');
+
+    const contextMenu = wrapper.findComponent(ContextMenu);
+    expect(contextMenu.exists()).toBe(true);
+    expect(contextMenu.props('isOpen')).toBe(true);
+
+    contextMenu.vm.$emit('close');
+    await wrapper.vm.$nextTick();
+
+    const runnerModal = wrapper.findComponent(CollectionRunnerModal);
+    expect(runnerModal.exists()).toBe(true);
+    runnerModal.vm.$emit('close');
+    await wrapper.vm.$nextTick();
+  });
 });
+
 

@@ -1,10 +1,11 @@
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 import { computed, ref, watch } from 'vue';
 import { useRequest } from '../../request';
 import type { Collection, CollectionItem } from '../interfaces';
 import { useCollections } from '../use-collections';
 import { PostmanParserService } from '../postman-parser.service';
 import { useEnvironments } from '../../environments/use-environments';
+import type { ContextMenuItem } from '../../../shared/ui/ContextMenu';
 
 const expandedSet = ref<Set<string>>(new Set(['col-default-trex']));
 const searchQueryState = ref<string>('');
@@ -39,6 +40,19 @@ interface UseCollectionTreeReturn {
   isDraggableDisabled: ComputedRef<boolean>;
   handleReorderCollections: (newCollections: Collection[]) => void;
   handleReorderItems: (colId: string, newItems: CollectionItem[]) => void;
+  isContextMenuOpen: Ref<boolean>;
+  contextMenuPos: Ref<{ x: number; y: number }>;
+  contextMenuCollection: Ref<Collection | null>;
+  contextMenuItems: ComputedRef<ContextMenuItem[]>;
+  openCollectionContextMenu: (event: MouseEvent, collection: Collection) => void;
+  closeContextMenu: () => void;
+  isRunnerModalOpen: Ref<boolean>;
+  runnerModalCollection: Ref<Collection | null>;
+  openRunnerModal: (collection: Collection) => void;
+  closeRunnerModal: () => void;
+  duplicateCol: (collectionId: string) => void;
+  clearStatusesCol: (collectionId: string) => void;
+  exportCol: (collectionId: string) => void;
 }
 
 const useCollectionTree = (
@@ -55,6 +69,9 @@ const useCollectionTree = (
     deleteItem,
     reorderItems,
     reorderCollections,
+    duplicateCollection,
+    clearCollectionStatuses,
+    exportCollection,
     selectItem,
   } = useCollections();
   const { createEnvironment, updateEnvironment } = useEnvironments();
@@ -264,6 +281,141 @@ const useCollectionTree = (
     reorderItems(colId, newItems);
   };
 
+  const isContextMenuOpen = ref<boolean>(false);
+  const contextMenuPos = ref<{ x: number; y: number }>({ x: 0, y: 0 });
+  const contextMenuCollection = ref<Collection | null>(null);
+
+  const isRunnerModalOpen = ref<boolean>(false);
+  const runnerModalCollection = ref<Collection | null>(null);
+
+  const openCollectionContextMenu = (
+    event: MouseEvent,
+    collection: Collection,
+  ): void => {
+    event.preventDefault();
+    event.stopPropagation();
+    contextMenuPos.value = { x: event.clientX, y: event.clientY };
+    contextMenuCollection.value = collection;
+    isContextMenuOpen.value = true;
+  };
+
+  const closeContextMenu = (): void => {
+    isContextMenuOpen.value = false;
+    contextMenuCollection.value = null;
+  };
+
+  const openRunnerModal = (collection: Collection): void => {
+    runnerModalCollection.value = collection;
+    isRunnerModalOpen.value = true;
+  };
+
+  const closeRunnerModal = (): void => {
+    isRunnerModalOpen.value = false;
+    runnerModalCollection.value = null;
+  };
+
+  const duplicateCol = (collectionId: string): void => {
+    const duplicated = duplicateCollection(collectionId);
+    const updated = new Set(expandedSet.value);
+    updated.add(duplicated.id);
+    expandedSet.value = updated;
+  };
+
+  const clearStatusesCol = (collectionId: string): void => {
+    clearCollectionStatuses(collectionId);
+  };
+
+  const exportCol = (collectionId: string): void => {
+    try {
+      const col = collections.value.find((c) => c.id === collectionId);
+      if (!col) {
+        return;
+      }
+      const json = exportCollection(collectionId);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const baseName = col.name.replace(/[^a-zA-Z0-9_-]/g, '_');
+      link.download = `${baseName}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch {
+      return;
+    }
+  };
+
+  const contextMenuItems = computed<ContextMenuItem[]>(() => {
+    const col = contextMenuCollection.value;
+    if (!col) {
+      return [];
+    }
+
+    return [
+      {
+        id: 'run-collection',
+        label: 'Executar Coleção',
+        icon: '🚀',
+        action: () => {
+          openRunnerModal(col);
+        },
+      },
+      {
+        id: 'add-request',
+        label: 'Nova Requisição',
+        icon: '➕',
+        action: () => {
+          addNewRequest(col.id);
+        },
+      },
+      {
+        id: 'duplicate-collection',
+        label: 'Duplicar Coleção',
+        icon: '📋',
+        action: () => {
+          duplicateCol(col.id);
+        },
+      },
+      {
+        id: 'rename-collection',
+        label: 'Renomear',
+        icon: '✏️',
+        action: () => {
+          startRenamingCollection(col);
+        },
+      },
+      {
+        id: 'export-collection',
+        label: 'Exportar Coleção',
+        icon: '📥',
+        action: () => {
+          exportCol(col.id);
+        },
+      },
+      {
+        id: 'clear-statuses',
+        label: 'Limpar Status',
+        icon: '🧹',
+        divider: true,
+        action: () => {
+          clearStatusesCol(col.id);
+        },
+      },
+      {
+        id: 'delete-collection',
+        label: 'Excluir Coleção',
+        icon: '🗑️',
+        danger: true,
+        divider: true,
+        action: () => {
+          deleteCol(col.id);
+        },
+      },
+    ];
+  });
+
   return {
     searchQuery: searchQueryState,
     collections,
@@ -290,6 +442,19 @@ const useCollectionTree = (
     isDraggableDisabled,
     handleReorderCollections,
     handleReorderItems,
+    isContextMenuOpen,
+    contextMenuPos,
+    contextMenuCollection,
+    contextMenuItems,
+    openCollectionContextMenu,
+    closeContextMenu,
+    isRunnerModalOpen,
+    runnerModalCollection,
+    openRunnerModal,
+    closeRunnerModal,
+    duplicateCol,
+    clearStatusesCol,
+    exportCol,
   };
 };
 

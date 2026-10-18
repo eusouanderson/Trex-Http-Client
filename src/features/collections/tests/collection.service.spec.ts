@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import type { Collection } from '../interfaces';
 import { CollectionService } from '../collection.service';
 
 describe('CollectionService', () => {
@@ -180,5 +181,56 @@ describe('CollectionService', () => {
     expect(reorderedList).toEqual([c2, c1]);
     expect(savedCol).toBeNull();
     expect(deletedId).toBeNull();
+  });
+
+  it('should duplicate collection and persist via repository', () => {
+    const tracker: { saved: Collection | null } = { saved: null };
+    const mockRepo = {
+      load: () => Promise.resolve(),
+      getAll: () => [{ id: 'col-1', name: 'Original', items: [] }],
+      getById: () => null,
+      save: (c: Collection) => {
+        tracker.saved = c;
+      },
+      delete: () => undefined,
+      reorder: () => undefined,
+    };
+
+    const s = new CollectionService(undefined, mockRepo);
+    const duplicated = s.duplicateCollection('col-1');
+    expect(duplicated.name).toBe('Original (Cópia)');
+    expect(tracker.saved?.name).toBe('Original (Cópia)');
+  });
+
+  it('should clear collection statuses and sync via repository', () => {
+    const tracker: { saved: Collection | null } = { saved: null };
+    const mockRepo = {
+      load: () => Promise.resolve(),
+      getAll: () => [
+        {
+          id: 'col-1',
+          name: 'Col 1',
+          items: [{ id: 'req-1', name: 'Req', type: 'request' as const, status: 200 }],
+        },
+      ],
+      getById: () => null,
+      save: (c: Collection) => {
+        tracker.saved = c;
+      },
+      delete: () => undefined,
+      reorder: () => undefined,
+    };
+
+    const s = new CollectionService(undefined, mockRepo);
+    s.clearCollectionStatuses('col-1');
+    const firstItem = tracker.saved?.items.find((i) => i.id === 'req-1');
+    expect(firstItem?.status).toBeUndefined();
+  });
+
+  it('should export collection as JSON', () => {
+    const s = new CollectionService();
+    const col = s.createCollection('Exportable');
+    const json = s.exportCollection(col.id);
+    expect(json).toContain('Exportable');
   });
 });

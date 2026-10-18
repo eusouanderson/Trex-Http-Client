@@ -130,5 +130,69 @@ describe('CollectionEntity', () => {
     expect(entity.all[0]?.id).toBe(colB.id);
     expect(entity.all[1]?.id).toBe(colA.id);
   });
+
+  it('should duplicate collection with new ids and name suffixed', () => {
+    const entity = new CollectionEntity([]);
+    const original = entity.create('Auth API', 'Desc');
+    entity.update(original.id, { auth: { type: 'bearer', token: 'secret', enabled: true } });
+    const item = entity.addItem(original.id, {
+      name: 'Login',
+      type: 'request',
+      method: 'POST',
+      url: 'https://api.dino.dev/login',
+      headers: { 'X-Dino': 'true' },
+      params: { limit: '10' },
+      auth: { type: 'basic', username: 'u', password: 'p', enabled: true },
+    });
+
+    const duplicated = entity.duplicate(original.id);
+    expect(duplicated.id).not.toBe(original.id);
+    expect(duplicated.name).toBe('Auth API (Cópia)');
+    expect(duplicated.description).toBe('Desc');
+    expect(duplicated.auth).toEqual({ type: 'bearer', token: 'secret', enabled: true });
+    expect(duplicated.items).toHaveLength(1);
+    expect(duplicated.items[0]?.id).not.toBe(item.id);
+    expect(duplicated.items[0]?.name).toBe('Login');
+    expect(duplicated.items[0]?.headers).toEqual({ 'X-Dino': 'true' });
+    expect(duplicated.items[0]?.params).toEqual({ limit: '10' });
+    expect(duplicated.items[0]?.auth).toEqual({ type: 'basic', username: 'u', password: 'p', enabled: true });
+    expect(entity.all).toHaveLength(2);
+  });
+
+  it('should throw error when duplicating non-existent collection', () => {
+    const entity = new CollectionEntity([]);
+    expect(() => entity.duplicate('not-found')).toThrow('Collection not found: not-found');
+  });
+
+  it('should clear statuses on items of collection', () => {
+    const entity = new CollectionEntity([]);
+    const col = entity.create('Status Test');
+    const item = entity.addItem(col.id, {
+      name: 'Item',
+      type: 'request',
+      status: 200,
+    });
+    expect(item.status).toBe(200);
+
+    entity.clearStatuses(col.id);
+    expect(entity.all[0]?.items[0]?.status).toBeUndefined();
+
+    entity.clearStatuses('missing-col');
+  });
+
+  it('should export collection as JSON string', () => {
+    const entity = new CollectionEntity([]);
+    const col = entity.create('Export Test');
+    const json = entity.export(col.id);
+    const parsed = JSON.parse(json) as { name: string; id: string };
+    expect(parsed.name).toBe('Export Test');
+    expect(parsed.id).toBe(col.id);
+  });
+
+  it('should throw error when exporting non-existent collection', () => {
+    const entity = new CollectionEntity([]);
+    expect(() => entity.export('not-found')).toThrow('Collection not found: not-found');
+  });
 });
+
 
