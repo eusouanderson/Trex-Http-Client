@@ -107,6 +107,7 @@ describe('DexiePersistenceStorage (IndexedDB)', () => {
     it('should save and retrieve client settings', async () => {
       const settings: ClientSettings = {
         theme: 'triceratops-amber',
+        fontFamily: 'system',
         orientation: 'vertical',
         density: 'compact',
         defaultTimeout: 15000,

@@ -13,6 +13,7 @@ describe('SettingsService', () => {
     const settings = service.getSettings();
 
     expect(settings.theme).toBe('dino');
+    expect(settings.fontFamily).toBe('system');
     expect(settings.orientation).toBe('horizontal');
     expect(settings.density).toBe('comfortable');
     expect(settings.defaultTimeout).toBe(10000);
@@ -73,6 +74,7 @@ describe('SettingsService', () => {
       load: () => Promise.resolve(),
       getSettings: () => ({
         theme: 'raptor-dracula' as const,
+        fontFamily: 'system',
         orientation: 'vertical' as const,
         density: 'compact' as const,
         defaultTimeout: 5000,
@@ -98,6 +100,7 @@ describe('SettingsService', () => {
         wasReset = true;
         return {
           theme: 'dino' as const,
+          fontFamily: 'system',
           orientation: 'horizontal' as const,
           density: 'comfortable' as const,
           defaultTimeout: 10000,
@@ -178,6 +181,37 @@ describe('SettingsService', () => {
     };
     const repoService = new SettingsService(undefined, mockRepo);
     expect(repoService.getCustomTheme('custom-velociraptor')).toEqual(dummyCustom);
+  });
+
+  it('should notify fontService on init, update and reset', () => {
+    const appliedFonts: string[] = [];
+    const mockFontService = {
+      getAvailableFonts: () => [],
+      getFontById: () => ({
+        id: 'system',
+        name: 'System',
+        label: 'System',
+        category: 'sans' as const,
+        cssValue: 'sans-serif',
+        description: '',
+      }),
+      getFontCssValue: () => 'sans-serif',
+      applyFont: (id: string) => {
+        appliedFonts.push(id);
+      },
+    };
+
+    const s = new SettingsService(undefined, undefined, mockFontService);
+    expect(appliedFonts).toEqual(['system']);
+
+    s.updateSettings({ fontFamily: 'fira-code' });
+    expect(appliedFonts).toEqual(['system', 'fira-code']);
+
+    s.updateSettings({ theme: 'trex-monokai' });
+    expect(appliedFonts).toEqual(['system', 'fira-code']);
+
+    s.resetSettings();
+    expect(appliedFonts).toEqual(['system', 'fira-code', 'system']);
   });
 });
 

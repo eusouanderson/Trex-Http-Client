@@ -111,5 +111,14 @@ describe('useSettings', () => {
 
     meta.remove();
   });
+
+  it('should update font family via setFontFamily and reset properly', () => {
+    const { settings, setFontFamily, resetSettings } = useSettings();
+    setFontFamily('geist');
+    expect(settings.value.fontFamily).toBe('geist');
+
+    resetSettings();
+    expect(settings.value.fontFamily).toBe('system');
+  });
 });
 

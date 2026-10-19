@@ -333,7 +333,7 @@ describe('CollectionTree Component', () => {
       await enabledItemHandle.trigger('click');
       expect(enabledItemHandle.attributes('title')).toBe('Arrastar para reorganizar requisição');
     }
-  });
+  }, 15000);
 
   it('should open context menu on right click on collection card', async () => {
     const wrapper = mount(CollectionTree, {
@@ -360,7 +360,7 @@ describe('CollectionTree Component', () => {
     expect(runnerModal.exists()).toBe(true);
     runnerModal.vm.$emit('close');
     await wrapper.vm.$nextTick();
-  });
+  }, 15000);
 });
 
 

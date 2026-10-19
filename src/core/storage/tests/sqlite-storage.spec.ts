@@ -70,6 +70,7 @@ describe('SqlitePersistenceStorage', () => {
 
       const settings: ClientSettings = {
         theme: 'dino',
+        fontFamily: 'system',
         orientation: 'horizontal',
         density: 'comfortable',
         defaultTimeout: 30000,

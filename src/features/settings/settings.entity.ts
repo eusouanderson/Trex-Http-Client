@@ -68,6 +68,7 @@ const JSON_THEME_PRESETS: Record<
 class SettingsEntity {
   public static readonly DEFAULT_SETTINGS: Readonly<ClientSettings> = {
     theme: 'dino',
+    fontFamily: 'system',
     orientation: 'horizontal',
     density: 'comfortable',
     defaultTimeout: 10000,

@@ -317,5 +317,19 @@ describe('SettingsModal Component', () => {
     const themeIcons = wrapper.findAllComponents({ name: 'ThemeIcon' });
     expect(themeIcons.length).toBeGreaterThanOrEqual(3);
   });
+
+  it('should render typography options in layout tab and allow changing font', async () => {
+    const wrapper = mount(SettingsModal);
+
+    expect(wrapper.text()).toContain('Tipografia da Aplicação');
+    const firaCodeBtn = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Fira Code'));
+    expect(firaCodeBtn).toBeDefined();
+
+    await firaCodeBtn?.trigger('click');
+    const { settings } = useSettings();
+    expect(settings.value.fontFamily).toBe('fira-code');
+  });
 });
 

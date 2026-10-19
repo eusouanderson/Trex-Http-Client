@@ -170,6 +170,7 @@ const customThemeSchema = z.object({
 
 const clientSettingsSchema = z.object({
   theme: z.string().min(1),
+  fontFamily: z.string().min(1).default('system'),
   orientation: z.enum(['horizontal', 'vertical']),
   density: z.enum(['compact', 'comfortable']),
   defaultTimeout: z.number().positive(),

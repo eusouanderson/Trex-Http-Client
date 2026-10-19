@@ -1,3 +1,4 @@
+import type { IFontService } from '../../core/fonts';
 import type {
   ClientSettings,
   CustomTheme,
@@ -12,9 +13,13 @@ class SettingsService implements ISettingsService {
   constructor(
     initial?: Partial<ClientSettings>,
     private readonly repository?: ILocalSettingsRepository,
+    private readonly fontService?: IFontService,
   ) {
     const fromRepo = repository ? repository.getSettings() : undefined;
     this.entity = new SettingsEntity(initial ?? fromRepo);
+    if (this.fontService) {
+      this.fontService.applyFont(this.entity.value.fontFamily);
+    }
   }
 
   public readonly getSettings = (): ClientSettings => {
@@ -27,23 +32,35 @@ class SettingsService implements ISettingsService {
   public readonly updateSettings = (
     partial: Partial<ClientSettings>,
   ): ClientSettings => {
+    let result: ClientSettings;
     if (this.repository) {
       const current = this.repository.getSettings();
       const updated = new SettingsEntity(current).update(partial);
       this.repository.save(updated);
       this.entity.update(partial);
-      return updated;
+      result = updated;
+    } else {
+      result = this.entity.update(partial);
     }
-    return this.entity.update(partial);
+    if (this.fontService && typeof partial.fontFamily === 'string') {
+      this.fontService.applyFont(partial.fontFamily);
+    }
+    return result;
   };
 
   public readonly resetSettings = (): ClientSettings => {
+    let result: ClientSettings;
     if (this.repository) {
       const defaulted = this.repository.reset();
       this.entity.reset();
-      return defaulted;
+      result = defaulted;
+    } else {
+      result = this.entity.reset();
     }
-    return this.entity.reset();
+    if (this.fontService) {
+      this.fontService.applyFont(result.fontFamily);
+    }
+    return result;
   };
 
   public readonly addCustomTheme = (theme: CustomTheme): ClientSettings => {

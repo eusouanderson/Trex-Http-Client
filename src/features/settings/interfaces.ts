@@ -84,6 +84,7 @@ interface CustomTheme {
 
 interface ClientSettings {
   theme: string;
+  fontFamily: string;
   orientation: PanelOrientation;
   density: UiDensity;
   defaultTimeout: number;
