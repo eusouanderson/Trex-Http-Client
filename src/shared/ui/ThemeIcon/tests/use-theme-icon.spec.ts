@@ -55,5 +55,50 @@ describe('useThemeIcon', () => {
     expect(blobIcon.isImage.value).toBe(true);
     expect(blobIcon.resolvedSrc.value).toBe('blob:http://localhost/12345');
   });
+
+  it('should handle data image url without prepending base url', () => {
+    const dataIcon = useThemeIcon({ icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==' });
+    expect(dataIcon.isImage.value).toBe(true);
+    expect(dataIcon.resolvedSrc.value).toBe('data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==');
+  });
+
+  it('should resolve icons from public/icons folder with base url', () => {
+    const iconWithRelativePath = useThemeIcon({ icon: 'icons/velociraptor.png' });
+    expect(iconWithRelativePath.isImage.value).toBe(true);
+    expect(iconWithRelativePath.resolvedSrc.value).toBe(`${import.meta.env.BASE_URL}icons/velociraptor.png`);
+
+    const iconWithLeadingSlash = useThemeIcon({ icon: '/icons/velociraptor.png' });
+    expect(iconWithLeadingSlash.isImage.value).toBe(true);
+    expect(iconWithLeadingSlash.resolvedSrc.value).toBe(`${import.meta.env.BASE_URL}icons/velociraptor.png`);
+  });
+
+  it('should not duplicate base url when icon already contains base url', () => {
+    const originalBase = import.meta.env.BASE_URL;
+    const testBase = '/Trex-Http-Client/';
+    import.meta.env.BASE_URL = testBase;
+
+    try {
+      const alreadyPrefixed = useThemeIcon({ icon: '/Trex-Http-Client/icons/velociraptor.png' });
+      expect(alreadyPrefixed.isImage.value).toBe(true);
+      expect(alreadyPrefixed.resolvedSrc.value).toBe('/Trex-Http-Client/icons/velociraptor.png');
+    } finally {
+      import.meta.env.BASE_URL = originalBase;
+    }
+  });
+
+  it('should identify http, /logos/, webp and jpg paths properly', () => {
+    const httpIcon = useThemeIcon({ icon: 'http://example.com/icon.png' });
+    expect(httpIcon.isImage.value).toBe(true);
+    expect(httpIcon.resolvedSrc.value).toBe('http://example.com/icon.png');
+
+    const logosSlashIcon = useThemeIcon({ icon: '/logos/custom.svg' });
+    expect(logosSlashIcon.isImage.value).toBe(true);
+
+    const webpIcon = useThemeIcon({ icon: 'avatar.webp' });
+    expect(webpIcon.isImage.value).toBe(true);
+
+    const jpgIcon = useThemeIcon({ icon: 'banner.jpg' });
+    expect(jpgIcon.isImage.value).toBe(true);
+  });
 });
 

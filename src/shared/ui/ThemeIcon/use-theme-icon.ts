@@ -10,6 +10,8 @@ const isImagePath = (icon: string): boolean => {
     normalized.startsWith('blob:') ||
     normalized.startsWith('logos/') ||
     normalized.startsWith('/logos/') ||
+    normalized.startsWith('icons/') ||
+    normalized.startsWith('/icons/') ||
     normalized.endsWith('.png') ||
     normalized.endsWith('.svg') ||
     normalized.endsWith('.webp') ||
@@ -27,8 +29,12 @@ const resolveIconUrl = (icon: string): string => {
   ) {
     return trimmed;
   }
+  const baseUrl = import.meta.env.BASE_URL;
+  if (trimmed.startsWith(baseUrl)) {
+    return trimmed;
+  }
   const cleanPath = trimmed.replace(/^\//, '');
-  return `${import.meta.env.BASE_URL}${cleanPath}`;
+  return `${baseUrl}${cleanPath}`;
 };
 
 const useThemeIcon = (props: ThemeIconProps): UseThemeIconReturn => {
