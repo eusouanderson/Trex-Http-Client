@@ -1,3 +1,11 @@
+## [1.9.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.9.0...v1.9.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* **ci:** compatibilizar testes com tinypool 2.2 e estabilizar pipeline ([3a645b9](https://github.com/eusouanderson/Trex-Http-Client/commit/3a645b98f4b3dbc47d22e3a149ae406d8ef509ae))
+* **icons:** mover icones para public e corrigir resolucao de base url em producao ([3749b38](https://github.com/eusouanderson/Trex-Http-Client/commit/3749b38bee6dd529aad66c4d5cc0dba6934c1a58))
+
 # [1.9.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.8.0...v1.9.0) (2026-10-19)
 
 
