@@ -17,7 +17,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['src/tests/setup-indexeddb.ts'],
-    include: ['src/**/*.spec.ts'],
+    include: ['src/**/*.spec.ts', 'scripts/**/*.spec.ts'],
     exclude: ['e2e/**', 'node_modules/**'],
     coverage: {
       provider: 'v8',
