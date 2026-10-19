@@ -1,7 +1,7 @@
 {
   "name": "trex-http-client",
   "private": true,
-  "version": "1.9.1",
+  "version": "1.10.0",
   "type": "module",
   "author": "Anderson Rodrigues da Silva",
   "contributors": [
@@ -21,7 +21,6 @@
     "docs:api": "typedoc",
     "docs:generate": "vite-node --script scripts/docs/generate-docs.ts"
   },
-
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",
     "@codemirror/commands": "^6.11.1",

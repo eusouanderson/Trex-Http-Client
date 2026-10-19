@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.9.1...v1.10.0) (2026-10-19)
+
+
+### Features
+
+* **docs:** implementar documentacao automatica inteligente com typedoc e groq ([eac3462](https://github.com/eusouanderson/Trex-Http-Client/commit/eac34627087d290f208438b1954157f71f59cf5b))
+
 ## [1.9.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.9.0...v1.9.1) (2026-10-19)
 
 
