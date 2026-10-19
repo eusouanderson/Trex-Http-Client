@@ -162,7 +162,7 @@ describe('useSettingsModal', () => {
 
     const originalCreate = window.URL.createObjectURL.bind(window.URL);
     // @ts-expect-error test undefined createObjectURL
-    delete window.URL.createObjectURL;
+    window.URL.createObjectURL = undefined;
     expect(() => { modal.downloadThemeTemplate(); }).not.toThrow();
     window.URL.createObjectURL = originalCreate;
   });
