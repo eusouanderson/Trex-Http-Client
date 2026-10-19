@@ -1,7 +1,8 @@
 import { ref } from 'vue';
+import { FontService } from '../../core/fonts';
 import type { ClientSettings, CustomTheme } from './interfaces';
-import { SettingsService } from './settings.service';
 import { SettingsRepository } from './settings.repository';
+import { SettingsService } from './settings.service';
 
 const THEME_COLORS: Record<string, string> = {
   dino: '#141311',
@@ -35,8 +36,9 @@ const updateThemeMeta = (theme: string, currentSettings: ClientSettings): void =
   }
 };
 
+const fontService = new FontService();
 const settingsRepository = new SettingsRepository();
-const settingsService = new SettingsService(undefined, settingsRepository);
+const settingsService = new SettingsService(undefined, settingsRepository, fontService);
 const settingsState = ref<ClientSettings>(settingsService.getSettings());
 const isSettingsOpen = ref<boolean>(false);
 
@@ -45,6 +47,7 @@ updateThemeMeta(settingsState.value.theme, settingsState.value);
 void settingsRepository.load().then(() => {
   settingsState.value = settingsService.getSettings();
   updateThemeMeta(settingsState.value.theme, settingsState.value);
+  fontService.applyFont(settingsState.value.fontFamily);
 });
 
 interface UseSettingsReturn {
@@ -56,6 +59,7 @@ interface UseSettingsReturn {
   resetSettings: () => void;
   addCustomTheme: (theme: CustomTheme) => void;
   removeCustomTheme: (themeId: string) => void;
+  setFontFamily: (fontId: string) => void;
 }
 
 const useSettings = (): UseSettingsReturn => {
@@ -88,6 +92,10 @@ const useSettings = (): UseSettingsReturn => {
     updateThemeMeta(settingsState.value.theme, settingsState.value);
   };
 
+  const setFontFamily = (fontId: string): void => {
+    updateSettings({ fontFamily: fontId });
+  };
+
   return {
     settings: settingsState,
     isOpen: isSettingsOpen,
@@ -97,6 +105,7 @@ const useSettings = (): UseSettingsReturn => {
     resetSettings,
     addCustomTheme,
     removeCustomTheme,
+    setFontFamily,
   };
 };
 

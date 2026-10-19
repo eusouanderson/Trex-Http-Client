@@ -235,6 +235,19 @@ describe('useSettingsModal', () => {
       expect(contributor.role).toBeTruthy();
     }
   });
+
+  it('should expose available fonts and allow updating font family', () => {
+    const modal = useSettingsModal();
+
+    expect(modal.availableFonts.value.length).toBeGreaterThanOrEqual(10);
+    expect(modal.settings.value.fontFamily).toBe('system');
+
+    modal.setFontFamily('fira-code');
+    expect(modal.settings.value.fontFamily).toBe('fira-code');
+
+    modal.setFontFamily('geist');
+    expect(modal.settings.value.fontFamily).toBe('geist');
+  });
 });
 
 

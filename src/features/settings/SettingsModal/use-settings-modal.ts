@@ -2,6 +2,8 @@ import type { ComputedRef, Ref } from 'vue';
 import { computed, ref } from 'vue';
 import { dinosaurIconService } from '@/core/icons';
 import type { ContributorItem } from '@/core/icons';
+import { FontService } from '@/core/fonts';
+import type { FontOption } from '@/core/fonts';
 import type {
   CustomTheme,
   JsonColorField,
@@ -104,6 +106,7 @@ const JSON_COLOR_FIELDS: JsonColorField[] = [
 ];
 
 const themeParser = new ThemeParserService();
+const fontService = new FontService();
 
 interface UseSettingsModalReturn {
   activeTab: typeof activeTabState;
@@ -115,6 +118,8 @@ interface UseSettingsModalReturn {
   jsonPresets: JsonPresetItem[];
   jsonColorFields: JsonColorField[];
   contributors: ComputedRef<ContributorItem[]>;
+  availableFonts: ComputedRef<FontOption[]>;
+  setFontFamily: (fontId: string) => void;
   setTab: (tab: SettingsTab) => void;
   setTheme: (themeId: string) => void;
   setOrientation: (orientation: PanelOrientation) => void;
@@ -284,6 +289,14 @@ const useSettingsModal = (): UseSettingsModalReturn => {
 
   const contributors = computed<ContributorItem[]>(() => dinosaurIconService.getContributors());
 
+  const availableFonts = computed<FontOption[]>(() =>
+    fontService.getAvailableFonts(),
+  );
+
+  const setFontFamily = (fontId: string): void => {
+    updateSettings({ fontFamily: fontId });
+  };
+
   return {
     activeTab: activeTabState,
     settings,
@@ -294,6 +307,8 @@ const useSettingsModal = (): UseSettingsModalReturn => {
     jsonPresets: JSON_PRESETS_LIST,
     jsonColorFields: JSON_COLOR_FIELDS,
     contributors,
+    availableFonts,
+    setFontFamily,
     setTab,
     setTheme,
     setOrientation,

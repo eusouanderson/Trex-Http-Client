@@ -33,6 +33,7 @@ describe('SettingsEntity', () => {
   it('should initialize with default settings when no initial values provided', () => {
     const entity = new SettingsEntity();
     expect(entity.value.theme).toBe('dino');
+    expect(entity.value.fontFamily).toBe('system');
     expect(entity.value.orientation).toBe('horizontal');
     expect(entity.value.jsonTheme.preset).toBe('dino');
     expect(entity.value.customThemes).toEqual([]);

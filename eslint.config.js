@@ -10,6 +10,7 @@ export default tseslint.config(
       'dist/**',
       'coverage/**',
       'dev-dist/**',
+      'src/fonts/**',
       '*.config.js',
       '*.config.ts',
       'package-lock.json',

@@ -17,6 +17,8 @@ const {
   jsonPreviewCode,
   jsonColorFields,
   contributors,
+  availableFonts,
+  setFontFamily,
   setTab,
   setTheme,
   setOrientation,
@@ -176,6 +178,39 @@ const isCustomTheme = (themeId: string): boolean => {
                   @click="setDensity('compact')"
                 >
                   <span>📐 Compacto</span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-xs font-semibold text-bone-200">Tipografia da Aplicação</label>
+                <span class="text-[11px] text-fossil-400">
+                  Fonte ativa: <strong class="font-mono text-dino-400">{{ settings.fontFamily }}</strong>
+                </span>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5 max-h-56 overflow-y-auto pr-1">
+                <button
+                  v-for="font in availableFonts"
+                  :key="font.id"
+                  type="button"
+                  class="flex flex-col gap-1 p-2.5 text-left transition-all border rounded-lg cursor-pointer"
+                  :class="settings.fontFamily === font.id ? 'border-dino-400 bg-dino-500/10 text-dino-300 ring-1 ring-dino-500/30' : 'border-surface-border text-fossil-300 hover:bg-surface-hover hover:border-surface-border/80'"
+                  @click="setFontFamily(font.id)"
+                >
+                  <div class="flex items-center justify-between w-full">
+                    <span class="text-xs font-semibold text-bone-100" :style="{ fontFamily: font.cssValue }">{{ font.label }}</span>
+                    <span
+                      class="text-[9px] px-1.5 py-0.5 rounded font-mono uppercase tracking-wider"
+                      :class="font.category === 'mono' ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' : 'bg-surface-ground text-fossil-400 border border-surface-border'"
+                    >
+                      {{ font.category }}
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-fossil-400 line-clamp-1 leading-tight">{{ font.description }}</span>
+                  <div class="text-[11px] text-fossil-300 mt-0.5 truncate select-none opacity-80" :style="{ fontFamily: font.cssValue }">
+                    Aa Bb Cc 0123 &lt;=&gt; {}
+                  </div>
                 </button>
               </div>
             </div>

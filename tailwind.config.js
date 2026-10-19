@@ -2,6 +2,9 @@ export default {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-family-app)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
         dino: {
           50: '#f0fdf4',
