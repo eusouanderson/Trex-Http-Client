@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.7.0...v1.8.0) (2026-10-19)
+
+
+### Features
+
+* **theme:** atualizar icones para dinossauros, ajustar contraste de strings e adicionar contribuidores ([7684190](https://github.com/eusouanderson/Trex-Http-Client/commit/76841907ba7663eb2f15e0eeb143ed2cecd89fe5))
+
 # [1.7.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.6.0...v1.7.0) (2026-10-18)
 
 
