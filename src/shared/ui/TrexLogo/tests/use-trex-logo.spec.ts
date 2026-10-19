@@ -10,6 +10,17 @@ describe('useTrexLogo', () => {
     expect(logoSrc).toBe('/logos/Trex.png');
   });
 
+  it('should use custom src when provided in props', () => {
+    const { logoSrc } = useTrexLogo({ src: '/custom/dino.png' });
+    expect(logoSrc).toBe('/custom/dino.png');
+  });
+
+  it('should pick a randomized dinosaur icon when randomize is true', () => {
+    const { logoSrc } = useTrexLogo({ randomize: true });
+    expect(logoSrc).toBeTruthy();
+    expect(logoSrc).not.toBe('/logos/Trex.png');
+  });
+
   it('should return lg size classes when specified', () => {
     const { containerClasses, innerClasses } = useTrexLogo({ size: 'lg' });
     
@@ -35,4 +46,3 @@ describe('useTrexLogo', () => {
     expect(innerClasses.value).toContain('p-2');
   });
 });
-

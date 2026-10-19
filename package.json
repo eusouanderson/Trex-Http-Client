@@ -3,6 +3,11 @@
   "private": true,
   "version": "1.7.0",
   "type": "module",
+  "author": "Anderson Rodrigues da Silva",
+  "contributors": [
+    "Lucas Jorge Rosa Silva",
+    "Marcos Roberto de Sousa Kimura"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",

@@ -10,6 +10,8 @@ const customThemeColorsSchema = z.object({
   accent: z.string().min(1),
   accentLight: z.string().min(1),
   accentBorder: z.string().min(1),
+  textMain: z.string().min(1).optional(),
+  textMuted: z.string().min(1).optional(),
 });
 
 const customThemeJsonThemeSchema = z.object({
@@ -116,6 +118,8 @@ class ThemeParserService {
         accent: '#00f0ff',
         accentLight: '#70f7ff',
         accentBorder: '#00bcd4',
+        textMain: '#faf8f5',
+        textMuted: '#938d82',
       },
       jsonTheme: {
         backgroundColor: '#0b1219',

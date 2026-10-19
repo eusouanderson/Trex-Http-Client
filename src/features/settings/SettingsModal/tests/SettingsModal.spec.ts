@@ -1,6 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSettings } from '../../use-settings';
+import { useSettingsModal } from '../use-settings-modal';
 import SettingsModal from '../index.vue';
 
 describe('SettingsModal Component', () => {
@@ -34,6 +35,8 @@ describe('SettingsModal Component', () => {
     const { resetSettings, openSettings } = useSettings();
     resetSettings();
     openSettings();
+    const modal = useSettingsModal();
+    modal.setTab('general');
   });
 
   it('should render modal and allow navigating to json tab', async () => {
@@ -96,7 +99,7 @@ describe('SettingsModal Component', () => {
 
     const generalTabButton = wrapper
       .findAll('nav button')
-      .find((btn) => btn.text().includes('Geral'));
+      .find((btn) => btn.text().includes('Layout'));
     await generalTabButton?.trigger('click');
 
     const verticalBtn = wrapper
@@ -292,6 +295,27 @@ describe('SettingsModal Component', () => {
     });
     await fileInput.trigger('change');
     window.FileReader = originalFileReader;
+  });
+
+  it('should navigate to contributors tab and display contributors list with dinosaur icons', async () => {
+    const wrapper = mount(SettingsModal);
+
+    const contributorsTabBtn = wrapper
+      .findAll('nav button')
+      .find((btn) => btn.text().includes('Contribuidores'));
+    expect(contributorsTabBtn).toBeDefined();
+    await contributorsTabBtn?.trigger('click');
+
+    expect(wrapper.text()).toContain('Contribuidores do Projeto');
+    expect(wrapper.text()).toContain('Lucas Jorge Rosa Silva');
+    expect(wrapper.text()).toContain('Marcos Roberto de Sousa Kimura');
+    expect(wrapper.text()).toContain('Anderson Rodrigues da Silva');
+    expect(wrapper.text()).toContain('Desenvolvedor');
+    expect(wrapper.text()).toContain('Autor');
+    expect(wrapper.text()).toContain('Contribuidor (Uso & Feedbacks)');
+
+    const themeIcons = wrapper.findAllComponents({ name: 'ThemeIcon' });
+    expect(themeIcons.length).toBeGreaterThanOrEqual(3);
   });
 });
 

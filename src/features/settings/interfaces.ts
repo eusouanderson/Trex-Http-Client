@@ -58,6 +58,8 @@ interface CustomThemeColors {
   accent: string;
   accentLight: string;
   accentBorder: string;
+  textMain?: string;
+  textMuted?: string;
 }
 
 interface CustomThemeJsonTheme {

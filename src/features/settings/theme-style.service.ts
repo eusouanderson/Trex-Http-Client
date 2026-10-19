@@ -37,9 +37,20 @@ class ThemeStyleService {
     return '20 19 17';
   };
 
+  public readonly isLightColor = (input: string): boolean => {
+    const rgbStr = this.hexToRgb(input);
+    const [r = 0, g = 0, b = 0] = rgbStr.split(' ').map((n) => Number.parseInt(n, 10));
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.55;
+  };
+
   public readonly colorsToCssVariables = (
     colors: CustomThemeColors,
   ): Record<string, string> => {
+    const isLight = this.isLightColor(colors.surfaceGround);
+    const defaultTextMain = isLight ? '#0f172a' : '#faf8f5';
+    const defaultTextMuted = isLight ? '#64748b' : '#b3afa6';
+
     return {
       '--color-surface-ground-rgb': this.hexToRgb(colors.surfaceGround),
       '--color-surface-panel-rgb': this.hexToRgb(colors.surfacePanel),
@@ -49,6 +60,8 @@ class ThemeStyleService {
       '--color-accent-rgb': this.hexToRgb(colors.accent),
       '--color-accent-light-rgb': this.hexToRgb(colors.accentLight),
       '--color-accent-border-rgb': this.hexToRgb(colors.accentBorder),
+      '--color-text-main-rgb': this.hexToRgb(colors.textMain ?? defaultTextMain),
+      '--color-text-muted-rgb': this.hexToRgb(colors.textMuted ?? defaultTextMuted),
     };
   };
 
@@ -60,4 +73,3 @@ class ThemeStyleService {
 }
 
 export { ThemeStyleService };
-

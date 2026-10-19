@@ -49,5 +49,11 @@ describe('useThemeIcon', () => {
     const defaultIcon = useThemeIcon({ icon: '🪨' });
     expect(defaultIcon.sizeClasses.value).toContain('w-8 h-8');
   });
+
+  it('should handle blob url without prepending base url', () => {
+    const blobIcon = useThemeIcon({ icon: 'blob:http://localhost/12345' });
+    expect(blobIcon.isImage.value).toBe(true);
+    expect(blobIcon.resolvedSrc.value).toBe('blob:http://localhost/12345');
+  });
 });
 

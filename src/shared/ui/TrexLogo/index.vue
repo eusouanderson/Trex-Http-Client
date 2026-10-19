@@ -18,7 +18,7 @@ const { logoSrc, containerClasses, innerClasses } = useTrexLogo(props);
   >
     <div class="absolute inset-0 bg-gradient-to-tr from-dino-500 via-dino-300 to-amber-400 animate-spin-slow opacity-90"></div>
     <div
-      class="relative z-10 flex items-center justify-center w-full h-full shadow-inner bg-bone-50"
+      class="relative z-10 flex items-center justify-center w-full h-full shadow-inner "
       :class="innerClasses"
     >
       <img :src="logoSrc" alt="T-Rex" class="object-contain w-full h-full drop-shadow-sm" />

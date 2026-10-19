@@ -30,16 +30,16 @@ const {
 
 <template>
   <div
-    class="h-screen w-screen flex flex-col bg-surface-ground text-bone-100 overflow-hidden font-sans select-none"
+    class="flex flex-col w-screen h-screen overflow-hidden font-sans select-none bg-surface-ground text-bone-100"
     :class="`theme-${settings.theme}`"
     :style="customThemeStyles"
   >
-    <header class="h-11 border-b border-surface-border bg-surface-panel flex items-center justify-between px-2 shrink-0 z-20 gap-2">
+    <header class="z-20 flex items-center justify-between gap-2 px-2 border-b h-11 border-surface-border bg-surface-panel shrink-0">
       <div class="flex items-center gap-2 shrink-0">
         <div class="flex items-center gap-1.5 cursor-pointer">
-          <trex-logo size="sm" />
+          <trex-logo size="sm" :randomize="true" />
           <div class="hidden sm:block">
-            <span class="font-black text-xs tracking-wider text-bone-100 uppercase">T-Rex</span>
+            <span class="text-xs font-black tracking-wider uppercase text-bone-100">T-Rex</span>
             <span class="text-[9px] text-dino-400 font-semibold block leading-none">HTTP</span>
           </div>
         </div>
@@ -54,12 +54,12 @@ const {
         </button>
       </div>
 
-      <div class="flex-1 min-w-0 h-full flex items-center overflow-hidden">
+      <div class="flex items-center flex-1 h-full min-w-0 overflow-hidden">
         <vue-draggable
           v-model="tabs"
           :animation="150"
           item-key="id"
-          class="flex-1 min-w-0 h-full flex items-end -space-x-1 overflow-hidden pt-1"
+          class="flex items-end flex-1 h-full min-w-0 pt-1 -space-x-1 overflow-hidden"
         >
           <div
             v-for="tab in tabs"
@@ -83,7 +83,7 @@ const {
               >
                 {{ tab.method }}
               </span>
-              <span class="truncate text-xs">{{ tab.name }}</span>
+              <span class="text-xs truncate">{{ tab.name }}</span>
             </div>
 
             <button
@@ -117,7 +117,7 @@ const {
       </div>
     </header>
 
-    <div class="flex-1 flex overflow-hidden">
+    <div class="flex flex-1 overflow-hidden">
       <splitpanes class="flex-1" :horizontal="false">
         <pane
           v-if="isSidebarOpen"
@@ -129,7 +129,7 @@ const {
           <collection-tree @select-item="handleSelectItem" />
         </pane>
 
-        <pane size="78" class="flex flex-col bg-surface-ground overflow-hidden">
+        <pane size="78" class="flex flex-col overflow-hidden bg-surface-ground">
           <splitpanes
             class="flex-1"
             :horizontal="settings.orientation === 'vertical'"

@@ -1,8 +1,16 @@
 import { computed } from 'vue';
+import { dinosaurIconService } from '@/core/icons';
 import type { TrexLogoProps, UseTrexLogoReturn } from './interfaces';
 
-export const useTrexLogo = (props: TrexLogoProps): UseTrexLogoReturn => {
-  const logoSrc = `${import.meta.env.BASE_URL}logos/Trex.png`;
+const DEFAULT_LOGO_SRC = `${import.meta.env.BASE_URL}logos/Trex.png`;
+
+const useTrexLogo = (props: TrexLogoProps): UseTrexLogoReturn => {
+  let logoSrc = DEFAULT_LOGO_SRC;
+  if (typeof props.src === 'string' && props.src.length > 0) {
+    logoSrc = props.src;
+  } else if (props.randomize === true) {
+    logoSrc = dinosaurIconService.getRandomIcon().src;
+  }
 
   const containerClasses = computed(() => {
     switch (props.size) {
@@ -40,3 +48,5 @@ export const useTrexLogo = (props: TrexLogoProps): UseTrexLogoReturn => {
     innerClasses,
   };
 };
+
+export { useTrexLogo };

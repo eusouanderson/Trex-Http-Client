@@ -18,5 +18,21 @@ describe('TrexLogo Component', () => {
     
     expect(wrapper.classes()).toContain('w-16');
   });
-});
 
+  it('should render custom src when passed via props', () => {
+    const wrapper = mount(TrexLogo, {
+      props: { src: '/custom-logo.png' },
+    });
+    const img = wrapper.find('img');
+    expect(img.attributes('src')).toBe('/custom-logo.png');
+  });
+
+  it('should render randomized icon when randomize prop is true', () => {
+    const wrapper = mount(TrexLogo, {
+      props: { randomize: true },
+    });
+    const img = wrapper.find('img');
+    expect(img.attributes('src')).toBeTruthy();
+    expect(img.attributes('src')).not.toBe('/logos/Trex.png');
+  });
+});
