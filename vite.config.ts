@@ -17,7 +17,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logos/Trex.png'],
+      includeAssets: ['logos/Trex.png', 'icons/*.png'],
       manifest: {
         name: 'Trex HTTP Client',
         short_name: 'Trex',

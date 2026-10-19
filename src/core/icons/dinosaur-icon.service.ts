@@ -1,18 +1,23 @@
-import anchiornisSrc from '@/icons/anchiornis.png';
-import iguanodonSrc from '@/icons/iguanodon.png';
-import liopleurodonSrc from '@/icons/liopleurodon.png';
-import muttaburrasaurusSrc from '@/icons/muttaburrasaurus.png';
-import saltopusSrc from '@/icons/saltopus.png';
-import scelidosaurusSrc from '@/icons/scelidosaurus.png';
-import stegosaurusSrc from '@/icons/stegosaurus.png';
-import triceratopsSrc from '@/icons/triceratops.png';
-import velociraptorSrc from '@/icons/velociraptor.png';
 import type { ContributorItem, DinosaurIcon, IDinosaurIconService } from './interfaces';
 
 interface ContributorDefinition {
   name: string;
   role: string;
 }
+
+const buildIconPath = (fileName: string): string => {
+  return `${import.meta.env.BASE_URL}icons/${fileName}.png`;
+};
+
+const VELOCIRAPTOR_SRC = buildIconPath('velociraptor');
+const LIOPLEURODON_SRC = buildIconPath('liopleurodon');
+const SALTOPUS_SRC = buildIconPath('saltopus');
+const ANCHIORNIS_SRC = buildIconPath('anchiornis');
+const TRICERATOPS_SRC = buildIconPath('triceratops');
+const STEGOSAURUS_SRC = buildIconPath('stegosaurus');
+const IGUANODON_SRC = buildIconPath('iguanodon');
+const MUTTABURRASAURUS_SRC = buildIconPath('muttaburrasaurus');
+const SCELIDOSAURUS_SRC = buildIconPath('scelidosaurus');
 
 const DEFAULT_CONTRIBUTORS: readonly ContributorDefinition[] = [
   { name: 'Anderson Rodrigues da Silva', role: 'Desenvolvedor' },
@@ -23,7 +28,7 @@ const DEFAULT_CONTRIBUTORS: readonly ContributorDefinition[] = [
 const DEFAULT_FALLBACK_ICON: DinosaurIcon = {
   name: 'velociraptor',
   label: 'Velociraptor',
-  src: velociraptorSrc,
+  src: VELOCIRAPTOR_SRC,
 };
 
 class DinosaurIconService implements IDinosaurIconService {
@@ -35,24 +40,24 @@ class DinosaurIconService implements IDinosaurIconService {
     customIcons?: DinosaurIcon[],
   ) {
     this.icons = customIcons ?? [
-      { name: 'velociraptor', label: 'Velociraptor', src: velociraptorSrc },
-      { name: 'liopleurodon', label: 'Liopleurodon', src: liopleurodonSrc },
-      { name: 'saltopus', label: 'Saltopus', src: saltopusSrc },
-      { name: 'anchiornis', label: 'Anchiornis', src: anchiornisSrc },
-      { name: 'triceratops', label: 'Triceratops', src: triceratopsSrc },
-      { name: 'stegosaurus', label: 'Stegosaurus', src: stegosaurusSrc },
-      { name: 'iguanodon', label: 'Iguanodon', src: iguanodonSrc },
-      { name: 'muttaburrasaurus', label: 'Muttaburrasaurus', src: muttaburrasaurusSrc },
-      { name: 'scelidosaurus', label: 'Scelidosaurus', src: scelidosaurusSrc },
+      { name: 'velociraptor', label: 'Velociraptor', src: VELOCIRAPTOR_SRC },
+      { name: 'liopleurodon', label: 'Liopleurodon', src: LIOPLEURODON_SRC },
+      { name: 'saltopus', label: 'Saltopus', src: SALTOPUS_SRC },
+      { name: 'anchiornis', label: 'Anchiornis', src: ANCHIORNIS_SRC },
+      { name: 'triceratops', label: 'Triceratops', src: TRICERATOPS_SRC },
+      { name: 'stegosaurus', label: 'Stegosaurus', src: STEGOSAURUS_SRC },
+      { name: 'iguanodon', label: 'Iguanodon', src: IGUANODON_SRC },
+      { name: 'muttaburrasaurus', label: 'Muttaburrasaurus', src: MUTTABURRASAURUS_SRC },
+      { name: 'scelidosaurus', label: 'Scelidosaurus', src: SCELIDOSAURUS_SRC },
     ];
 
     this.themeIconMap = {
-      dino: velociraptorSrc,
-      'trex-monokai': liopleurodonSrc,
-      'raptor-dracula': saltopusSrc,
-      'pterodactyl-midnight': anchiornisSrc,
-      'triceratops-amber': triceratopsSrc,
-      'brachiosaurus-light': stegosaurusSrc,
+      dino: VELOCIRAPTOR_SRC,
+      'trex-monokai': LIOPLEURODON_SRC,
+      'raptor-dracula': SALTOPUS_SRC,
+      'pterodactyl-midnight': ANCHIORNIS_SRC,
+      'triceratops-amber': TRICERATOPS_SRC,
+      'brachiosaurus-light': STEGOSAURUS_SRC,
     };
   }
 
@@ -71,7 +76,7 @@ class DinosaurIconService implements IDinosaurIconService {
   };
 
   public readonly getThemeIcon = (themeId: string): string => {
-    return this.themeIconMap[themeId] ?? velociraptorSrc;
+    return this.themeIconMap[themeId] ?? VELOCIRAPTOR_SRC;
   };
 
   public readonly getContributors = (): ContributorItem[] => {

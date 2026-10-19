@@ -11,7 +11,8 @@ describe('DinosaurIconService', () => {
     for (const icon of icons) {
       expect(icon.name).toBeTruthy();
       expect(icon.label).toBeTruthy();
-      expect(icon.src).toBeTruthy();
+      expect(icon.src).toContain('icons/');
+      expect(icon.src.endsWith('.png')).toBe(true);
     }
   });
 
