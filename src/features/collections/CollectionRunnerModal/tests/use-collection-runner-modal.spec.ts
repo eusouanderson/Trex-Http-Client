@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import type {
   Collection,
   CollectionRunItemResult,
@@ -49,7 +49,7 @@ describe('useCollectionRunnerModal', () => {
     ],
   };
 
-  let runMock: ReturnType<typeof vi.fn>;
+  let runMock: Mock<ICollectionRunnerService['run']>;
   let mockRunnerService: ICollectionRunnerService;
 
   beforeEach(() => {
@@ -114,7 +114,11 @@ describe('useCollectionRunnerModal', () => {
   it('should abort run when stopRun is called', async () => {
     let capturedSignal: AbortSignal | undefined;
     runMock = vi.fn(
-      (_col: Collection, _onProgress?: unknown, signal?: AbortSignal): Promise<CollectionRunReport> => {
+      (
+        _col: Collection,
+        _onProgress?: (result: CollectionRunItemResult, index: number, total: number) => void,
+        signal?: AbortSignal,
+      ): Promise<CollectionRunReport> => {
         capturedSignal = signal;
         return new Promise((resolve) => {
           setTimeout(() => {
