@@ -21,6 +21,8 @@ describe('useSettingsModal', () => {
     expect(modal.activeTab.value).toBe('theme');
     modal.setTab('network');
     expect(modal.activeTab.value).toBe('network');
+    modal.setTab('contributors');
+    expect(modal.activeTab.value).toBe('contributors');
   });
 
   it('should update theme and synchronize json theme presets', () => {
@@ -204,6 +206,34 @@ describe('useSettingsModal', () => {
     expect(result.success).toBe(false);
     expect(result.error).toBe('Falha ao processar o arquivo JSON de tema.');
     spy.mockRestore();
+  });
+
+  it('should provide dinosaur PNG icons in themes list and presets list', () => {
+    const modal = useSettingsModal();
+
+    expect(modal.jurassicThemes.value.length).toBeGreaterThanOrEqual(6);
+    for (const theme of modal.jurassicThemes.value) {
+      expect(theme.icon).toBeTruthy();
+    }
+    for (const preset of modal.jsonPresets) {
+      expect(preset.icon).toBeTruthy();
+    }
+  });
+
+  it('should expose contributors list with randomized dinosaur icons', () => {
+    const modal = useSettingsModal();
+
+    expect(modal.contributors.value).toHaveLength(3);
+    const names = modal.contributors.value.map((c) => c.name);
+    expect(names).toContain('Lucas Jorge Rosa Silva');
+    expect(names).toContain('Marcos Roberto de Sousa Kimura');
+    expect(names).toContain('Anderson Rodrigues da Silva');
+
+    for (const contributor of modal.contributors.value) {
+      expect(contributor.icon).toBeTruthy();
+      expect(contributor.iconName).toBeTruthy();
+      expect(contributor.role).toBeTruthy();
+    }
   });
 });
 

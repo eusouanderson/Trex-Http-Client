@@ -16,6 +16,7 @@ const {
   customThemeError,
   jsonPreviewCode,
   jsonColorFields,
+  contributors,
   setTab,
   setTheme,
   setOrientation,
@@ -93,7 +94,7 @@ const isCustomTheme = (themeId: string): boolean => {
             @click="setTab('general')"
           >
             <span>⚙️</span>
-            <span>Geral & Layout</span>
+            <span>Layout</span>
           </button>
           <button
             type="button"
@@ -121,6 +122,15 @@ const isCustomTheme = (themeId: string): boolean => {
           >
             <span>🌐</span>
             <span>Rede & HTTP</span>
+          </button>
+          <button
+            type="button"
+            class="flex items-center w-full gap-2 px-3 py-2 text-xs font-medium text-left transition-colors rounded-lg"
+            :class="activeTab === 'contributors' ? 'bg-dino-500/20 text-dino-300 border border-dino-500/40' : 'text-fossil-300 hover:bg-surface-hover'"
+            @click="setTab('contributors')"
+          >
+            <span>🦖</span>
+            <span>Contribuidores</span>
           </button>
         </nav>
 
@@ -211,7 +221,7 @@ const isCustomTheme = (themeId: string): boolean => {
 
             <div
               v-if="customThemeError"
-              class="p-3 text-xs border rounded-lg bg-magma-500/10 border-magma-500/30 text-magma-400 flex items-center justify-between"
+              class="flex items-center justify-between p-3 text-xs border rounded-lg bg-magma-500/10 border-magma-500/30 text-magma-400"
             >
               <span>{{ customThemeError }}</span>
             </div>
@@ -229,7 +239,7 @@ const isCustomTheme = (themeId: string): boolean => {
 
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-bold text-bone-100 truncate">{{ themeItem.label }}</span>
+                    <span class="text-xs font-bold truncate text-bone-100">{{ themeItem.label }}</span>
                     <div class="flex items-center gap-1.5 shrink-0 ml-1">
                       <span
                         v-if="isCustomTheme(themeItem.id)"
@@ -352,6 +362,49 @@ const isCustomTheme = (themeId: string): boolean => {
               </div>
             </div>
           </div>
+
+          <div v-if="activeTab === 'contributors'" class="space-y-5">
+            <div>
+              <h3 class="flex items-center gap-2 text-sm font-bold text-bone-100">
+                <span>🦖</span>
+                <span>Contribuidores do Projeto</span>
+              </h3>
+              <p class="mt-1 text-xs text-fossil-400">
+                Desenvolvido por Anderson Rodrigues com valiosas contribuições de uso e feedbacks.
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <div
+                v-for="contributor in contributors"
+                :key="contributor.id"
+                class="flex items-center justify-between p-3.5 rounded-xl border border-surface-border bg-surface-ground/40 hover:bg-surface-hover/30 transition-all shadow-sm"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-surface-card border border-surface-border flex items-center justify-center p-1.5 shadow-inner shrink-0">
+                    <theme-icon :icon="contributor.icon" size="md" />
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-xs font-bold text-bone-100">{{ contributor.name }}</h4>
+                      <span
+                        v-if="contributor.role === 'Desenvolvedor'"
+                        class="text-[9px] px-1.5 py-0.5 rounded bg-dino-500/20 text-dino-300 border border-dino-500/40 font-semibold"
+                      >
+                        Autor
+                      </span>
+                    </div>
+                    <span class="text-[10px] text-fossil-400">{{ contributor.role }}</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-dino-500/10 border border-dino-500/30 text-[10px] text-dino-300 font-mono">
+                  <span>🦕</span>
+                  <span>{{ contributor.iconName }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
 
@@ -364,7 +417,7 @@ const isCustomTheme = (themeId: string): boolean => {
           >
             Restaurar Padrões
           </button>
-          <span class="text-xs text-fossil-500 font-mono">v{{ appVersion }} ({{ commitHash }})</span>
+          <span class="font-mono text-xs text-fossil-500">v{{ appVersion }} ({{ commitHash }})</span>
         </div>
         <button
           type="button"

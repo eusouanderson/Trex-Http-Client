@@ -57,8 +57,8 @@ export default {
         },
         bone: {
           50: '#ffffff',
-          100: '#faf8f5',
-          200: '#f5f1eb',
+          100: 'rgb(var(--color-text-main-rgb, 250 248 245) / <alpha-value>)',
+          200: 'rgb(var(--color-text-muted-rgb, 245 241 235) / <alpha-value>)',
           300: '#ebe3d7',
           400: '#ded2bf',
           500: '#cdbca4',

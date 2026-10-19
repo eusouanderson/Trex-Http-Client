@@ -7,6 +7,7 @@ const isImagePath = (icon: string): boolean => {
     normalized.startsWith('http://') ||
     normalized.startsWith('https://') ||
     normalized.startsWith('data:image/') ||
+    normalized.startsWith('blob:') ||
     normalized.startsWith('logos/') ||
     normalized.startsWith('/logos/') ||
     normalized.endsWith('.png') ||
@@ -21,7 +22,8 @@ const resolveIconUrl = (icon: string): string => {
   if (
     trimmed.startsWith('http://') ||
     trimmed.startsWith('https://') ||
-    trimmed.startsWith('data:image/')
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('blob:')
   ) {
     return trimmed;
   }
