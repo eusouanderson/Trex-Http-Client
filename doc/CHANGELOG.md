@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.8.0...v1.9.0) (2026-10-19)
+
+
+### Features
+
+* **settings:** adicionar selecao global de tipografia e organizacao de fontes ([9ec6255](https://github.com/eusouanderson/Trex-Http-Client/commit/9ec625582a210655b981c6c7cfed060aefe08748))
+
 # [1.8.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.7.0...v1.8.0) (2026-10-19)
 
 
