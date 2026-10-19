@@ -60,17 +60,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Validate Documentation Build
+        if: github.event_name == 'pull_request'
+        run: pnpm run docs:generate
+
       - name: Build PWA for Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: pnpm run build
         env:
           VITE_BASE_URL: /Trex-Http-Client/
 
+      - name: Generate Smart Documentation
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: pnpm run docs:generate
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+      - name: Validate Documentation Artifacts
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: test -f ./dist/docs/index.html && test -f ./dist/docs/api/index.html
+
       - name: Upload dist artifact for Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+
 
   deploy-pages:
     environment:

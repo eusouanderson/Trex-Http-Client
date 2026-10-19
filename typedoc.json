@@ -1,0 +1,25 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/core/http/index.ts",
+    "src/core/security/index.ts",
+    "src/core/variables/index.ts",
+    "src/core/scripts/index.ts",
+    "src/core/storage/index.ts",
+    "src/core/fonts/index.ts",
+    "src/core/icons/index.ts",
+    "src/features/collections/index.ts",
+    "src/features/environments/index.ts",
+    "src/features/request/index.ts",
+    "src/features/response/index.ts",
+    "src/features/settings/index.ts"
+  ],
+  "out": "dist/docs/api",
+  "name": "Trex HTTP Client — Referência da API",
+  "tsconfig": "tsconfig.json",
+  "readme": "none",
+  "cleanOutputDir": true,
+  "githubPages": true,
+  "sort": ["source-order"]
+}
+
