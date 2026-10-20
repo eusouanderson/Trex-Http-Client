@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.10.0...v1.11.0) (2026-10-20)
+
+
+### Features
+
+* **perf:** implementar auditoria de bundle, orcamento e lighthouse ci ([32d1e40](https://github.com/eusouanderson/Trex-Http-Client/commit/32d1e4026de3c55f37120aceacd84d74ff6ccc53))
+
 # [1.10.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.9.1...v1.10.0) (2026-10-19)
 
 
