@@ -4,14 +4,14 @@
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     ["@semantic-release/changelog", {
-      "changelogFile": "doc/CHANGELOG.md"
+      "changelogFile": "docs/CHANGELOG.md"
     }],
     ["@semantic-release/npm", { "npmPublish": false }],
     ["@semantic-release/exec", {
       "prepareCmd": "VITE_BASE_URL=/Trex-Http-Client/ pnpm run build && cd dist && zip -r ../trex-http-client-pwa.zip ./*"
     }],
     ["@semantic-release/git", {
-      "assets": ["package.json", "doc/CHANGELOG.md"],
+      "assets": ["package.json", "docs/CHANGELOG.md"],
       "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
     }],
     ["@semantic-release/github", {

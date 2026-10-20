@@ -3,6 +3,7 @@ import type {
   Collection,
   CollectionItem,
   CreateItemInput,
+  ParsedCollectionVariable,
 } from './interfaces';
 import { CollectionService } from './collection.service';
 import { CollectionRepository } from './collection.repository';
@@ -38,6 +39,10 @@ interface UseCollectionsReturn {
   duplicateCollection: (collectionId: string) => Collection;
   clearCollectionStatuses: (collectionId: string) => void;
   exportCollection: (collectionId: string) => string;
+  importCollection: (jsonString: string) => {
+    collection: Collection;
+    variables: ParsedCollectionVariable[];
+  };
   selectItem: (itemId: string | null) => void;
 }
 
@@ -135,6 +140,17 @@ const useCollections = (): UseCollectionsReturn => {
     return collectionService.exportCollection(collectionId);
   };
 
+  const importCollection = (
+    jsonString: string,
+  ): {
+    collection: Collection;
+    variables: ParsedCollectionVariable[];
+  } => {
+    const result = collectionService.importCollection(jsonString);
+    syncState();
+    return result;
+  };
+
   const selectItem = (itemId: string | null): void => {
     selectedItemIdState.value = itemId;
   };
@@ -154,6 +170,7 @@ const useCollections = (): UseCollectionsReturn => {
     duplicateCollection,
     clearCollectionStatuses,
     exportCollection,
+    importCollection,
     selectItem,
   };
 };

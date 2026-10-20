@@ -348,12 +348,41 @@ describe('useCollectionTree', () => {
     expect(imported?.items[0]?.name).toBe('Folder / Request');
   });
 
+  it('should import a native trex collection and expand it', () => {
+    const tree = useCollectionTree();
+    const trexJson = {
+      info: {
+        name: 'Trex Export Test',
+        schema: 'https://trex-http-client.dev/schemas/collection/v1.0.0/collection.json',
+      },
+      name: 'Trex Export Test',
+      items: [
+        {
+          id: 'item-1',
+          name: 'Dino Request',
+          type: 'request',
+          method: 'GET',
+          url: 'https://trex.dev/api',
+        },
+      ],
+    };
+
+    tree.importCollection(JSON.stringify(trexJson));
+    const imported = tree.filteredCollections.value.find((c) => c.name === 'Trex Export Test');
+    expect(imported).toBeDefined();
+    expect(imported?.items).toHaveLength(1);
+    expect(imported?.items[0]?.name).toBe('Dino Request');
+    expect(tree.isExpanded(imported?.id ?? '')).toBe(true);
+  });
+
   it('should trigger alert when import fails', () => {
     const tree = useCollectionTree();
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    tree.importPostmanCollection('invalid json');
-    expect(alertMock).toHaveBeenCalledWith('Erro ao importar collection do Postman.');
+    tree.importCollection('invalid json');
+    expect(alertMock).toHaveBeenCalledWith(
+      'Erro ao importar collection. Certifique-se de que o arquivo é uma collection válida do Trex ou do Postman.',
+    );
     alertMock.mockRestore();
   });
 

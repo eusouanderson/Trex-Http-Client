@@ -3,7 +3,6 @@ import { computed, ref, watch } from 'vue';
 import { useRequest } from '../../request';
 import type { Collection, CollectionItem } from '../interfaces';
 import { useCollections } from '../use-collections';
-import { PostmanParserService } from '../postman-parser.service';
 import { useEnvironments } from '../../environments/use-environments';
 import type { ContextMenuItem } from '../../../shared/ui/ContextMenu';
 
@@ -36,6 +35,7 @@ interface UseCollectionTreeReturn {
   startRenamingCollection: (collection: Collection) => void;
   saveRenameCollection: (collectionId: string) => void;
   cancelRenameCollection: () => void;
+  importCollection: (jsonString: string) => void;
   importPostmanCollection: (jsonString: string) => void;
   isDraggableDisabled: ComputedRef<boolean>;
   handleReorderCollections: (newCollections: Collection[]) => void;
@@ -72,6 +72,7 @@ const useCollectionTree = (
     duplicateCollection,
     clearCollectionStatuses,
     exportCollection,
+    importCollection: importCollectionDomain,
     selectItem,
   } = useCollections();
   const { createEnvironment, updateEnvironment } = useEnvironments();
@@ -239,34 +240,33 @@ const useCollectionTree = (
     editingCollectionNameState.value = '';
   };
 
-  const importPostmanCollection = (jsonString: string): void => {
+  const importCollection = (jsonString: string): void => {
     try {
-      const parser = new PostmanParserService();
-      const parsed = parser.parse(jsonString);
-      
-      const newCol = createCollection(parsed.name);
-      
-      for (const reqItem of parsed.items) {
-        addItem(newCol.id, reqItem);
-      }
+      const { collection, variables } = importCollectionDomain(jsonString);
 
-      if (parsed.variables.length > 0) {
-        const env = createEnvironment(parsed.name);
-        env.variables = parsed.variables.map(v => ({
+      if (variables.length > 0) {
+        const env = createEnvironment(collection.name);
+        env.variables = variables.map((v) => ({
           id: crypto.randomUUID(),
           key: v.key,
           value: v.value,
-          enabled: v.enabled
+          enabled: v.enabled,
         }));
         updateEnvironment(env);
       }
-      
+
       const updated = new Set(expandedSet.value);
-      updated.add(newCol.id);
+      updated.add(collection.id);
       expandedSet.value = updated;
     } catch {
-      window.alert('Erro ao importar collection do Postman.');
+      window.alert(
+        'Erro ao importar collection. Certifique-se de que o arquivo é uma collection válida do Trex ou do Postman.',
+      );
     }
+  };
+
+  const importPostmanCollection = (jsonString: string): void => {
+    importCollection(jsonString);
   };
 
   const isDraggableDisabled = computed<boolean>(() => {
@@ -337,7 +337,7 @@ const useCollectionTree = (
       const link = document.createElement('a');
       link.href = url;
       const baseName = col.name.replace(/[^a-zA-Z0-9_-]/g, '_');
-      link.download = `${baseName}.json`;
+      link.download = `${baseName}.trex_collection.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -438,6 +438,7 @@ const useCollectionTree = (
     startRenamingCollection,
     saveRenameCollection,
     cancelRenameCollection,
+    importCollection,
     importPostmanCollection,
     isDraggableDisabled,
     handleReorderCollections,

@@ -1,4 +1,9 @@
-import type { Collection, CollectionItem, CreateItemInput } from './interfaces';
+import type {
+  Collection,
+  CollectionItem,
+  CreateItemInput,
+  ParsedCollectionResult,
+} from './interfaces';
 
 class CollectionEntity {
   private collections: Collection[];
@@ -193,7 +198,62 @@ class CollectionEntity {
     if (!target) {
       throw new Error(`Collection not found: ${collectionId}`);
     }
-    return JSON.stringify(target, null, 2);
+    const exportData = {
+      info: {
+        name: target.name,
+        description: target.description,
+        schema: 'https://trex-http-client.dev/schemas/collection/v1.0.0/collection.json',
+      },
+      ...target,
+    };
+    return JSON.stringify(exportData, null, 2);
+  }
+
+  public import(parsed: ParsedCollectionResult): Collection {
+    const newId = `col-${Date.now().toString()}-${Math.random().toString(36).substring(2, 7)}`;
+    const idMap = new Map<string, string>();
+
+    const newItems: CollectionItem[] = parsed.items.map((item) => {
+      const newItemId = `item-${Date.now().toString()}-${Math.random().toString(36).substring(2, 7)}`;
+      if (typeof item.id === 'string' && item.id.length > 0) {
+        idMap.set(item.id, newItemId);
+      }
+      return {
+        id: newItemId,
+        name: item.name,
+        type: item.type,
+        parentId: item.parentId,
+        method: item.method,
+        url: item.url,
+        headers: item.headers ? { ...item.headers } : undefined,
+        params: item.params ? { ...item.params } : undefined,
+        body: item.body,
+        auth: item.auth ? (JSON.parse(JSON.stringify(item.auth)) as typeof item.auth) : undefined,
+        testScript: item.testScript,
+        status: item.status,
+      };
+    });
+
+    const remappedItems: CollectionItem[] = newItems.map((item) => {
+      if (typeof item.parentId === 'string' && item.parentId.length > 0 && idMap.has(item.parentId)) {
+        return {
+          ...item,
+          parentId: idMap.get(item.parentId),
+        };
+      }
+      return item;
+    });
+
+    const newCollection: Collection = {
+      id: newId,
+      name: parsed.name,
+      description: parsed.description,
+      auth: parsed.auth ? (JSON.parse(JSON.stringify(parsed.auth)) as typeof parsed.auth) : undefined,
+      items: remappedItems,
+    };
+
+    this.collections.push(newCollection);
+    return { ...newCollection };
   }
 }
 

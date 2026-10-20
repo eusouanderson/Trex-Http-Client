@@ -63,6 +63,10 @@ interface ICollectionService {
   duplicateCollection(collectionId: string): Collection;
   clearCollectionStatuses(collectionId: string): void;
   exportCollection(collectionId: string): string;
+  importCollection(jsonString: string): {
+    collection: Collection;
+    variables: ParsedCollectionVariable[];
+  };
 }
 
 interface ILocalCollectionRepository {
@@ -111,6 +115,40 @@ interface ICollectionRunnerService {
   ): Promise<CollectionRunReport>;
 }
 
+interface ParsedCollectionItem {
+  id?: string;
+  name: string;
+  type: CollectionItemType;
+  parentId?: string | null;
+  method?: HttpMethod;
+  url?: string;
+  headers?: Record<string, string>;
+  params?: Record<string, string>;
+  body?: string;
+  auth?: AuthConfig;
+  testScript?: string;
+  status?: number;
+}
+
+interface ParsedCollectionVariable {
+  key: string;
+  value: string;
+  enabled: boolean;
+}
+
+interface ParsedCollectionResult {
+  name: string;
+  description?: string;
+  auth?: AuthConfig;
+  items: ParsedCollectionItem[];
+  variables: ParsedCollectionVariable[];
+  format: 'trex' | 'postman';
+}
+
+interface ICollectionParserService {
+  parse(jsonString: string): ParsedCollectionResult;
+}
+
 export type {
   CollectionItemType,
   CollectionItem,
@@ -122,4 +160,8 @@ export type {
   CollectionRunItemResult,
   CollectionRunReport,
   ICollectionRunnerService,
+  ParsedCollectionItem,
+  ParsedCollectionVariable,
+  ParsedCollectionResult,
+  ICollectionParserService,
 };

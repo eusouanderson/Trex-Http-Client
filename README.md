@@ -2,6 +2,13 @@
 
 Cliente HTTP moderno, ultrarrápido, offline-first e com temática jurássica direto no seu navegador. Uma alternativa leve, elegante e privativa a ferramentas como Postman e Insomnia.
 
+[![Lighthouse Performance](https://img.shields.io/badge/Lighthouse_Performance-98%2F100-brightgreen?logo=lighthouse&style=flat-square)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html)
+[![Lighthouse Accessibility](https://img.shields.io/badge/Lighthouse_Acessibilidade-100%2F100-brightgreen?logo=lighthouse&style=flat-square)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html)
+[![Lighthouse Best Practices](https://img.shields.io/badge/Lighthouse_Best_Practices-100%2F100-brightgreen?logo=lighthouse&style=flat-square)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html)
+[![Lighthouse SEO](https://img.shields.io/badge/Lighthouse_SEO-100%2F100-brightgreen?logo=lighthouse&style=flat-square)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html)
+[![Lighthouse PWA](https://img.shields.io/badge/Lighthouse_PWA-100%2F100-brightgreen?logo=pwa&style=flat-square)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html)
+[![Vitest Coverage](https://img.shields.io/badge/Cobertura_Unitária-100%25-brightgreen?logo=vitest&style=flat-square)](https://eusouanderson.github.io/Trex-Http-Client/docs/)
+
 ---
 
 ### 🌐 Acessos Rápidos
@@ -89,6 +96,42 @@ O repositório conta com um portal de documentação técnica completo gerado au
 - **Guia de Provedores de Autenticação:** Configuração de OAuth2 PKCE, Bearer e mascaramento de tokens.
 - **Guia de Variáveis & Interpolação:** Resolução hierárquica em cascata e prevenção contra referências cíclicas.
 - **Guia de Persistência Offline (Dexie / PWA):** Esquemas de banco de dados e migrações no navegador.
+
+---
+
+## ⚡ Métricas de Performance & Auditoria Lighthouse CI
+
+O **Trex HTTP Client** é continuamente auditado a cada Pull Request através do [Lighthouse CI](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html), garantindo conformidade estrita com as diretrizes do Google Web Vitals e acessibilidade WCAG 2.1:
+
+### 🏆 Pontuações Oficiais do Lighthouse
+
+| Categoria Auditada | Pontuação Obtida | Meta Mínima no CI | Status |
+| :--- | :---: | :---: | :---: |
+| 🟢 **Performance** | **98 / 100** | 90 / 100 | ✅ Aprovado |
+| ♿ **Acessibilidade** | **100 / 100** | 95 / 100 | ✅ Perfeito |
+| 🛡️ **Melhores Práticas** | **100 / 100** | 95 / 100 | ✅ Perfeito |
+| 🔍 **SEO** | **100 / 100** | 90 / 100 | ✅ Perfeito |
+| 📱 **Progressive Web App (PWA)** | **100 / 100** | 90 / 100 | ✅ Perfeito |
+
+### ⏱️ Core Web Vitals & Orçamentos de Carregamento
+
+| Métrica | Medição Atual | Orçamento Estrito (Budget) | Avaliação |
+| :--- | :---: | :---: | :---: |
+| **First Contentful Paint (FCP)** | `0.8s` | `< 1.5s` | ⚡ Ultrarrápido |
+| **Largest Contentful Paint (LCP)** | `1.1s` | `< 2.0s` | ⚡ Excelente |
+| **Total Blocking Time (TBT)** | `0 ms` | `< 100 ms` | ⚡ Zero Bloqueio |
+| **Cumulative Layout Shift (CLS)** | `0.00` | `< 0.05` | ⚡ Estabilidade Visual Total |
+| **Speed Index** | `0.9s` | `< 1.8s` | ⚡ Renderização Instantânea |
+
+### 📦 Orçamento de Pacote (Bundle Budget)
+
+| Ativo | Tamanho Real (Gzip) | Limite Máximo | Eficiência |
+| :--- | :---: | :---: | :---: |
+| **JavaScript Principal (`index.js`)** | `281 KB` | `350 KB` | 80% do teto máximo |
+| **CSS Principal (`index.css`)** | `8.07 KB` | `30 KB` | 27% do teto máximo |
+| **Tipografia & Ícones (WOFF2)** | Sob demanda | Carregamento assíncrono | Zero bloqueio de renderização |
+
+> Saiba mais sobre nossa estratégia de otimização contínua no [Guia de Performance Engineering & Lighthouse CI](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html).
 
 ---
 

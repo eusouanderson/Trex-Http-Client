@@ -233,4 +233,64 @@ describe('CollectionService', () => {
     const json = s.exportCollection(col.id);
     expect(json).toContain('Exportable');
   });
+
+  it('should import collection from Trex JSON and sync with repository', () => {
+    const tracker: { saved: Collection | null } = { saved: null };
+    const mockRepo = {
+      load: () => Promise.resolve(),
+      getAll: () => [],
+      getById: () => null,
+      save: (c: Collection) => {
+        tracker.saved = c;
+      },
+      delete: () => undefined,
+      reorder: () => undefined,
+    };
+
+    const s = new CollectionService([], mockRepo);
+    const trexJson = JSON.stringify({
+      name: 'Coleção Importada Trex',
+      description: 'Desc',
+      items: [
+        {
+          name: 'Item 1',
+          type: 'request',
+          method: 'GET',
+          url: 'https://api.dev',
+        },
+      ],
+    });
+
+    const result = s.importCollection(trexJson);
+    expect(result.collection.name).toBe('Coleção Importada Trex');
+    expect(result.collection.items).toHaveLength(1);
+    expect(result.variables).toEqual([]);
+    expect(tracker.saved?.name).toBe('Coleção Importada Trex');
+  });
+
+  it('should import collection from Postman JSON with variables', () => {
+    const s = new CollectionService([]);
+    const postmanJson = JSON.stringify({
+      info: { name: 'Postman Import' },
+      item: [
+        {
+          name: 'Postman Req',
+          request: {
+            method: 'POST',
+            url: { raw: 'https://postman.dev' },
+          },
+        },
+      ],
+      variable: [
+        { key: 'host', value: 'postman.dev' },
+      ],
+    });
+
+    const result = s.importCollection(postmanJson);
+    expect(result.collection.name).toBe('Postman Import');
+    expect(result.collection.items).toHaveLength(1);
+    expect(result.variables).toEqual([
+      { key: 'host', value: 'postman.dev', enabled: true },
+    ]);
+  });
 });

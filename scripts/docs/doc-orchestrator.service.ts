@@ -66,8 +66,8 @@ class DocOrchestratorService implements IDocOrchestratorService {
     const gitDiff = this.getGitDiff();
     const appVersion = this.getPackageVersion();
 
-    const existingArchitecture = this.readFileIfExists(join(this.projectRoot, 'doc', 'ARCHITECTURE.md'));
-    const existingChangelog = this.readFileIfExists(join(this.projectRoot, 'doc', 'CHANGELOG.md'));
+    const existingArchitecture = this.readFileIfExists(join(this.projectRoot, 'docs', 'ARCHITECTURE.md'));
+    const existingChangelog = this.readFileIfExists(join(this.projectRoot, 'docs', 'CHANGELOG.md'));
 
     const contextInput: DocContextInput = {
       commitHash,
@@ -183,7 +183,7 @@ class DocOrchestratorService implements IDocOrchestratorService {
       });
     }
 
-    const archPath = join(this.projectRoot, 'doc', 'ARCHITECTURE.md');
+    const archPath = join(this.projectRoot, 'docs', 'ARCHITECTURE.md');
     if (this.fileSystem.existsSync(archPath)) {
       const content = this.fileSystem.readFileSync(archPath, 'utf-8');
       guides.push({

@@ -2,10 +2,13 @@ import type {
   Collection,
   CollectionItem,
   CreateItemInput,
+  ICollectionParserService,
   ICollectionService,
   ILocalCollectionRepository,
+  ParsedCollectionVariable,
 } from './interfaces';
 import { CollectionEntity } from './collection.entity';
+import { CollectionParserService } from './collection-parser.service';
 
 class CollectionService implements ICollectionService {
   private readonly entity: CollectionEntity;
@@ -13,6 +16,7 @@ class CollectionService implements ICollectionService {
   constructor(
     initial?: Collection[],
     private readonly repository?: ILocalCollectionRepository,
+    private readonly parser: ICollectionParserService = new CollectionParserService(),
   ) {
     const list = initial ?? repository?.getAll();
     this.entity = new CollectionEntity(list);
@@ -110,6 +114,19 @@ class CollectionService implements ICollectionService {
 
   public exportCollection(collectionId: string): string {
     return this.entity.export(collectionId);
+  }
+
+  public importCollection(jsonString: string): {
+    collection: Collection;
+    variables: ParsedCollectionVariable[];
+  } {
+    const parsed = this.parser.parse(jsonString);
+    const collection = this.entity.import(parsed);
+    this.repository?.save(collection);
+    return {
+      collection,
+      variables: parsed.variables,
+    };
   }
 }
 
