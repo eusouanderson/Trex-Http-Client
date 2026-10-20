@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.12.0...v1.12.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* **collections:** unificar docs, limpar lockfiles, atualizar metricas lighthouse no readme e corrigir importacao de collections (closes [#16](https://github.com/eusouanderson/Trex-Http-Client/issues/16)) ([11152a7](https://github.com/eusouanderson/Trex-Http-Client/commit/11152a7588b104bcd198a10307c29cf5b1bb4125))
+
 # [1.12.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.11.0...v1.12.0) (2026-10-20)
 
 
