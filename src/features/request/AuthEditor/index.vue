@@ -43,6 +43,7 @@ watch(
       <label class="font-bold text-fossil-300 w-28">Tipo de Auth:</label>
       <select
         :value="authType"
+        aria-label="Tipo de Autenticação"
         class="bg-surface-ground border border-surface-border text-xs rounded-lg px-3 py-2 text-bone-200 focus:outline-none focus:border-dino-400 cursor-pointer"
         @change="setAuthType(($event.target as HTMLSelectElement).value as AuthType)"
       >
@@ -148,6 +149,7 @@ watch(
           <label class="text-fossil-300 font-semibold">Adicionar em:</label>
           <select
             :value="(currentAuth as ApiKeyAuthConfig).addTo"
+            aria-label="Local para adicionar a chave de API"
             class="bg-surface-ground border border-surface-border text-xs rounded-lg px-3 py-2 text-bone-200 focus:outline-none focus:border-dino-400 cursor-pointer"
             @change="updateApiKeyAuth((currentAuth as ApiKeyAuthConfig).key, (currentAuth as ApiKeyAuthConfig).value, ($event.target as HTMLSelectElement).value as ApiKeyPlacement)"
           >
@@ -183,6 +185,7 @@ watch(
         <label class="text-fossil-300 font-semibold">Grant Type:</label>
         <select
           :value="(currentAuth as OAuth2Config).grantType"
+          aria-label="Grant Type do OAuth2"
           class="bg-surface-ground border border-surface-border text-xs rounded-lg px-3 py-2 text-bone-200 focus:outline-none focus:border-dino-400 cursor-pointer"
           @change="updateOAuth2({ grantType: ($event.target as HTMLSelectElement).value as OAuth2GrantType })"
         >

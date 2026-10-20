@@ -40,6 +40,7 @@ const {
       <div class="flex items-center gap-2">
         <select
           :value="activeTab.method"
+          aria-label="Método HTTP"
           class="bg-surface-ground border border-surface-border text-xs font-black rounded-lg px-3 py-2.5 focus:outline-none focus:border-dino-400 cursor-pointer"
           :class="{
             'text-dino-400': activeTab.method === 'GET',
@@ -62,6 +63,7 @@ const {
         <input
           :value="activeTab.url"
           type="text"
+          aria-label="URL da requisição"
           placeholder="https://api.dinossauro.dev/v1/fossils"
           class="flex-1 bg-surface-ground border border-surface-border rounded-lg px-3.5 py-2 text-xs text-bone-100 placeholder-fossil-500 focus:outline-none focus:border-dino-400 font-mono"
           @input="setUrl(($event.target as HTMLInputElement).value)"
@@ -174,22 +176,26 @@ const {
             <input
               v-model="param.enabled"
               type="checkbox"
+              aria-label="Habilitar parâmetro de URL"
               class="trex-checkbox ml-2"
             />
             <input
               v-model="param.key"
               type="text"
+              aria-label="Chave do parâmetro"
               placeholder="Chave"
               class="flex-1 bg-transparent border-0 px-2 py-1 text-xs text-bone-100 placeholder-fossil-600 focus:outline-none font-mono"
             />
             <input
               v-model="param.value"
               type="text"
+              aria-label="Valor do parâmetro"
               placeholder="Valor"
               class="flex-1 bg-transparent border-0 px-2 py-1 text-xs text-bone-100 placeholder-fossil-600 focus:outline-none font-mono"
             />
             <button
               type="button"
+              aria-label="Remover parâmetro"
               class="px-2 text-xs text-fossil-500 hover:text-magma-400"
               @click="removeParam(param.id)"
             >
@@ -227,22 +233,26 @@ const {
             <input
               v-model="header.enabled"
               type="checkbox"
+              aria-label="Habilitar cabeçalho HTTP"
               class="trex-checkbox ml-2"
             />
             <input
               v-model="header.key"
               type="text"
+              aria-label="Nome do cabeçalho"
               placeholder="Nome do Header (ex: Authorization)"
               class="flex-1 bg-transparent border-0 px-2 py-1 text-xs text-bone-100 placeholder-fossil-600 focus:outline-none font-mono"
             />
             <input
               v-model="header.value"
               type="text"
+              aria-label="Valor do cabeçalho"
               placeholder="Valor (ex: Bearer token)"
               class="flex-1 bg-transparent border-0 px-2 py-1 text-xs text-bone-100 placeholder-fossil-600 focus:outline-none font-mono"
             />
             <button
               type="button"
+              aria-label="Remover cabeçalho"
               class="px-2 text-xs text-fossil-500 hover:text-magma-400"
               @click="removeHeader(header.id)"
             >

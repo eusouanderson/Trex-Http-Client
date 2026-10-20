@@ -15,3 +15,6 @@ coverage
 .lighthouseci
 .DS_Store
 *.tsbuildinfo
+playwright-report
+test-results
+C:*

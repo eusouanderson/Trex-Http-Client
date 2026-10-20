@@ -90,6 +90,7 @@ const {
               <input
                 :value="selectedEnvironment.name"
                 type="text"
+                aria-label="Nome do Ambiente"
                 placeholder="Nome do Ambiente"
                 class="bg-transparent border-b border-transparent hover:border-surface-border focus:border-dino-400 text-lg font-bold text-bone-100 focus:outline-none px-1 py-0.5 flex-1 min-w-0"
                 @input="updateEnvironmentName(($event.target as HTMLInputElement).value)"
@@ -139,6 +140,7 @@ const {
                     <input
                       :checked="v.enabled"
                       type="checkbox"
+                      aria-label="Habilitar variável de ambiente"
                       class="trex-checkbox cursor-pointer"
                       @change="updateVariable(v.id, 'enabled', ($event.target as HTMLInputElement).checked)"
                     />
@@ -147,6 +149,7 @@ const {
                     <input
                       :value="v.key"
                       type="text"
+                      aria-label="Nome da variável"
                       placeholder="minha_variavel"
                       class="w-full bg-transparent border border-transparent hover:border-surface-border focus:border-dino-400 rounded px-2 py-1 text-xs text-bone-100 placeholder-fossil-600 focus:outline-none font-mono"
                       @input="updateVariable(v.id, 'key', ($event.target as HTMLInputElement).value)"
@@ -156,6 +159,7 @@ const {
                     <input
                       :value="v.value"
                       :type="isVariableVisible(v.id) ? 'text' : 'password'"
+                      aria-label="Valor da variável"
                       placeholder="valor..."
                       class="w-full bg-transparent border border-transparent hover:border-surface-border focus:border-dino-400 rounded px-2 py-1 pr-7 text-xs text-bone-100 placeholder-fossil-600 focus:outline-none font-mono"
                       @input="updateVariable(v.id, 'value', ($event.target as HTMLInputElement).value)"
@@ -163,6 +167,7 @@ const {
                     <button
                       type="button"
                       :title="isVariableVisible(v.id) ? 'Ocultar valor' : 'Mostrar valor'"
+                      aria-label="Alternar visibilidade do valor da variável"
                       class="absolute right-1 text-xs text-fossil-400 hover:text-bone-100 p-1 cursor-pointer transition-colors"
                       @click="toggleVariableVisibility(v.id)"
                     >
@@ -173,6 +178,7 @@ const {
                   <div class="col-span-1 flex justify-center">
                     <button
                       type="button"
+                      aria-label="Remover variável"
                       class="text-xs text-fossil-500 hover:text-magma-400 p-1 cursor-pointer"
                       @click="removeVariable(v.id)"
                     >

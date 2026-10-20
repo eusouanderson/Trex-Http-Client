@@ -3,13 +3,16 @@ import type { GuideItem, IPortalBuilderService, PortalBuilderOptions } from './i
 class PortalBuilderService implements IPortalBuilderService {
   public buildPortalHtml = (options: PortalBuilderOptions): string => {
     const { title, version, commitHash, contextOutput, apiDocsPath, guides } = options;
+    const apiBaseDir = apiDocsPath.endsWith('index.html')
+      ? apiDocsPath.replace(/index\.html$/, '')
+      : (apiDocsPath.endsWith('/') ? apiDocsPath : `${apiDocsPath}/`);
 
     const architectureItemsHtml = contextOutput.architectureHighlights
       .map((item) => `<li class="flex items-start gap-2"><span class="text-dino-accent font-bold">›</span><span>${this.escapeHtml(item)}</span></li>`)
       .join('\n');
 
     const changelogItemsHtml = contextOutput.changelogHighlights
-      .map((item) => `<li class="flex items-start gap-2"><span class="text-amber-accent font-bold">›</span><span>${this.escapeHtml(item)}</span></li>`)
+      .map((item) => `<li class="flex items-start gap-2"><span class="text-amber-accent font-bold">›</span><span>${this.escapeHtml(this.cleanMarkdownText(item))}</span></li>`)
       .join('\n');
 
     const guidesCardsHtml = guides
@@ -30,6 +33,7 @@ class PortalBuilderService implements IPortalBuilderService {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="${this.escapeHtml(options.baseUrl)}">
   <title>${this.escapeHtml(title)}</title>
   <meta name="description" content="Documentação técnica, arquitetura e referência da API do Trex-Http-Client.">
   <link rel="icon" type="image/png" href="../logos/Trex.png">
@@ -202,10 +206,11 @@ class PortalBuilderService implements IPortalBuilderService {
       </div>
       <nav class="nav-links">
         <a href="#modulos">Módulos</a>
+        <a href="#performance">Lighthouse CI</a>
         <a href="#guias">Guias</a>
         <a href="#arquitetura">Arquitetura</a>
         <a href="${this.escapeHtml(apiDocsPath)}">Referência da API TypeDoc</a>
-        <a href="../../Trex-Http-Client/" class="btn btn-primary">Abrir Trex App</a>
+        <a href="/Trex-Http-Client/" class="btn btn-primary">Abrir Trex App</a>
       </nav>
     </div>
   </header>
@@ -240,7 +245,7 @@ class PortalBuilderService implements IPortalBuilderService {
             <span style="font-size:1.25rem;">🦖</span>
             <span style="font-weight:700; font-size:1.05rem;">Resumo Contextual da Versão</span>
           </div>
-          <span class="badge badge-dino">Gerado com IA (${this.escapeHtml(contextOutput.modelUsed)})</span>
+          <span class="badge badge-dino">${this.renderModelBadge(contextOutput.modelUsed)}</span>
         </div>
         <p style="color:var(--text-main); font-size:1rem; margin-bottom:1.25rem;">${this.escapeHtml(contextOutput.summary)}</p>
         <div class="grid grid-cols-2">
@@ -268,7 +273,7 @@ class PortalBuilderService implements IPortalBuilderService {
             <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Core HTTP Client</h3>
             <p style="color:var(--text-muted); font-size:0.9rem;">Cliente HTTP resiliente com suporte a timeouts, cancelamento com AbortController, interceptors, retries idempotentes com backoff exponencial e validação Zod.</p>
             <div style="margin-top:1rem;">
-              <a href="${this.escapeHtml(apiDocsPath)}modules/core_http.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+              <a href="${this.escapeHtml(apiBaseDir)}modules/core_http.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
             </div>
           </div>
 
@@ -277,7 +282,7 @@ class PortalBuilderService implements IPortalBuilderService {
             <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Segurança & Segredos</h3>
             <p style="color:var(--text-muted); font-size:0.9rem;">Provedores OOP de autenticação (OAuth2 com PKCE S256, Bearer, Basic Auth, ApiKey) e SecretsMaskerService para mascaramento automático de credenciais.</p>
             <div style="margin-top:1rem;">
-              <a href="${this.escapeHtml(apiDocsPath)}modules/core_security.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+              <a href="${this.escapeHtml(apiBaseDir)}modules/core_security.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
             </div>
           </div>
 
@@ -286,7 +291,7 @@ class PortalBuilderService implements IPortalBuilderService {
             <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Variáveis & Interpolação</h3>
             <p style="color:var(--text-muted); font-size:0.9rem;">VariableResolverService com resolução hierárquica, interpolação em cascata ({{variavel}}) e prevenção ativa contra dependências cíclicas.</p>
             <div style="margin-top:1rem;">
-              <a href="${this.escapeHtml(apiDocsPath)}modules/core_variables.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+              <a href="${this.escapeHtml(apiBaseDir)}modules/core_variables.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
             </div>
           </div>
 
@@ -295,7 +300,7 @@ class PortalBuilderService implements IPortalBuilderService {
             <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Scripts de Teste (tx / pm)</h3>
             <p style="color:var(--text-muted); font-size:0.9rem;">Sandbox seguro para execução de asserções em JavaScript pós-resposta, com compatibilidade Postman (pm) e namespace nativo Trex (tx).</p>
             <div style="margin-top:1rem;">
-              <a href="${this.escapeHtml(apiDocsPath)}modules/core_scripts.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+              <a href="${this.escapeHtml(apiBaseDir)}modules/core_scripts.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
             </div>
           </div>
 
@@ -304,7 +309,7 @@ class PortalBuilderService implements IPortalBuilderService {
             <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Persistência Multi-Target</h3>
             <p style="color:var(--text-muted); font-size:0.9rem;">Abstração agnóstica de banco de dados com Dexie / IndexedDB no PWA, suporte a migrações idempotentes e fallback transparente em memória.</p>
             <div style="margin-top:1rem;">
-              <a href="${this.escapeHtml(apiDocsPath)}modules/core_storage.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+              <a href="${this.escapeHtml(apiBaseDir)}modules/core_storage.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
             </div>
           </div>
 
@@ -313,7 +318,92 @@ class PortalBuilderService implements IPortalBuilderService {
             <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Coleções & Runner</h3>
             <p style="color:var(--text-muted); font-size:0.9rem;">Árvore hierárquica com drag-and-drop, exportação JSON, menu de contexto e CollectionRunnerService para execução em lote de requisições.</p>
             <div style="margin-top:1rem;">
-              <a href="${this.escapeHtml(apiDocsPath)}modules/features_collections.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+              <a href="${this.escapeHtml(apiBaseDir)}modules/features_collections.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="code-pill">src/features/environments</span>
+            <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Ambientes & Variáveis</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Gerenciamento de variáveis em múltiplos escopos, resolução dinâmica de segredos e EnvironmentService orientado a objetos.</p>
+            <div style="margin-top:1rem;">
+              <a href="${this.escapeHtml(apiBaseDir)}modules/features_environments.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="code-pill">src/features/request</span>
+            <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Request Builder & Auth</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Construtor modular de requisições, headers, query params, editores de autorização e execução com RequestRunnerService.</p>
+            <div style="margin-top:1rem;">
+              <a href="${this.escapeHtml(apiBaseDir)}modules/features_request.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="code-pill">src/features/settings</span>
+            <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Configurações & Temas</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Gerenciamento de timeouts, retries, seletor com 8 fontes empacotadas e temas dinâmicos em variáveis CSS via SettingsService.</p>
+            <div style="margin-top:1rem;">
+              <a href="${this.escapeHtml(apiBaseDir)}modules/features_settings.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="performance" style="margin-top:4rem;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+          <div>
+            <h2 class="section-title">Engenharia de Performance & Lighthouse CI</h2>
+            <p class="section-subtitle" style="margin-bottom:0;">Auditoria automatizada a cada Pull Request com orçamentos de bundle e metas rígidas de Core Web Vitals.</p>
+          </div>
+          <a href="./guides/performance-strategy-guide.html" style="color:var(--dino-accent); font-weight:700; font-size:0.9rem;">
+            Ver Estratégia de Performance Completa →
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2" style="margin-bottom:1.25rem;">
+          <div class="card" style="border-left:4px solid var(--dino-accent);">
+            <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0.75rem;">Índices de Auditoria Lighthouse (Preview Oficial)</div>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Performance</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Acessibilidade</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Boas Práticas</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">SEO</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="border-left:4px solid var(--amber-accent);">
+            <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0.75rem;">Métricas de Laboratório & Core Web Vitals</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">First Contentful Paint (FCP)</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">0.5 s <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Rápido)</span></div>
+              </div>
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">Largest Contentful Paint (LCP)</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">0.7 s <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Meta: &lt; 2.5s)</span></div>
+              </div>
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">Cumulative Layout Shift (CLS)</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">0 <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Estabilidade total)</span></div>
+              </div>
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">Orçamento de Bundle</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">Monitorado <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(GitHub Actions)</span></div>
+              </div>
             </div>
           </div>
         </div>
@@ -381,6 +471,7 @@ class PortalBuilderService implements IPortalBuilderService {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="${this.escapeHtml(options.baseUrl)}">
   <title>${this.escapeHtml(guide.title)} — Trex Docs</title>
   <link rel="icon" type="image/png" href="../../logos/Trex.png">
   <style>
@@ -509,6 +600,23 @@ class PortalBuilderService implements IPortalBuilderService {
     }
 
     return result.join('\n');
+  };
+
+  private renderModelBadge = (modelUsed: string): string => {
+    if (modelUsed.startsWith('fallback')) {
+      return 'Documentação Oficial';
+    }
+    return `Gerado com IA (${this.escapeHtml(modelUsed)})`;
+  };
+
+  private cleanMarkdownText = (raw: string): string => {
+    return raw
+      .replace(/\(\[([a-f0-9]+)\]\([^)]+\)\)/gi, '')
+      .replace(/\([a-f0-9]{7,40}\)/gi, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/\[skip\s+ci\]/gi, '')
+      .replace(/\*\*/g, '')
+      .trim();
   };
 
   private formatInline = (text: string): string => {

@@ -130,5 +130,26 @@ describe('GroqDocService', () => {
     expect(result.modelUsed).toBe('fallback-error');
     expect(result.summary).toContain('feat(docs)');
   });
+
+  it('should cleanly parse and sanitize semantic-release commit messages in fallback mode', async () => {
+    const releaseInput: DocContextInput = {
+      commitHash: '32d1e40',
+      commitMessage:
+        'chore(release): 1.11.0 [skip ci]\n\n# [1.11.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.10.0...v1.11.0) (2026-10-20)\n\n### Features\n\n* **perf:** implementar auditoria de bundle, orcamento e lighthouse ci ([32d1e40](https://github.com/eusouanderson/Trex-Http-Client/commit/32d1e4026de3c55f37120aceacd84d74ff6ccc53))',
+      gitDiff: 'diff --git a/file.ts b/file.ts',
+      existingArchitecture: '# Architecture',
+      existingChangelog: '# Changelog',
+    };
+
+    const service = new GroqDocService('');
+    const result = await service.analyzeChanges(releaseInput);
+
+    expect(result.summary).not.toContain('[skip ci]');
+    expect(result.summary).not.toContain('# [1.11.0]');
+    expect(result.summary).toContain('perf: implementar auditoria de bundle, orcamento e lighthouse ci');
+    expect(result.changelogHighlights).toEqual([
+      'perf: implementar auditoria de bundle, orcamento e lighthouse ci',
+    ]);
+  });
 });
 

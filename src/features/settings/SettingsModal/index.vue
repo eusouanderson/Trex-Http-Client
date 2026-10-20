@@ -230,6 +230,7 @@ const isCustomTheme = (themeId: string): boolean => {
                   ref="fileInputRef"
                   type="file"
                   accept=".json,application/json"
+                  aria-label="Importar arquivo de tema JSON"
                   class="hidden"
                   @change="handleFileImport"
                 />
@@ -315,9 +316,11 @@ const isCustomTheme = (themeId: string): boolean => {
 
           <div v-if="activeTab === 'network'" class="space-y-4">
             <div>
-              <label class="block mb-1 text-xs font-semibold text-bone-200">Timeout Padrão (ms)</label>
+              <label for="default-timeout-input" class="block mb-1 text-xs font-semibold text-bone-200">Timeout Padrão (ms)</label>
               <input
+                id="default-timeout-input"
                 type="number"
+                aria-label="Timeout Padrão em milissegundos"
                 :value="settings.defaultTimeout"
                 class="w-full px-3 py-2 text-xs border rounded-lg bg-surface-ground border-surface-border text-bone-100 focus:outline-none focus:border-dino-400"
                 @input="setTimeoutValue(Number(($event.target as HTMLInputElement).value))"
@@ -325,9 +328,11 @@ const isCustomTheme = (themeId: string): boolean => {
             </div>
 
             <div>
-              <label class="block mb-1 text-xs font-semibold text-bone-200">Tentativas de Retry Padrão</label>
+              <label for="default-retry-input" class="block mb-1 text-xs font-semibold text-bone-200">Tentativas de Retry Padrão</label>
               <input
+                id="default-retry-input"
                 type="number"
+                aria-label="Tentativas de Retry Padrão"
                 :value="settings.defaultRetryAttempts"
                 min="0"
                 max="5"
@@ -375,6 +380,7 @@ const isCustomTheme = (themeId: string): boolean => {
                     <span class="text-[11px] font-mono text-fossil-400 uppercase">{{ settings.jsonTheme[field.key] }}</span>
                     <input
                       type="color"
+                      :aria-label="`Cor de sintaxe para ${field.label}`"
                       :value="settings.jsonTheme[field.key]"
                       class="p-0 overflow-hidden bg-transparent border rounded cursor-pointer w-7 h-7 border-surface-border"
                       @input="setJsonColor(field.key, ($event.target as HTMLInputElement).value)"

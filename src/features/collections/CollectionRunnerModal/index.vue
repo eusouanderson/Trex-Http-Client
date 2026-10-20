@@ -46,6 +46,7 @@ const {
         <button
           type="button"
           title="Fechar"
+          aria-label="Fechar modal de execução de coleção"
           class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-hover text-fossil-400 hover:text-bone-100 transition-colors cursor-pointer text-xs"
           @click="close"
         >

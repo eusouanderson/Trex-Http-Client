@@ -92,6 +92,7 @@ const handleFileImport = (event: Event): void => {
             ref="fileInputRef"
             type="file"
             accept=".json"
+            aria-label="Importar arquivo de coleção JSON"
             class="hidden"
             @change="handleFileImport"
           />
@@ -110,6 +111,7 @@ const handleFileImport = (event: Event): void => {
         <input
           v-model="searchQuery"
           type="text"
+          aria-label="Filtrar requisições"
           placeholder="Filtrar requisições..."
           class="w-full bg-surface-ground border border-surface-border rounded-lg pl-7 pr-3 py-1.5 text-xs text-bone-100 placeholder-fossil-500 focus:outline-none focus:border-dino-400"
         />
@@ -169,6 +171,7 @@ const handleFileImport = (event: Event): void => {
               v-if="editingCollectionId === collection.id"
               v-model="editingCollectionName"
               type="text"
+              aria-label="Nome da coleção"
               autofocus
               class="bg-surface-ground border border-dino-400 rounded px-1.5 py-0.5 text-xs text-bone-100 focus:outline-none w-full font-sans shadow-sm"
               @click.stop
@@ -309,6 +312,7 @@ const handleFileImport = (event: Event): void => {
                   v-if="editingItemId === item.id"
                   v-model="editingItemName"
                   type="text"
+                  aria-label="Nome da requisição"
                   autofocus
                   class="bg-surface-ground border border-dino-400 rounded px-1.5 py-0.5 text-xs text-bone-100 focus:outline-none w-full font-sans shadow-sm"
                   @click.stop
