@@ -36,7 +36,7 @@ const {
   startRenamingCollection,
   saveRenameCollection,
   cancelRenameCollection,
-  importPostmanCollection,
+  importCollection,
   isDraggableDisabled,
   handleReorderCollections,
   handleReorderItems,
@@ -65,7 +65,7 @@ const handleFileImport = (event: Event): void => {
   reader.onload = (e) => {
     const result = e.target?.result;
     if (typeof result === 'string') {
-      importPostmanCollection(result);
+      importCollection(result);
     }
   };
   reader.readAsText(file);

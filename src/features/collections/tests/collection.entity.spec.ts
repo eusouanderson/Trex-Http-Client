@@ -144,19 +144,30 @@ describe('CollectionEntity', () => {
       params: { limit: '10' },
       auth: { type: 'basic', username: 'u', password: 'p', enabled: true },
     });
+    entity.addItem(original.id, {
+      name: 'Simple Request',
+      type: 'request',
+    });
 
     const duplicated = entity.duplicate(original.id);
     expect(duplicated.id).not.toBe(original.id);
     expect(duplicated.name).toBe('Auth API (Cópia)');
     expect(duplicated.description).toBe('Desc');
     expect(duplicated.auth).toEqual({ type: 'bearer', token: 'secret', enabled: true });
-    expect(duplicated.items).toHaveLength(1);
+    expect(duplicated.items).toHaveLength(2);
     expect(duplicated.items[0]?.id).not.toBe(item.id);
     expect(duplicated.items[0]?.name).toBe('Login');
     expect(duplicated.items[0]?.headers).toEqual({ 'X-Dino': 'true' });
     expect(duplicated.items[0]?.params).toEqual({ limit: '10' });
     expect(duplicated.items[0]?.auth).toEqual({ type: 'basic', username: 'u', password: 'p', enabled: true });
+    expect(duplicated.items[1]?.headers).toBeUndefined();
+    expect(duplicated.items[1]?.params).toBeUndefined();
+    expect(duplicated.items[1]?.auth).toBeUndefined();
     expect(entity.all).toHaveLength(2);
+
+    const noAuthCol = entity.create('Sem Auth');
+    const dupNoAuth = entity.duplicate(noAuthCol.id);
+    expect(dupNoAuth.auth).toBeUndefined();
   });
 
   it('should throw error when duplicating non-existent collection', () => {
@@ -180,13 +191,75 @@ describe('CollectionEntity', () => {
     entity.clearStatuses('missing-col');
   });
 
-  it('should export collection as JSON string', () => {
+  it('should export collection as JSON string with info schema', () => {
     const entity = new CollectionEntity([]);
-    const col = entity.create('Export Test');
+    const col = entity.create('Export Test', 'Desc');
     const json = entity.export(col.id);
-    const parsed = JSON.parse(json) as { name: string; id: string };
+    const parsed = JSON.parse(json) as {
+      name: string;
+      id: string;
+      info?: { name: string; schema: string };
+    };
     expect(parsed.name).toBe('Export Test');
     expect(parsed.id).toBe(col.id);
+    expect(parsed.info?.schema).toBe(
+      'https://trex-http-client.dev/schemas/collection/v1.0.0/collection.json',
+    );
+    expect(parsed.info?.name).toBe('Export Test');
+  });
+
+  it('should import parsed collection and remap item IDs and parentIds', () => {
+    const entity = new CollectionEntity([]);
+    const imported = entity.import({
+      format: 'trex',
+      name: 'Imported Trex',
+      description: 'Desc',
+      auth: { type: 'bearer', token: 'tok', enabled: true },
+      variables: [],
+      items: [
+        {
+          id: 'old-folder-id',
+          name: 'Pasta Pai',
+          type: 'folder',
+        },
+        {
+          id: 'old-child-id',
+          name: 'Req Filho',
+          type: 'request',
+          parentId: 'old-folder-id',
+          method: 'GET',
+          url: 'https://api.dev/child',
+          headers: { 'X-Key': 'Val' },
+          params: { p: '1' },
+          body: 'body-data',
+          auth: { type: 'bearer', token: 'item-tok', enabled: true },
+          testScript: 'tx.test("ok", () => {});',
+        },
+        {
+          name: 'Req Raiz',
+          type: 'request',
+          parentId: null,
+          method: 'POST',
+          url: 'https://api.dev/root',
+        },
+      ],
+    });
+
+    expect(imported.name).toBe('Imported Trex');
+    expect(imported.description).toBe('Desc');
+    expect(imported.auth?.type).toBe('bearer');
+    expect(imported.items).toHaveLength(3);
+
+    const folder = imported.items[0];
+    const child = imported.items[1];
+    const root = imported.items[2];
+
+    expect(folder?.id).not.toBe('old-folder-id');
+    expect(child?.id).not.toBe('old-child-id');
+    expect(child?.parentId).toBe(folder?.id);
+    expect(root?.parentId).toBeNull();
+    expect(entity.all).toHaveLength(1);
+    expect(entity.all[0]?.id).toBe(imported.id);
   });
 
   it('should throw error when exporting non-existent collection', () => {

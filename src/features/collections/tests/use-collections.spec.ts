@@ -102,5 +102,22 @@ describe('useCollections', () => {
     const json = exportCollection(col.id);
     expect(json).toContain('To Export');
   });
+
+  it('should import collection reactively', () => {
+    const { collections, importCollection } = useCollections();
+    const raw = JSON.stringify({
+      name: 'Imported via Composable',
+      items: [
+        {
+          name: 'Item In Composable',
+          type: 'request',
+        },
+      ],
+    });
+
+    const result = importCollection(raw);
+    expect(result.collection.name).toBe('Imported via Composable');
+    expect(collections.value.some((c) => c.name === 'Imported via Composable')).toBe(true);
+  });
 });
 
