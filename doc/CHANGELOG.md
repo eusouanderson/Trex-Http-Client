@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.11.0...v1.12.0) (2026-10-20)
+
+
+### Features
+
+* **docs:** integrar metricas lighthouse, aprimorar acessibilidade e atualizar readme ([1053120](https://github.com/eusouanderson/Trex-Http-Client/commit/105312003521046aa5a7cc9ca9831441f69ac1ff))
+
 # [1.11.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.10.0...v1.11.0) (2026-10-20)
 
 
