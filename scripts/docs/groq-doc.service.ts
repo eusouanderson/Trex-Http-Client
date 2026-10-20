@@ -135,10 +135,76 @@ class GroqDocService implements IGroqDocService {
     return sanitized.trim();
   };
 
+  private cleanTextLine = (line: string): string => {
+    return line
+      .replace(/\(\[([a-f0-9]+)\]\([^)]+\)\)/gi, '')
+      .replace(/\([a-f0-9]{7,40}\)/gi, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/\[skip\s+ci\]/gi, '')
+      .replace(/\*\*/g, '')
+      .trim();
+  };
+
+  private extractCleanChangelogItems = (rawMessage: string, existingChangelog: string): string[] => {
+    const lines = rawMessage.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+    const bulletLines = lines.filter((l) => l.startsWith('* ') || l.startsWith('- '));
+
+    if (bulletLines.length > 0) {
+      const items = bulletLines
+        .map((l) => this.cleanTextLine(l.slice(2)))
+        .filter((l) => l.length > 0 && !l.startsWith('#'));
+      if (items.length > 0) {
+        return items;
+      }
+    }
+
+    const nonHeaderLines = lines.filter(
+      (l) => !l.startsWith('#') && !l.startsWith('chore(release):') && !l.toLowerCase().includes('skip ci'),
+    );
+    if (nonHeaderLines.length > 0) {
+      const cleaned = this.cleanTextLine(nonHeaderLines[0] ?? '');
+      if (cleaned.length > 0) {
+        return [cleaned];
+      }
+    }
+
+    if (rawMessage.trim().length > 0) {
+      const firstLine = this.cleanTextLine(lines[0] ?? rawMessage);
+      if (firstLine.length > 0) {
+        return [firstLine];
+      }
+    }
+
+    if (existingChangelog.length > 0) {
+      const clLines = existingChangelog
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.startsWith('* ') || l.startsWith('- '));
+      const extracted = clLines.slice(0, 3).map((l) => this.cleanTextLine(l.slice(2)));
+      if (extracted.length > 0) {
+        return extracted;
+      }
+    }
+
+    return ['Melhorias contínuas e estabilidade técnica da versão.'];
+  };
+
+  private buildCleanSummary = (commitMessage: string, cleanItems: string[]): string => {
+    if (cleanItems.length === 0) {
+      return 'Documentação técnica do cliente HTTP Trex, com suporte offline, coleções e variáveis.';
+    }
+
+    const firstItem = cleanItems[0] ?? '';
+    if (commitMessage.includes('chore(release):')) {
+      return `Atualização recente: ${cleanItems.join('; ')}`;
+    }
+
+    return `Atualização recente: ${firstItem}`;
+  };
+
   private buildFallbackOutput = (input: DocContextInput, reason: string): DocContextOutput => {
-    const summary = input.commitMessage.length > 0
-      ? `Atualização recente: ${input.commitMessage}`
-      : 'Documentação técnica do cliente HTTP Trex, com suporte offline, coleções e variáveis.';
+    const cleanItems = this.extractCleanChangelogItems(input.commitMessage, input.existingChangelog);
+    const summary = this.buildCleanSummary(input.commitMessage, cleanItems);
 
     const architectureHighlights = [
       'Core HTTP: Cliente com interceptors, retries com backoff exponencial e suporte a streaming/json.',
@@ -148,15 +214,10 @@ class GroqDocService implements IGroqDocService {
       'Customização: Seletor tipográfico com 8 fontes empacotadas e temas dinâmicos em variáveis CSS.',
     ];
 
-    const changelogHighlights = input.commitMessage.length > 0
-      ? [input.commitMessage]
-      : ['Melhorias de desempenho e estabilização de rotinas da aplicação.'];
-
-
     return {
       summary,
       architectureHighlights,
-      changelogHighlights,
+      changelogHighlights: cleanItems,
       generatedAt: new Date().toISOString(),
       modelUsed: reason,
     };

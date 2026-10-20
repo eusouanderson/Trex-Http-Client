@@ -47,6 +47,7 @@ const {
         <button
           type="button"
           title="Alternar Barra Lateral"
+          aria-label="Alternar Barra Lateral"
           class="p-1.5 text-fossil-400 hover:text-bone-100 hover:bg-surface-hover rounded-lg transition-colors text-xs"
           @click="toggleSidebar"
         >
@@ -89,6 +90,7 @@ const {
             <button
               type="button"
               title="Fechar aba"
+              aria-label="Fechar aba"
               class="w-3.5 h-3.5 shrink-0 flex items-center justify-center rounded hover:bg-surface-border text-[9px] text-fossil-500 hover:text-bone-100 opacity-60 group-hover:opacity-100 transition-opacity"
               @click.stop="closeTab(tab.id)"
             >
@@ -109,6 +111,7 @@ const {
         <button
           type="button"
           title="Configurações (Engrenagem)"
+          aria-label="Configurações"
           class="p-1.5 text-fossil-300 hover:text-dino-300 hover:bg-surface-hover border border-surface-border rounded-lg transition-colors flex items-center justify-center text-xs cursor-pointer"
           @click="openSettings"
         >

@@ -25,6 +25,7 @@ const onSelectChange = (event: Event): void => {
   <div class="flex items-center gap-1.5">
     <select
       :value="activeEnvironment?.id ?? 'none'"
+      aria-label="Selecionar ambiente ativo"
       class="bg-surface-ground border border-surface-border text-xs text-bone-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-dino-400 cursor-pointer w-44 truncate"
       @change="onSelectChange"
     >
@@ -47,6 +48,7 @@ const onSelectChange = (event: Event): void => {
     <button
       type="button"
       title="Gerenciar Ambientes (Variáveis)"
+      aria-label="Gerenciar Ambientes"
       class="p-1.5 text-fossil-300 hover:text-dino-300 hover:bg-surface-hover border border-surface-border rounded-lg transition-colors flex items-center justify-center text-xs cursor-pointer"
       @click="openManager"
     >

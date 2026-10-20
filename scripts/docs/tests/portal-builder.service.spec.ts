@@ -71,5 +71,24 @@ describe('PortalBuilderService', () => {
     expect(guideHtml).toContain('<pre><code>const x = 10;</code></pre>');
     expect(guideHtml).toContain('← Voltar para Trex Docs');
   });
+
+  it('should render official documentation badge and clean changelog markdown when model is fallback', () => {
+    const fallbackOptions: PortalBuilderOptions = {
+      ...mockOptions,
+      contextOutput: {
+        ...mockOptions.contextOutput,
+        modelUsed: 'fallback-error',
+        changelogHighlights: [
+          '* **perf:** implementar auditoria ([32d1e40](https://github.com/test))',
+        ],
+      },
+    };
+
+    const html = service.buildPortalHtml(fallbackOptions);
+    expect(html).toContain('Documentação Oficial');
+    expect(html).not.toContain('fallback-error');
+    expect(html).toContain('perf: implementar auditoria');
+    expect(html).not.toContain('32d1e40');
+  });
 });
 

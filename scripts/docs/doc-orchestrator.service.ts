@@ -195,6 +195,18 @@ class DocOrchestratorService implements IDocOrchestratorService {
       });
     }
 
+    const perfGuidePath = join(this.projectRoot, 'docs', 'performance-strategy.md');
+    if (this.fileSystem.existsSync(perfGuidePath)) {
+      const content = this.fileSystem.readFileSync(perfGuidePath, 'utf-8');
+      guides.push({
+        id: 'performance-strategy-guide',
+        title: 'Guia de Performance Engineering & Lighthouse CI',
+        description: 'Auditoria contínua de performance, acessibilidade 100%, Core Web Vitals, orçamentos de bundle e relatórios no CI/CD.',
+        fileName: 'performance-strategy-guide',
+        content,
+      });
+    }
+
     return guides;
   };
 }
