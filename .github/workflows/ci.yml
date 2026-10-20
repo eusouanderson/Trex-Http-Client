@@ -60,15 +60,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Validate Documentation Build
-        if: github.event_name == 'pull_request'
-        run: pnpm run docs:generate
-
-      - name: Build PWA for Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Build Application
         run: pnpm run build
         env:
           VITE_BASE_URL: /Trex-Http-Client/
+
+      - name: Audit Bundle Size and Budget
+        run: pnpm run perf:bundle
+
+      - name: Lighthouse CI Audit
+        run: pnpm run perf:lighthouse
+
+      - name: Upload Performance Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-reports
+          path: |
+            dist/performance-report.json
+            dist/performance-report.md
+            .lighthouseci/
+          retention-days: 14
+
+      - name: Validate Documentation Build
+        if: github.event_name == 'pull_request'
+        run: pnpm run docs:generate
 
       - name: Generate Smart Documentation
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

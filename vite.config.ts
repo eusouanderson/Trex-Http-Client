@@ -37,6 +37,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,ico,png}'],
+        navigateFallbackDenylist: [/^\/Trex-Http-Client\/docs/, /^\/docs/],
       },
       devOptions: {
         enabled: true,

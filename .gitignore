@@ -12,5 +12,6 @@ yarn-error.log*
 pnpm-debug.log*
 pnpm-workspace.yaml
 coverage
+.lighthouseci
 .DS_Store
 *.tsbuildinfo
