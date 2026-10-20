@@ -1,0 +1,413 @@
+{
+  "timestamp": "2026-10-19T23:51:11.991Z",
+  "totalRawSizeBytes": 234060586,
+  "totalGzipSizeBytes": 75231614,
+  "totalJsRawSizeBytes": 880634,
+  "totalJsGzipSizeBytes": 280413,
+  "initialJsRawSizeBytes": 880500,
+  "initialJsGzipSizeBytes": 280288,
+  "totalCssRawSizeBytes": 43413,
+  "totalCssGzipSizeBytes": 8074,
+  "assets": [
+    {
+      "name": "Iosevka-Bold-5ezgatlp.ttc",
+      "path": "assets/Iosevka-Bold-5ezgatlp.ttc",
+      "canonicalName": "Iosevka-Bold.ttc",
+      "category": "font",
+      "rawSizeBytes": 57236180,
+      "gzipSizeBytes": 17906843
+    },
+    {
+      "name": "Iosevka-SemiBold--HzZuceC.ttc",
+      "path": "assets/Iosevka-SemiBold--HzZuceC.ttc",
+      "canonicalName": "Iosevka-SemiBold-.ttc",
+      "category": "font",
+      "rawSizeBytes": 57000220,
+      "gzipSizeBytes": 17803538
+    },
+    {
+      "name": "Iosevka-Regular-Bfulf1W7.ttc",
+      "path": "assets/Iosevka-Regular-Bfulf1W7.ttc",
+      "canonicalName": "Iosevka-Regular.ttc",
+      "category": "font",
+      "rawSizeBytes": 56852316,
+      "gzipSizeBytes": 17736484
+    },
+    {
+      "name": "Iosevka-Medium-DEJzSN_g.ttc",
+      "path": "assets/Iosevka-Medium-DEJzSN_g.ttc",
+      "canonicalName": "Iosevka-Medium.ttc",
+      "category": "font",
+      "rawSizeBytes": 55459476,
+      "gzipSizeBytes": 17162962
+    },
+    {
+      "name": "index-C8_Txo5H.js",
+      "path": "assets/index-C8_Txo5H.js",
+      "canonicalName": "index.js",
+      "category": "js-entry",
+      "rawSizeBytes": 880500,
+      "gzipSizeBytes": 280288
+    },
+    {
+      "name": "MonaspaceNeonFrozen-SemiBold-CUJQ6Lsa.ttf",
+      "path": "assets/MonaspaceNeonFrozen-SemiBold-CUJQ6Lsa.ttf",
+      "canonicalName": "MonaspaceNeonFrozen-SemiBold.ttf",
+      "category": "font",
+      "rawSizeBytes": 753136,
+      "gzipSizeBytes": 309871
+    },
+    {
+      "name": "MonaspaceNeonFrozen-Medium-DC58aXES.ttf",
+      "path": "assets/MonaspaceNeonFrozen-Medium-DC58aXES.ttf",
+      "canonicalName": "MonaspaceNeonFrozen-Medium.ttf",
+      "category": "font",
+      "rawSizeBytes": 749348,
+      "gzipSizeBytes": 308054
+    },
+    {
+      "name": "MonaspaceNeonFrozen-Regular-BCqJFBtz.ttf",
+      "path": "assets/MonaspaceNeonFrozen-Regular-BCqJFBtz.ttf",
+      "canonicalName": "MonaspaceNeonFrozen-Regular.ttf",
+      "category": "font",
+      "rawSizeBytes": 740308,
+      "gzipSizeBytes": 306037
+    },
+    {
+      "name": "MonaspaceNeonFrozen-Bold-D-vTniip.ttf",
+      "path": "assets/MonaspaceNeonFrozen-Bold-D-vTniip.ttf",
+      "canonicalName": "MonaspaceNeonFrozen-Bold-D.ttf",
+      "category": "font",
+      "rawSizeBytes": 739756,
+      "gzipSizeBytes": 312113
+    },
+    {
+      "name": "Hack-Bold-CVmVTnBC.ttf",
+      "path": "assets/Hack-Bold-CVmVTnBC.ttf",
+      "canonicalName": "Hack-Bold.ttf",
+      "category": "font",
+      "rawSizeBytes": 317628,
+      "gzipSizeBytes": 152899
+    },
+    {
+      "name": "Hack-Regular-D6rFOwSy.ttf",
+      "path": "assets/Hack-Regular-D6rFOwSy.ttf",
+      "canonicalName": "Hack-Regular.ttf",
+      "category": "font",
+      "rawSizeBytes": 309408,
+      "gzipSizeBytes": 148532
+    },
+    {
+      "name": "CascadiaCode-Bold-CtdV9HaP.woff2",
+      "path": "assets/CascadiaCode-Bold-CtdV9HaP.woff2",
+      "canonicalName": "CascadiaCode-Bold.woff2",
+      "category": "font",
+      "rawSizeBytes": 154840,
+      "gzipSizeBytes": 153998
+    },
+    {
+      "name": "CascadiaCode-SemiBold-BRGexq7T.woff2",
+      "path": "assets/CascadiaCode-SemiBold-BRGexq7T.woff2",
+      "canonicalName": "CascadiaCode-SemiBold.woff2",
+      "category": "font",
+      "rawSizeBytes": 154708,
+      "gzipSizeBytes": 153671
+    },
+    {
+      "name": "CascadiaCode-Regular-CIwq8_CP.woff2",
+      "path": "assets/CascadiaCode-Regular-CIwq8_CP.woff2",
+      "canonicalName": "CascadiaCode-Regular.woff2",
+      "category": "font",
+      "rawSizeBytes": 152352,
+      "gzipSizeBytes": 151250
+    },
+    {
+      "name": "SourceCodePro-Bold-BgyDxNLb.otf",
+      "path": "assets/SourceCodePro-Bold-BgyDxNLb.otf",
+      "canonicalName": "SourceCodePro-Bold.otf",
+      "category": "font",
+      "rawSizeBytes": 134020,
+      "gzipSizeBytes": 92285
+    },
+    {
+      "name": "SourceCodePro-Semibold-RAVGx5iI.otf",
+      "path": "assets/SourceCodePro-Semibold-RAVGx5iI.otf",
+      "canonicalName": "SourceCodePro-Semibold.otf",
+      "category": "font",
+      "rawSizeBytes": 131608,
+      "gzipSizeBytes": 90814
+    },
+    {
+      "name": "SourceCodePro-Regular-BpbYOLgm.otf",
+      "path": "assets/SourceCodePro-Regular-BpbYOLgm.otf",
+      "canonicalName": "SourceCodePro-Regular.otf",
+      "category": "font",
+      "rawSizeBytes": 131128,
+      "gzipSizeBytes": 91017
+    },
+    {
+      "name": "SourceCodePro-Medium-D3c6JeGC.otf",
+      "path": "assets/SourceCodePro-Medium-D3c6JeGC.otf",
+      "canonicalName": "SourceCodePro-Medium.otf",
+      "category": "font",
+      "rawSizeBytes": 130984,
+      "gzipSizeBytes": 91563
+    },
+    {
+      "name": "scelidosaurus.png",
+      "path": "icons/scelidosaurus.png",
+      "canonicalName": "scelidosaurus.png",
+      "category": "image",
+      "rawSizeBytes": 126424,
+      "gzipSizeBytes": 126376
+    },
+    {
+      "name": "iguanodon.png",
+      "path": "icons/iguanodon.png",
+      "canonicalName": "iguanodon.png",
+      "category": "image",
+      "rawSizeBytes": 121542,
+      "gzipSizeBytes": 121289
+    },
+    {
+      "name": "anchiornis.png",
+      "path": "icons/anchiornis.png",
+      "canonicalName": "anchiornis.png",
+      "category": "image",
+      "rawSizeBytes": 117540,
+      "gzipSizeBytes": 117158
+    },
+    {
+      "name": "FiraCode-Bold-DzhvDiv4.woff2",
+      "path": "assets/FiraCode-Bold-DzhvDiv4.woff2",
+      "canonicalName": "FiraCode-Bold.woff2",
+      "category": "font",
+      "rawSizeBytes": 107788,
+      "gzipSizeBytes": 107833
+    },
+    {
+      "name": "FiraCode-SemiBold-BiAOBdH0.woff2",
+      "path": "assets/FiraCode-SemiBold-BiAOBdH0.woff2",
+      "canonicalName": "FiraCode-SemiBold.woff2",
+      "category": "font",
+      "rawSizeBytes": 106992,
+      "gzipSizeBytes": 107031
+    },
+    {
+      "name": "FiraCode-Regular-jAL9VymT.woff2",
+      "path": "assets/FiraCode-Regular-jAL9VymT.woff2",
+      "canonicalName": "FiraCode-Regular.woff2",
+      "category": "font",
+      "rawSizeBytes": 103240,
+      "gzipSizeBytes": 103203
+    },
+    {
+      "name": "FiraCode-Medium--YTCSZkP.woff2",
+      "path": "assets/FiraCode-Medium--YTCSZkP.woff2",
+      "canonicalName": "FiraCode-Medium-.woff2",
+      "category": "font",
+      "rawSizeBytes": 102384,
+      "gzipSizeBytes": 102406
+    },
+    {
+      "name": "muttaburrasaurus.png",
+      "path": "icons/muttaburrasaurus.png",
+      "canonicalName": "muttaburrasaurus.png",
+      "category": "image",
+      "rawSizeBytes": 90449,
+      "gzipSizeBytes": 90073
+    },
+    {
+      "name": "velociraptor.png",
+      "path": "icons/velociraptor.png",
+      "canonicalName": "velociraptor.png",
+      "category": "image",
+      "rawSizeBytes": 90338,
+      "gzipSizeBytes": 89732
+    },
+    {
+      "name": "liopleurodon.png",
+      "path": "icons/liopleurodon.png",
+      "canonicalName": "liopleurodon.png",
+      "category": "image",
+      "rawSizeBytes": 89863,
+      "gzipSizeBytes": 88392
+    },
+    {
+      "name": "saltopus.png",
+      "path": "icons/saltopus.png",
+      "canonicalName": "saltopus.png",
+      "category": "image",
+      "rawSizeBytes": 86695,
+      "gzipSizeBytes": 86327
+    },
+    {
+      "name": "triceratops.png",
+      "path": "icons/triceratops.png",
+      "canonicalName": "triceratops.png",
+      "category": "image",
+      "rawSizeBytes": 85962,
+      "gzipSizeBytes": 84735
+    },
+    {
+      "name": "IBMPlexSans-SemiBold-KfaJl9PC.woff2",
+      "path": "assets/IBMPlexSans-SemiBold-KfaJl9PC.woff2",
+      "canonicalName": "IBMPlexSans-SemiBold.woff2",
+      "category": "font",
+      "rawSizeBytes": 67060,
+      "gzipSizeBytes": 67103
+    },
+    {
+      "name": "IBMPlexSans-Medium-BQLKo0ot.woff2",
+      "path": "assets/IBMPlexSans-Medium-BQLKo0ot.woff2",
+      "canonicalName": "IBMPlexSans-Medium.woff2",
+      "category": "font",
+      "rawSizeBytes": 66740,
+      "gzipSizeBytes": 66783
+    },
+    {
+      "name": "stegosaurus.png",
+      "path": "icons/stegosaurus.png",
+      "canonicalName": "stegosaurus.png",
+      "category": "image",
+      "rawSizeBytes": 63399,
+      "gzipSizeBytes": 61678
+    },
+    {
+      "name": "IBMPlexSans-Regular-BiEB_oxT.woff2",
+      "path": "assets/IBMPlexSans-Regular-BiEB_oxT.woff2",
+      "canonicalName": "IBMPlexSans-Regular.woff2",
+      "category": "font",
+      "rawSizeBytes": 63020,
+      "gzipSizeBytes": 63058
+    },
+    {
+      "name": "IBMPlexSans-Bold-CDYgCOW4.woff2",
+      "path": "assets/IBMPlexSans-Bold-CDYgCOW4.woff2",
+      "canonicalName": "IBMPlexSans-Bold.woff2",
+      "category": "font",
+      "rawSizeBytes": 63012,
+      "gzipSizeBytes": 63050
+    },
+    {
+      "name": "GeistMono-Bold-C40cTmo2.woff2",
+      "path": "assets/GeistMono-Bold-C40cTmo2.woff2",
+      "canonicalName": "GeistMono-Bold.woff2",
+      "category": "font",
+      "rawSizeBytes": 51828,
+      "gzipSizeBytes": 51866
+    },
+    {
+      "name": "GeistMono-SemiBold-TmAUe3tB.woff2",
+      "path": "assets/GeistMono-SemiBold-TmAUe3tB.woff2",
+      "canonicalName": "GeistMono-SemiBold.woff2",
+      "category": "font",
+      "rawSizeBytes": 51476,
+      "gzipSizeBytes": 51497
+    },
+    {
+      "name": "GeistMono-Medium-DgBJuAVu.woff2",
+      "path": "assets/GeistMono-Medium-DgBJuAVu.woff2",
+      "canonicalName": "GeistMono-Medium.woff2",
+      "category": "font",
+      "rawSizeBytes": 51420,
+      "gzipSizeBytes": 51458
+    },
+    {
+      "name": "GeistMono-Regular-CFYzo_Dg.woff2",
+      "path": "assets/GeistMono-Regular-CFYzo_Dg.woff2",
+      "canonicalName": "GeistMono-Regular.woff2",
+      "category": "font",
+      "rawSizeBytes": 50444,
+      "gzipSizeBytes": 50482
+    },
+    {
+      "name": "Geist-Bold-CjXFw4BI.woff2",
+      "path": "assets/Geist-Bold-CjXFw4BI.woff2",
+      "canonicalName": "Geist-Bold.woff2",
+      "category": "font",
+      "rawSizeBytes": 46748,
+      "gzipSizeBytes": 46781
+    },
+    {
+      "name": "Geist-SemiBold-BPglaXaf.woff2",
+      "path": "assets/Geist-SemiBold-BPglaXaf.woff2",
+      "canonicalName": "Geist-SemiBold.woff2",
+      "category": "font",
+      "rawSizeBytes": 46484,
+      "gzipSizeBytes": 46517
+    },
+    {
+      "name": "Geist-Medium-DeFHbtzq.woff2",
+      "path": "assets/Geist-Medium-DeFHbtzq.woff2",
+      "canonicalName": "Geist-Medium.woff2",
+      "category": "font",
+      "rawSizeBytes": 46404,
+      "gzipSizeBytes": 46437
+    },
+    {
+      "name": "Geist-Regular-2UM0PzHi.woff2",
+      "path": "assets/Geist-Regular-2UM0PzHi.woff2",
+      "canonicalName": "Geist-Regular.woff2",
+      "category": "font",
+      "rawSizeBytes": 45272,
+      "gzipSizeBytes": 45305
+    },
+    {
+      "name": "index-2_NY-M90.css",
+      "path": "assets/index-2_NY-M90.css",
+      "canonicalName": "index.css",
+      "category": "css-entry",
+      "rawSizeBytes": 43413,
+      "gzipSizeBytes": 8074
+    },
+    {
+      "name": "Trex.png",
+      "path": "logos/Trex.png",
+      "canonicalName": "Trex.png",
+      "category": "image",
+      "rawSizeBytes": 27653,
+      "gzipSizeBytes": 27579
+    },
+    {
+      "name": "workbox-9c191d2f.js",
+      "path": "workbox-9c191d2f.js",
+      "canonicalName": "workbox.js",
+      "category": "service-worker",
+      "rawSizeBytes": 15112,
+      "gzipSizeBytes": 5192
+    },
+    {
+      "name": "sw.js",
+      "path": "sw.js",
+      "canonicalName": "sw.js",
+      "category": "service-worker",
+      "rawSizeBytes": 2566,
+      "gzipSizeBytes": 1059
+    },
+    {
+      "name": "index.html",
+      "path": "index.html",
+      "canonicalName": "index.html",
+      "category": "other",
+      "rawSizeBytes": 866,
+      "gzipSizeBytes": 505
+    },
+    {
+      "name": "manifest.webmanifest",
+      "path": "manifest.webmanifest",
+      "canonicalName": "manifest.webmanifest",
+      "category": "manifest",
+      "rawSizeBytes": 402,
+      "gzipSizeBytes": 291
+    },
+    {
+      "name": "registerSW.js",
+      "path": "registerSW.js",
+      "canonicalName": "registerSW.js",
+      "category": "js-chunk",
+      "rawSizeBytes": 134,
+      "gzipSizeBytes": 125
+    }
+  ]
+}

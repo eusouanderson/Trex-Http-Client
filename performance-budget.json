@@ -1,0 +1,13 @@
+{
+  "mode": "warn",
+  "limits": {
+    "maxInitialJsRawBytes": 1050000,
+    "maxInitialJsGzipBytes": 330000,
+    "maxTotalJsRawBytes": 1100000,
+    "maxTotalJsGzipBytes": 350000,
+    "maxTotalCssRawBytes": 60000,
+    "maxTotalCssGzipBytes": 15000,
+    "maxAllowedGrowthPercent": 15
+  }
+}
+

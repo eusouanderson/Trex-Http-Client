@@ -19,7 +19,10 @@
     "format": "prettier --write src/",
     "prepare": "husky",
     "docs:api": "typedoc",
-    "docs:generate": "vite-node --script scripts/docs/generate-docs.ts"
+    "docs:generate": "vite-node --script scripts/docs/generate-docs.ts",
+    "perf:bundle": "vite-node --script scripts/performance/run-bundle-analysis.ts",
+    "perf:lighthouse": "lhci autorun",
+    "perf:audit": "pnpm run perf:bundle && pnpm run perf:lighthouse"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",
@@ -44,6 +47,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.63.0",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/exec": "^7.1.0",
