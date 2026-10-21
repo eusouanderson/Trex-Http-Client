@@ -173,6 +173,7 @@ const clientSettingsSchema = z.object({
   fontFamily: z.string().min(1).default('system'),
   orientation: z.enum(['horizontal', 'vertical']),
   density: z.enum(['compact', 'comfortable']),
+  panelLayout: z.enum(['default', 'separated']).default('default'),
   defaultTimeout: z.number().positive(),
   defaultRetryAttempts: z.number().nonnegative(),
   followRedirects: z.boolean(),

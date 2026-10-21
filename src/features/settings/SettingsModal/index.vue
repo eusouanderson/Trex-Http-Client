@@ -26,6 +26,7 @@ const {
   setTheme,
   setOrientation,
   setDensity,
+  setPanelLayout,
   setTimeoutValue,
   setRetryAttempts,
   toggleFollowRedirects,
@@ -197,6 +198,31 @@ const isCustomTheme = (themeId: string): boolean => {
                   @click="setDensity('compact')"
                 >
                   <span>📐 Compacto</span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-baseline justify-between mb-2">
+                <label class="block text-xs font-semibold text-bone-200">Estilo dos Painéis</label>
+                <span class="text-[11px] text-fossil-400">Display the workspace as separate rounded panels with consistent spacing.</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  class="flex items-center justify-center gap-2 p-3 text-xs font-medium transition-all border rounded-lg cursor-pointer"
+                  :class="settings.panelLayout === 'default' ? 'border-dino-400 bg-dino-500/10 text-dino-300' : 'border-surface-border text-fossil-300 hover:bg-surface-hover'"
+                  @click="setPanelLayout('default')"
+                >
+                  <span>🔲 Default Layout</span>
+                </button>
+                <button
+                  type="button"
+                  class="flex items-center justify-center gap-2 p-3 text-xs font-medium transition-all border rounded-lg cursor-pointer"
+                  :class="settings.panelLayout === 'separated' ? 'border-dino-400 bg-dino-500/10 text-dino-300' : 'border-surface-border text-fossil-300 hover:bg-surface-hover'"
+                  @click="setPanelLayout('separated')"
+                >
+                  <span>🍱 Separated Panels</span>
                 </button>
               </div>
             </div>

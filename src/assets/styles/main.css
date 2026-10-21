@@ -202,6 +202,25 @@ body {
   display: none;
 }
 
+.splitpanes--separated.splitpanes--vertical > .splitpanes__splitter {
+  width: 4px;
+  background-color: transparent;
+  border: none;
+}
+
+.splitpanes--separated.splitpanes--horizontal > .splitpanes__splitter {
+  height: 4px;
+  background-color: transparent;
+  border: none;
+}
+
+.splitpanes--separated.splitpanes--vertical > .splitpanes__splitter:hover,
+.splitpanes--separated.splitpanes--horizontal > .splitpanes__splitter:hover,
+.splitpanes--separated.splitpanes--dragging .splitpanes__splitter {
+  background-color: rgb(var(--color-accent-rgb) / 0.3);
+  box-shadow: 0 0 4px rgb(var(--color-accent-rgb) / 0.3);
+}
+
 input[type='checkbox'],
 .trex-checkbox {
   appearance: none;

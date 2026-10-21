@@ -366,5 +366,33 @@ describe('SettingsModal Component', () => {
 
     expect(wrapper.emitted('openEnvironmentManager')).toBeDefined();
   });
+
+  it('should toggle panel layout between default and separated panels in layout tab', async () => {
+    const wrapper = mount(SettingsModal);
+
+    const generalTabButton = wrapper
+      .findAll('nav button')
+      .find((btn) => btn.text().includes('Layout'));
+    await generalTabButton?.trigger('click');
+
+    expect(wrapper.text()).toContain('Estilo dos Painéis');
+    expect(wrapper.text()).toContain('Display the workspace as separate rounded panels with consistent spacing.');
+
+    const separatedBtn = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Separated Panels'));
+    expect(separatedBtn).toBeDefined();
+    await separatedBtn?.trigger('click');
+
+    const { settings } = useSettings();
+    expect(settings.value.panelLayout).toBe('separated');
+
+    const defaultBtn = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Default Layout'));
+    expect(defaultBtn).toBeDefined();
+    await defaultBtn?.trigger('click');
+    expect(settings.value.panelLayout).toBe('default');
+  });
 });
 

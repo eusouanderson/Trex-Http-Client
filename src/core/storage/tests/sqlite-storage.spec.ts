@@ -73,6 +73,7 @@ describe('SqlitePersistenceStorage', () => {
         fontFamily: 'system',
         orientation: 'horizontal',
         density: 'comfortable',
+        panelLayout: 'default',
         defaultTimeout: 30000,
         defaultRetryAttempts: 1,
         followRedirects: true,

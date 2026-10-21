@@ -35,6 +35,7 @@ describe('SettingsEntity', () => {
     expect(entity.value.theme).toBe('dino');
     expect(entity.value.fontFamily).toBe('system');
     expect(entity.value.orientation).toBe('horizontal');
+    expect(entity.value.panelLayout).toBe('default');
     expect(entity.value.jsonTheme.preset).toBe('dino');
     expect(entity.value.customThemes).toEqual([]);
   });
@@ -63,8 +64,9 @@ describe('SettingsEntity', () => {
   it('should update settings with and without partial jsonTheme', () => {
     const entity = new SettingsEntity();
 
-    entity.update({ orientation: 'vertical' });
+    entity.update({ orientation: 'vertical', panelLayout: 'separated' });
     expect(entity.value.orientation).toBe('vertical');
+    expect(entity.value.panelLayout).toBe('separated');
 
     entity.update({
       jsonTheme: {
@@ -77,11 +79,13 @@ describe('SettingsEntity', () => {
   });
 
   it('should reset settings to default', () => {
-    const entity = new SettingsEntity({ theme: 'pterodactyl-midnight' });
+    const entity = new SettingsEntity({ theme: 'pterodactyl-midnight', panelLayout: 'separated' });
     expect(entity.value.theme).toBe('pterodactyl-midnight');
+    expect(entity.value.panelLayout).toBe('separated');
 
     entity.reset();
     expect(entity.value.theme).toBe('dino');
+    expect(entity.value.panelLayout).toBe('default');
     expect(entity.value.customThemes).toEqual([]);
   });
 
