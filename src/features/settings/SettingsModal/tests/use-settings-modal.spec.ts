@@ -271,6 +271,16 @@ describe('useSettingsModal', () => {
     const fallbackModal = useSettingsModal();
     fallbackModal.openEnvironmentManager();
   });
+
+  it('should update panel layout mode', () => {
+    const modal = useSettingsModal();
+
+    expect(modal.settings.value.panelLayout).toBe('default');
+    modal.setPanelLayout('separated');
+    expect(modal.settings.value.panelLayout).toBe('separated');
+    modal.setPanelLayout('default');
+    expect(modal.settings.value.panelLayout).toBe('default');
+  });
 });
 
 

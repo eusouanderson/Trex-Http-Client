@@ -10,6 +10,7 @@ type ThemePalette = BuiltinThemePalette | (string & {});
 
 type PanelOrientation = 'horizontal' | 'vertical';
 type UiDensity = 'compact' | 'comfortable';
+type PanelLayoutMode = 'default' | 'separated';
 type JsonPresetName =
   | 'dino'
   | 'trex-monokai'
@@ -87,6 +88,7 @@ interface ClientSettings {
   fontFamily: string;
   orientation: PanelOrientation;
   density: UiDensity;
+  panelLayout: PanelLayoutMode;
   defaultTimeout: number;
   defaultRetryAttempts: number;
   followRedirects: boolean;
@@ -116,6 +118,7 @@ export type {
   ThemePalette,
   PanelOrientation,
   UiDensity,
+  PanelLayoutMode,
   JsonPresetName,
   JsonThemeSettings,
   JsonColorField,

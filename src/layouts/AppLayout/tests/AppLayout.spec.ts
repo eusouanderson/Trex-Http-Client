@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import CollectionTree from '../../../features/collections/CollectionTree/index.vue';
 import { EnvironmentSelector } from '../../../features/environments';
 import { useRequest } from '../../../features/request';
+import { useSettings } from '../../../features/settings';
 import AppLayout from '../index.vue';
 
 describe('AppLayout Component', () => {
@@ -174,6 +175,33 @@ describe('AppLayout Component', () => {
     const header = wrapper.find('header');
     expect(header.exists()).toBe(true);
     expect(header.text()).not.toContain('Pronto');
+  });
+
+  it('should apply separated panels styling when settings.panelLayout is separated', () => {
+    const { updateSettings } = useSettings();
+    updateSettings({ panelLayout: 'separated' });
+
+    const wrapper = mount(AppLayout, {
+      global: {
+        stubs: {
+          Splitpanes: { template: '<div><slot /></div>' },
+          Pane: { template: '<div><slot /></div>' },
+          VueDraggable: { template: '<div><slot /></div>' },
+          CollectionTree: { template: '<div class="collection-tree-stub"></div>' },
+          RequestBuilder: { template: '<div class="request-builder-stub"></div>' },
+          ResponseViewer: { template: '<div class="response-viewer-stub"></div>' },
+          SettingsModal: { template: '<div class="settings-modal-stub"></div>' },
+          EnvironmentSelector: { template: '<div class="environment-selector-stub"></div>' },
+          EnvironmentManagerModal: { template: '<div class="environment-manager-stub"></div>' },
+        },
+      },
+    });
+
+    const workspaceArea = wrapper.find('.trex-workspace-area');
+    expect(workspaceArea.classes()).toContain('p-1');
+    expect(workspaceArea.classes()).toContain('gap-1');
+
+    updateSettings({ panelLayout: 'default' });
   });
 });
 

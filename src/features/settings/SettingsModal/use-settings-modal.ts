@@ -13,6 +13,7 @@ import type {
   JurassicThemeItem,
   PanelOrientation,
   UiDensity,
+  PanelLayoutMode,
 } from '../interfaces';
 import { JSON_THEME_PRESETS } from '../settings.entity';
 import { ThemeParserService } from '../theme-parser.service';
@@ -125,6 +126,7 @@ interface UseSettingsModalReturn {
   setTheme: (themeId: string) => void;
   setOrientation: (orientation: PanelOrientation) => void;
   setDensity: (density: UiDensity) => void;
+  setPanelLayout: (mode: PanelLayoutMode) => void;
   setTimeoutValue: (timeoutMs: number) => void;
   setRetryAttempts: (attempts: number) => void;
   toggleFollowRedirects: () => void;
@@ -208,6 +210,10 @@ const useSettingsModal = (options?: UseSettingsModalOptions): UseSettingsModalRe
 
   const setDensity = (density: UiDensity): void => {
     updateSettings({ density });
+  };
+
+  const setPanelLayout = (panelLayout: PanelLayoutMode): void => {
+    updateSettings({ panelLayout });
   };
 
   const setTimeoutValue = (timeoutMs: number): void => {
@@ -331,6 +337,7 @@ const useSettingsModal = (options?: UseSettingsModalOptions): UseSettingsModalRe
     setTheme,
     setOrientation,
     setDensity,
+    setPanelLayout,
     setTimeoutValue,
     setRetryAttempts,
     toggleFollowRedirects,

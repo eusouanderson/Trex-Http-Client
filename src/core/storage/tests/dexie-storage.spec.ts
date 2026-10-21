@@ -110,6 +110,7 @@ describe('DexiePersistenceStorage (IndexedDB)', () => {
         fontFamily: 'system',
         orientation: 'vertical',
         density: 'compact',
+        panelLayout: 'separated',
         defaultTimeout: 15000,
         defaultRetryAttempts: 2,
         followRedirects: false,

@@ -115,27 +115,49 @@ const {
       </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-      <splitpanes class="flex-1" :horizontal="false">
+    <div
+      class="flex flex-1 overflow-hidden trex-workspace-area"
+      :class="{
+        'p-1 gap-1 bg-surface-ground': settings.panelLayout === 'separated',
+      }"
+    >
+      <splitpanes
+        class="flex-1"
+        :class="{ 'splitpanes--separated': settings.panelLayout === 'separated' }"
+        :horizontal="false"
+      >
         <pane
           v-if="isSidebarOpen"
           size="22"
           min-size="15"
           max-size="40"
-          class="bg-surface-panel"
+          :class="settings.panelLayout === 'separated' ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm' : 'bg-surface-panel'"
         >
           <collection-tree @select-item="handleSelectItem" />
         </pane>
 
-        <pane size="78" class="flex flex-col overflow-hidden bg-surface-ground">
+        <pane
+          size="78"
+          class="flex flex-col overflow-hidden"
+          :class="settings.panelLayout === 'separated' ? 'bg-transparent' : 'bg-surface-ground'"
+        >
           <splitpanes
             class="flex-1"
+            :class="{ 'splitpanes--separated': settings.panelLayout === 'separated' }"
             :horizontal="settings.orientation === 'vertical'"
           >
-            <pane size="55" min-size="25">
+            <pane
+              size="55"
+              min-size="25"
+              :class="settings.panelLayout === 'separated' ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm' : ''"
+            >
               <request-builder />
             </pane>
-            <pane size="45" min-size="20">
+            <pane
+              size="45"
+              min-size="20"
+              :class="settings.panelLayout === 'separated' ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm' : ''"
+            >
               <response-viewer :result="executionResult" :loading="isLoading" />
             </pane>
           </splitpanes>

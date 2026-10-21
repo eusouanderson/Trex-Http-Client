@@ -71,6 +71,7 @@ class SettingsEntity {
     fontFamily: 'system',
     orientation: 'horizontal',
     density: 'comfortable',
+    panelLayout: 'default',
     defaultTimeout: 10000,
     defaultRetryAttempts: 0,
     followRedirects: true,

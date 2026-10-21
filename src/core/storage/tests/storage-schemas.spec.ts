@@ -131,6 +131,10 @@ describe('Storage Schemas (Zod)', () => {
     const parsed = validateClientSettings(raw);
     expect(parsed.theme).toBe('dino');
     expect(parsed.orientation).toBe('horizontal');
+    expect(parsed.panelLayout).toBe('default');
+
+    const separated = validateClientSettings({ ...raw, panelLayout: 'separated' });
+    expect(separated.panelLayout).toBe('separated');
   });
 
   it('should validate client settings with custom themes', () => {
