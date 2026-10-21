@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { beforeEach, describe, expect, it } from 'vitest';
 import CollectionTree from '../../../features/collections/CollectionTree/index.vue';
 import { EnvironmentSelector } from '../../../features/environments';
@@ -202,6 +203,33 @@ describe('AppLayout Component', () => {
     expect(workspaceArea.classes()).toContain('gap-1');
 
     updateSettings({ panelLayout: 'default' });
+  });
+
+  it('should apply density class to root element according to settings.density', async () => {
+    const { updateSettings } = useSettings();
+    updateSettings({ density: 'compact' });
+
+    const wrapper = mount(AppLayout, {
+      global: {
+        stubs: {
+          Splitpanes: { template: '<div><slot /></div>' },
+          Pane: { template: '<div><slot /></div>' },
+          VueDraggable: { template: '<div><slot /></div>' },
+          CollectionTree: { template: '<div class="collection-tree-stub"></div>' },
+          RequestBuilder: { template: '<div class="request-builder-stub"></div>' },
+          ResponseViewer: { template: '<div class="response-viewer-stub"></div>' },
+          SettingsModal: { template: '<div class="settings-modal-stub"></div>' },
+          EnvironmentSelector: { template: '<div class="environment-selector-stub"></div>' },
+          EnvironmentManagerModal: { template: '<div class="environment-manager-stub"></div>' },
+        },
+      },
+    });
+
+    expect(wrapper.classes()).toContain('density-compact');
+
+    updateSettings({ density: 'comfortable' });
+    await nextTick();
+    expect(wrapper.classes()).toContain('density-comfortable');
   });
 });
 

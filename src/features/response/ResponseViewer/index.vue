@@ -22,7 +22,7 @@ const {
   <div class="h-full flex flex-col bg-surface-panel overflow-hidden select-text">
     <div
       v-if="result"
-      class="p-3 border-b border-surface-border bg-surface-ground/30 flex items-center justify-between"
+      class="response-meta-bar p-3 border-b border-surface-border bg-surface-ground/30 flex items-center justify-between"
     >
       <div class="flex items-center gap-3">
         <span

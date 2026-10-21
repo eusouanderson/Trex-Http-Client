@@ -31,7 +31,7 @@ const {
 <template>
   <div
     class="flex flex-col w-screen h-screen overflow-hidden font-sans select-none bg-surface-ground text-bone-100"
-    :class="`theme-${settings.theme}`"
+    :class="[`theme-${settings.theme}`, `density-${settings.density}`]"
     :style="customThemeStyles"
   >
     <header class="z-20 flex items-center justify-between gap-2 px-2 border-b h-11 border-surface-border bg-surface-panel shrink-0">
