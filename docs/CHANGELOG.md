@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.12.1...v1.13.0) (2026-10-21)
+
+
+### Features
+
+* **layout:** remover status pronto e mover gerenciamento de ambientes para configuracoes ([0c2f03e](https://github.com/eusouanderson/Trex-Http-Client/commit/0c2f03e247650afa88da2cfdc47ac6b3897b4e8c))
+
 ## [1.12.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.12.0...v1.12.1) (2026-10-20)
 
 
