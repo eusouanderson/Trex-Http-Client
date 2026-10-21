@@ -146,9 +146,34 @@ describe('AppLayout Component', () => {
     }
 
     const globeBtn = wrapper.find('button[title*="Gerenciar Ambientes"]');
-    if (globeBtn.exists()) {
-      await globeBtn.trigger('click');
+    expect(globeBtn.exists()).toBe(false);
+
+    const settingsModal = wrapper.find('.settings-modal-stub');
+    if (settingsModal.exists()) {
+      await settingsModal.trigger('click');
     }
+  });
+
+  it('should not render ready status indicator in header', () => {
+    const wrapper = mount(AppLayout, {
+      global: {
+        stubs: {
+          Splitpanes: { template: '<div><slot /></div>' },
+          Pane: { template: '<div><slot /></div>' },
+          VueDraggable: { template: '<div><slot /></div>' },
+          CollectionTree: { template: '<div class="collection-tree-stub"></div>' },
+          RequestBuilder: { template: '<div class="request-builder-stub"></div>' },
+          ResponseViewer: { template: '<div class="response-viewer-stub"></div>' },
+          SettingsModal: { template: '<div class="settings-modal-stub"></div>' },
+          EnvironmentSelector: { template: '<div class="environment-selector-stub"></div>' },
+          EnvironmentManagerModal: { template: '<div class="environment-manager-stub"></div>' },
+        },
+      },
+    });
+
+    const header = wrapper.find('header');
+    expect(header.exists()).toBe(true);
+    expect(header.text()).not.toContain('Pronto');
   });
 });
 

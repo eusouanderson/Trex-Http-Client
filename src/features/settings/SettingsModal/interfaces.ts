@@ -1,9 +1,16 @@
-type SettingsTab = 'general' | 'theme' | 'json' | 'network' | 'contributors';
+type SettingsTab = 'general' | 'theme' | 'json' | 'network' | 'contributors' | 'environments';
 
 interface SettingsModalProps {
   modelValue?: boolean;
 }
 
-type SettingsModalEmits = (e: 'update:modelValue', value: boolean) => void;
+interface SettingsModalEmits {
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'openEnvironmentManager'): void;
+}
 
-export type { SettingsModalProps, SettingsModalEmits, SettingsTab };
+interface UseSettingsModalOptions {
+  onOpenEnvironmentManager?: () => void;
+}
+
+export type { SettingsModalProps, SettingsModalEmits, SettingsTab, UseSettingsModalOptions };

@@ -17,7 +17,8 @@ import type {
 import { JSON_THEME_PRESETS } from '../settings.entity';
 import { ThemeParserService } from '../theme-parser.service';
 import { useSettings } from '../use-settings';
-import type { SettingsTab } from './interfaces';
+import { useEnvironments } from '../../environments';
+import type { SettingsTab, UseSettingsModalOptions } from './interfaces';
 
 const JSON_PREVIEW_CODE = `{
   "request": {
@@ -134,12 +135,15 @@ interface UseSettingsModalReturn {
   downloadThemeTemplate: () => void;
   resetAll: () => void;
   close: () => void;
+  activeEnvironmentName: ComputedRef<string>;
+  totalEnvironments: ComputedRef<number>;
+  openEnvironmentManager: () => void;
 }
 
 const activeTabState = ref<SettingsTab>('general');
 const customThemeErrorState = ref<string | null>(null);
 
-const useSettingsModal = (): UseSettingsModalReturn => {
+const useSettingsModal = (options?: UseSettingsModalOptions): UseSettingsModalReturn => {
   const {
     settings,
     updateSettings,
@@ -148,6 +152,7 @@ const useSettingsModal = (): UseSettingsModalReturn => {
     addCustomTheme,
     removeCustomTheme,
   } = useSettings();
+  const { environments, activeEnvironment } = useEnvironments();
 
   const jurassicThemes = computed<JurassicThemeItem[]>(() => {
     const customItems: JurassicThemeItem[] = settings.value.customThemes.map((c) => ({
@@ -297,6 +302,19 @@ const useSettingsModal = (): UseSettingsModalReturn => {
     updateSettings({ fontFamily: fontId });
   };
 
+  const activeEnvironmentName = computed<string>(
+    () => activeEnvironment.value?.name ?? 'Sem Ambiente',
+  );
+
+  const totalEnvironments = computed<number>(
+    () => environments.value.length,
+  );
+
+  const openEnvironmentManager = (): void => {
+    close();
+    options?.onOpenEnvironmentManager?.();
+  };
+
   return {
     activeTab: activeTabState,
     settings,
@@ -323,6 +341,9 @@ const useSettingsModal = (): UseSettingsModalReturn => {
     downloadThemeTemplate,
     resetAll,
     close,
+    activeEnvironmentName,
+    totalEnvironments,
+    openEnvironmentManager,
   };
 };
 

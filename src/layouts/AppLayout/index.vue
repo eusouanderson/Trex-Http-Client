@@ -102,11 +102,6 @@ const {
 
       <div class="flex items-center gap-2 shrink-0">
         <environment-selector @open-manager="openEnvironmentManager" />
-      
-        <div class="hidden md:flex items-center gap-1.5 px-2 py-1 bg-surface-ground border border-surface-border rounded-lg text-[11px] text-fossil-300 font-mono">
-          <span class="w-1.5 h-1.5 rounded-full bg-dino-400 animate-pulse"></span>
-          <span>Pronto</span>
-        </div>
 
         <button
           type="button"
@@ -148,7 +143,7 @@ const {
       </splitpanes>
     </div>
 
-    <settings-modal />
+    <settings-modal @open-environment-manager="openEnvironmentManager" />
     <environment-manager-modal :is-open="isEnvironmentManagerOpen" @close="closeEnvironmentManager" />
   </div>
 </template>

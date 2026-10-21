@@ -4,7 +4,10 @@ import { CodeEditor } from '../../../shared/editor/CodeEditor';
 import { ThemeIcon } from '../../../shared/ui/ThemeIcon';
 import { TrexLogo } from '../../../shared/ui/TrexLogo';
 import { useSettings } from '../use-settings';
+import type { SettingsModalEmits } from './interfaces';
 import { useSettingsModal } from './use-settings-modal';
+
+const emit = defineEmits<SettingsModalEmits>();
 
 const { isOpen } = useSettings();
 const appVersion = __APP_VERSION__;
@@ -32,7 +35,14 @@ const {
   downloadThemeTemplate,
   resetAll,
   close,
-} = useSettingsModal();
+  activeEnvironmentName,
+  totalEnvironments,
+  openEnvironmentManager,
+} = useSettingsModal({
+  onOpenEnvironmentManager: () => {
+    emit('openEnvironmentManager');
+  },
+});
 
 const fileInputRef = ref<HTMLInputElement | null>(null);
 
@@ -91,12 +101,21 @@ const isCustomTheme = (themeId: string): boolean => {
         <nav class="w-48 p-3 space-y-1 border-r border-surface-border bg-surface-ground/30">
           <button
             type="button"
-            class="flex items-center w-full gap-2 px-3 py-2 text-xs font-medium text-left transition-colors rounded-lg"
+            class="flex items-center w-full gap-2 px-3 py-2 text-xs font-medium text-left transition-colors rounded-lg cursor-pointer"
             :class="activeTab === 'general' ? 'bg-dino-500/20 text-dino-300 border border-dino-500/40' : 'text-fossil-300 hover:bg-surface-hover'"
             @click="setTab('general')"
           >
             <span>⚙️</span>
             <span>Layout</span>
+          </button>
+          <button
+            type="button"
+            class="flex items-center w-full gap-2 px-3 py-2 text-xs font-medium text-left transition-colors rounded-lg cursor-pointer"
+            :class="activeTab === 'environments' ? 'bg-dino-500/20 text-dino-300 border border-dino-500/40' : 'text-fossil-300 hover:bg-surface-hover'"
+            @click="setTab('environments')"
+          >
+            <span>🌍</span>
+            <span>Ambientes</span>
           </button>
           <button
             type="button"
@@ -213,6 +232,57 @@ const isCustomTheme = (themeId: string): boolean => {
                   </div>
                 </button>
               </div>
+            </div>
+
+            <div>
+              <label class="block mb-2 text-xs font-semibold text-bone-200">Ambientes de Execução</label>
+              <div class="flex items-center justify-between p-3 rounded-lg border border-surface-border bg-surface-ground/30">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">🌍</span>
+                  <div>
+                    <span class="text-xs font-medium text-bone-100 block">Gerenciar Ambientes e Variáveis</span>
+                    <span class="text-[11px] text-fossil-400">Ativo: {{ activeEnvironmentName }} ({{ totalEnvironments }} configurados)</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="px-3 py-1.5 bg-dino-500 hover:bg-dino-600 text-surface-ground font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                  @click="openEnvironmentManager"
+                >
+                  Abrir
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="activeTab === 'environments'" class="space-y-6">
+            <div>
+              <h3 class="text-sm font-semibold text-bone-100">Gerenciamento de Ambientes & Variáveis</h3>
+              <p class="text-xs text-fossil-400 mt-1">
+                Configure ambientes (ex: Desenvolvimento, Staging, Produção) e defina variáveis dinâmicas no formato &#123;&#123;variavel&#125;&#125;.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-surface-ground/40 border border-surface-border space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-semibold text-bone-200 block">Ambiente Ativo</span>
+                  <span class="text-xs text-dino-400 font-mono">{{ activeEnvironmentName }}</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs font-semibold text-bone-200 block">Total de Ambientes</span>
+                  <span class="text-xs text-fossil-400 font-mono">{{ totalEnvironments }}</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-dino-500 hover:bg-dino-600 text-surface-ground font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                @click="openEnvironmentManager"
+              >
+                <span>🌍</span>
+                <span>Gerenciar Ambientes e Variáveis</span>
+              </button>
             </div>
           </div>
 
