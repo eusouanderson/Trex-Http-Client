@@ -26,13 +26,10 @@ describe('EnvironmentSelector Component', () => {
     expect(wrapper.emitted('openManager')).toBeDefined();
   });
 
-  it('should emit openManager when clicking the globe button', async () => {
+  it('should not render globe button in selector', () => {
     const wrapper = mount(EnvironmentSelector);
     const globeButton = wrapper.find('button[title*="Gerenciar Ambientes"]');
-    expect(globeButton.exists()).toBe(true);
-
-    await globeButton.trigger('click');
-    expect(wrapper.emitted('openManager')).toBeDefined();
+    expect(globeButton.exists()).toBe(false);
   });
 
   it('should change active environment when an environment option is selected', async () => {

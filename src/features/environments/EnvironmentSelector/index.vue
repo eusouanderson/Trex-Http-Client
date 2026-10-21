@@ -44,15 +44,5 @@ const onSelectChange = (event: Event): void => {
         <option value="manage" class="bg-surface-panel text-amber-400 font-bold">⚙️ Gerenciar Ambientes</option>
       </optgroup>
     </select>
-
-    <button
-      type="button"
-      title="Gerenciar Ambientes (Variáveis)"
-      aria-label="Gerenciar Ambientes"
-      class="p-1.5 text-fossil-300 hover:text-dino-300 hover:bg-surface-hover border border-surface-border rounded-lg transition-colors flex items-center justify-center text-xs cursor-pointer"
-      @click="openManager"
-    >
-      🌍
-    </button>
   </div>
 </template>

@@ -331,5 +331,40 @@ describe('SettingsModal Component', () => {
     const { settings } = useSettings();
     expect(settings.value.fontFamily).toBe('fira-code');
   });
+
+  it('should allow navigating to environments tab and opening environment manager', async () => {
+    const wrapper = mount(SettingsModal);
+
+    const envTabButton = wrapper
+      .findAll('nav button')
+      .find((btn) => btn.text().includes('Ambientes'));
+
+    expect(envTabButton).toBeDefined();
+    await envTabButton?.trigger('click');
+
+    expect(wrapper.text()).toContain('Gerenciamento de Ambientes & Variáveis');
+
+    const openManagerBtn = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Gerenciar Ambientes e Variáveis'));
+
+    expect(openManagerBtn).toBeDefined();
+    await openManagerBtn?.trigger('click');
+
+    expect(wrapper.emitted('openEnvironmentManager')).toBeDefined();
+  });
+
+  it('should allow opening environment manager from layout tab', async () => {
+    const wrapper = mount(SettingsModal);
+
+    const openManagerBtn = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Abrir'));
+
+    expect(openManagerBtn).toBeDefined();
+    await openManagerBtn?.trigger('click');
+
+    expect(wrapper.emitted('openEnvironmentManager')).toBeDefined();
+  });
 });
 

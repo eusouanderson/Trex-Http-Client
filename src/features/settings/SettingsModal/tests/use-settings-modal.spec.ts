@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterAll, vi } from 'vitest';
+import { useEnvironments } from '../../../environments';
 import { ThemeParserService } from '../../theme-parser.service';
 import { useSettingsModal } from '../use-settings-modal';
 
@@ -247,6 +248,28 @@ describe('useSettingsModal', () => {
 
     modal.setFontFamily('geist');
     expect(modal.settings.value.fontFamily).toBe('geist');
+  });
+
+  it('should support environments tab and handle opening environment manager', () => {
+    const onOpen = vi.fn();
+    const modal = useSettingsModal({ onOpenEnvironmentManager: onOpen });
+    const { setActiveEnvironment, createEnvironment } = useEnvironments();
+
+    setActiveEnvironment(null);
+    modal.setTab('environments');
+    expect(modal.activeTab.value).toBe('environments');
+    expect(modal.activeEnvironmentName.value).toBe('Sem Ambiente');
+    expect(typeof modal.totalEnvironments.value).toBe('number');
+
+    const env = createEnvironment('Prod Matrix');
+    setActiveEnvironment(env.id);
+    expect(modal.activeEnvironmentName.value).toBe('Prod Matrix');
+
+    modal.openEnvironmentManager();
+    expect(onOpen).toHaveBeenCalledTimes(1);
+
+    const fallbackModal = useSettingsModal();
+    fallbackModal.openEnvironmentManager();
   });
 });
 
