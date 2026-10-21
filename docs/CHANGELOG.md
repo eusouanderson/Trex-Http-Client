@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.13.0...v1.14.0) (2026-10-21)
+
+
+### Features
+
+* **layout:** implementar opcao de layout com paineis separados ([5c593df](https://github.com/eusouanderson/Trex-Http-Client/commit/5c593df2c17b28e70257eee6a54ad9fa7b47257e))
+
 # [1.13.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.12.1...v1.13.0) (2026-10-21)
 
 
