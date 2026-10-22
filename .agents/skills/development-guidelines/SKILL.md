@@ -140,3 +140,6 @@ Os arquivos `.vue` contêm exclusivamente HTML e estilos:
    - Utilize `computed` em vez de métodos para qualquer cálculo ou valor derivado de estado reativo.
    - Não realize otimizações prematuras.
 3. **Tratamento de Estados**: Considere e exponha explicitamente estados de carregamento (`isLoading`), erro (`errorMessage` ou `error`) e dados prontos.
+4. **Interface**: Exponha apenas o necessário através de interfaces públicas (`index.ts`).
+   - Evite acoplamento direto entre módulos, consumindo sempre a Public API.
+   - Prefira contratos claros e tipados em `interfaces.ts` para comunicação entre domínios e componentes.

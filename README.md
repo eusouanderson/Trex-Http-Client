@@ -17,6 +17,7 @@ Cliente HTTP moderno, ultrarrápido, offline-first e com temática jurássica di
 - 📚 **Documentação Técnica & API:** [Trex HTTP Client — Documentação Técnica & API](https://eusouanderson.github.io/Trex-Http-Client/docs/)
 - ⚡ **Guia de Performance & Lighthouse CI:** [Auditoria Contínua & Core Web Vitals](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html)
 - 🏛️ **Manual de Arquitetura:** [Manual de Arquitetura do Sistema](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/architecture-guide.html)
+- ⌨️ **Manual de Atalhos de Teclado:** [Atalhos Globais & Paleta de Comandos](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/keyboard-shortcuts-guide.html)
 - 🧪 **Guia de Scripts de Teste:** [Guia Prático de Testes (tx.* / pm.*)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/test-scripts-guide.html)
 - 📖 **Referência TypeDoc da API:** [Explorar Símbolos & Classes](https://eusouanderson.github.io/Trex-Http-Client/docs/api/)
 
@@ -92,6 +93,7 @@ O repositório conta com um portal de documentação técnica completo gerado au
 - **[Guia de Performance Engineering & Lighthouse CI](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/performance-strategy-guide.html):** Auditoria contínua de performance, acessibilidade 100%, Core Web Vitals (FCP, LCP, CLS) e orçamentos de bundle no CI/CD.
 - **[Guia de Scripts de Testes (tx.* / pm.*)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/test-scripts-guide.html):** Criação de asserções pós-resposta, testes automáticos de status code, validação de payload JSON e extração automática de variáveis de ambiente.
 - **[Manual de Arquitetura do Sistema](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/architecture-guide.html):** Arquitetura Feature-Sliced Design, princípios Domain-Driven Design (DDD) e padrões OOP.
+- **[Manual de Atalhos de Teclado & Paleta de Comandos](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/keyboard-shortcuts-guide.html):** Catálogo de atalhos globais, paleta de comandos pesquisável, detecção de conflitos e personalização com persistência offline.
 - **Guia do Cliente HTTP Resiliente:** Interceptors, timeouts, cancelamento com `AbortController` e retries com backoff.
 - **Guia de Provedores de Autenticação:** Configuração de OAuth2 PKCE, Bearer e mascaramento de tokens.
 - **Guia de Variáveis & Interpolação:** Resolução hierárquica em cascata e prevenção contra referências cíclicas.

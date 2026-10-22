@@ -248,6 +248,18 @@ class DocOrchestratorService implements IDocOrchestratorService {
       });
     }
 
+    const shortcutsGuidePath = join(this.projectRoot, 'docs', 'keyboard-shortcuts-guide.md');
+    if (this.fileSystem.existsSync(shortcutsGuidePath)) {
+      const content = this.fileSystem.readFileSync(shortcutsGuidePath, 'utf-8');
+      guides.push({
+        id: 'keyboard-shortcuts-guide',
+        title: 'Manual de Atalhos de Teclado & Paleta de Comandos',
+        description: 'Catálogo de atalhos globais, paleta de comandos pesquisável, detecção de conflitos e personalização com persistência offline.',
+        fileName: 'keyboard-shortcuts-guide',
+        content,
+      });
+    }
+
     return guides;
   };
 }

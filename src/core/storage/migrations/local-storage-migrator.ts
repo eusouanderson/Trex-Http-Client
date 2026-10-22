@@ -1,12 +1,7 @@
-import type { IPersistenceStorage } from '../interfaces';
 import type { Environment } from '../../../features/environments/interfaces';
+import type { IPersistenceStorage } from '../interfaces';
 import { validateEnvironment } from '../schemas';
-
-interface MigrationResult {
-  migratedEnvironmentsCount: number;
-  migratedActiveEnvironment: boolean;
-}
-
+import type { MigrationResult } from './interfaces';
 class LocalStorageMigrator {
   private readonly LEGACY_ENVS_KEY = 'trex_environments';
   private readonly LEGACY_ACTIVE_ENV_KEY = 'trex_active_environment';

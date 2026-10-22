@@ -56,6 +56,17 @@ describe('SettingsModal Component', () => {
     expect(wrapper.text()).toContain('Pré-visualização do Editor');
   });
 
+  it('should navigate to shortcuts tab and display shortcuts section', async () => {
+    const wrapper = mount(SettingsModal);
+    const shortcutsTabBtn = wrapper
+      .findAll('nav button')
+      .find((btn) => btn.text().includes('Atalhos'));
+
+    expect(shortcutsTabBtn).toBeDefined();
+    await shortcutsTabBtn?.trigger('click');
+    expect(wrapper.text()).toContain('Atalhos de Teclado');
+  });
+
   it('should allow modifying a json theme color', async () => {
     const wrapper = mount(SettingsModal);
 

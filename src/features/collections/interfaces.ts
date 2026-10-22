@@ -42,6 +42,17 @@ interface CreateItemInput {
   status?: number;
 }
 
+interface GenericCollectionProbe {
+  info?: {
+    name?: string;
+    schema?: string;
+  };
+  schema?: string;
+  name?: string;
+  item?: unknown;
+  items?: unknown;
+}
+
 interface ICollectionService {
   getCollections(): Collection[];
   createCollection(name: string, description?: string): Collection;
@@ -149,19 +160,94 @@ interface ICollectionParserService {
   parse(jsonString: string): ParsedCollectionResult;
 }
 
+
+interface PostmanHeader {
+  key?: string;
+  value?: string;
+  disabled?: boolean;
+}
+
+interface PostmanUrl {
+  raw?: string;
+  query?: { key?: string; value?: string; disabled?: boolean }[];
+  variable?: { key?: string; value?: string }[];
+}
+
+interface PostmanUrlEncoded {
+  key?: string;
+  value?: string;
+  disabled?: boolean;
+}
+
+interface PostmanBody {
+  mode?: string;
+  raw?: string;
+  urlencoded?: PostmanUrlEncoded[];
+}
+
+interface PostmanRequest {
+  method?: string;
+  url?: string | PostmanUrl;
+  header?: PostmanHeader[];
+  body?: PostmanBody;
+}
+
+interface PostmanItem {
+  name?: string;
+  item?: PostmanItem[];
+  request?: PostmanRequest;
+}
+
+interface PostmanInfo {
+  name?: string;
+}
+
+interface PostmanVariable {
+  key?: string;
+  value?: string;
+  disabled?: boolean;
+}
+
+interface PostmanCollection {
+  info?: PostmanInfo;
+  item?: PostmanItem[];
+  variable?: PostmanVariable[];
+}
+
+
+interface TrexInfo {
+  name?: string;
+  description?: string;
+  schema?: string;
+}
+
+interface RawTrexItem {
+  id?: string;
+  name?: string;
+  type?: string;
+  parentId?: string | null;
+  method?: string;
+  url?: string;
+  headers?: Record<string, string>;
+  params?: Record<string, string>;
+  body?: string;
+  auth?: AuthConfig;
+  testScript?: string;
+  status?: number;
+}
+
+interface RawTrexCollection {
+  info?: TrexInfo;
+  id?: string;
+  name?: string;
+  description?: string;
+  auth?: AuthConfig;
+  items?: RawTrexItem[];
+}
+
+
 export type {
-  CollectionItemType,
-  CollectionItem,
-  Collection,
-  CreateItemInput,
-  ICollectionService,
-  ILocalCollectionRepository,
-  CollectionRunItemTestResult,
-  CollectionRunItemResult,
-  CollectionRunReport,
-  ICollectionRunnerService,
-  ParsedCollectionItem,
-  ParsedCollectionVariable,
-  ParsedCollectionResult,
-  ICollectionParserService,
+  Collection, CollectionItem, CollectionItemType, CollectionRunItemResult, CollectionRunItemTestResult, CollectionRunReport, CreateItemInput, GenericCollectionProbe, ICollectionParserService, ICollectionRunnerService, ICollectionService,
+  ILocalCollectionRepository, ParsedCollectionItem, ParsedCollectionResult, ParsedCollectionVariable, PostmanBody, PostmanCollection, PostmanHeader, PostmanInfo, PostmanItem, PostmanRequest, PostmanUrl, PostmanUrlEncoded, PostmanVariable, RawTrexCollection, RawTrexItem, TrexInfo
 };
+

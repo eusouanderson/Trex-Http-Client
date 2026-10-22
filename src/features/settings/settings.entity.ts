@@ -81,6 +81,7 @@ class SettingsEntity {
       ...JSON_THEME_PRESETS.dino,
     },
     customThemes: [],
+    customShortcuts: {},
   };
 
   private currentSettings: ClientSettings;
@@ -94,6 +95,7 @@ class SettingsEntity {
         ...(initial?.jsonTheme ?? {}),
       },
       customThemes: initial?.customThemes ? [...initial.customThemes] : [],
+      customShortcuts: initial?.customShortcuts ? { ...initial.customShortcuts } : {},
     };
   }
 
@@ -102,6 +104,7 @@ class SettingsEntity {
       ...this.currentSettings,
       jsonTheme: { ...this.currentSettings.jsonTheme },
       customThemes: [...this.currentSettings.customThemes],
+      customShortcuts: { ...this.currentSettings.customShortcuts },
     };
   }
 
@@ -115,6 +118,9 @@ class SettingsEntity {
       customThemes: partial.customThemes
         ? [...partial.customThemes]
         : this.currentSettings.customThemes,
+      customShortcuts: partial.customShortcuts
+        ? { ...partial.customShortcuts }
+        : this.currentSettings.customShortcuts,
     };
     return { ...this.value };
   };

@@ -24,6 +24,13 @@ describe('useSettingsModal', () => {
     expect(modal.activeTab.value).toBe('network');
     modal.setTab('contributors');
     expect(modal.activeTab.value).toBe('contributors');
+    modal.setTab('shortcuts');
+    expect(modal.activeTab.value).toBe('shortcuts');
+
+    window.dispatchEvent(
+      new CustomEvent('trex:open-settings-tab', { detail: { tab: 'general' } }),
+    );
+    expect(modal.activeTab.value).toBe('general');
   });
 
   it('should update theme and synchronize json theme presets', () => {
