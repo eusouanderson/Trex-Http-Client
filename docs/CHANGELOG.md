@@ -1,3 +1,12 @@
+# [1.15.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.14.0...v1.15.0) (2026-10-22)
+
+
+### Features
+
+* **docs:** implementar documentacao versionada historico de prs e metricas lighthouse ([b282c1a](https://github.com/eusouanderson/Trex-Http-Client/commit/b282c1a0dbb32e3e3b30b441b6b10626d84c115e))
+* **pwa:** implementar notificacao controlada de atualizacao do service worker ([780e656](https://github.com/eusouanderson/Trex-Http-Client/commit/780e65613ae30da8558d0e550524201609bd5dbc))
+* **ui:** implementar estilizacao reativa para modos de densidade visual confortavel e compacto ([1f5ae56](https://github.com/eusouanderson/Trex-Http-Client/commit/1f5ae56698887216bcf2ff43f8bc248b78c771e9))
+
 # [1.14.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.13.0...v1.14.0) (2026-10-21)
 
 
