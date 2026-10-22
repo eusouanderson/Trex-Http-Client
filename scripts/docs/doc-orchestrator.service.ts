@@ -2,7 +2,9 @@ import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { GroqDocService } from './groq-doc.service';
+import { MetricsCollectorService } from './metrics-collector.service';
 import { PortalBuilderService } from './portal-builder.service';
+import { PrHistoryService } from './pr-history.service';
 import type {
   DocContextInput,
   GuideItem,
@@ -10,7 +12,9 @@ import type {
   IDocOrchestratorService,
   IFileSystem,
   IGroqDocService,
+  IMetricsCollectorService,
   IPortalBuilderService,
+  IPrHistoryService,
   PortalBuilderOptions,
 } from './interfaces';
 
@@ -35,6 +39,8 @@ class DocOrchestratorService implements IDocOrchestratorService {
   private readonly portalBuilderService: IPortalBuilderService;
   private readonly fileSystem: IFileSystem;
   private readonly commandRunner: ICommandRunner;
+  private readonly metricsCollectorService: IMetricsCollectorService;
+  private readonly prHistoryService: IPrHistoryService;
 
   constructor(
     projectRoot = process.cwd(),
@@ -42,12 +48,16 @@ class DocOrchestratorService implements IDocOrchestratorService {
     portalBuilderService?: IPortalBuilderService,
     fileSystem: IFileSystem = defaultFileSystem,
     commandRunner: ICommandRunner = defaultCommandRunner,
+    metricsCollectorService?: IMetricsCollectorService,
+    prHistoryService?: IPrHistoryService,
   ) {
     this.projectRoot = resolve(projectRoot);
     this.groqDocService = groqDocService ?? new GroqDocService();
     this.portalBuilderService = portalBuilderService ?? new PortalBuilderService();
     this.fileSystem = fileSystem;
     this.commandRunner = commandRunner;
+    this.metricsCollectorService = metricsCollectorService ?? new MetricsCollectorService(this.projectRoot, this.fileSystem);
+    this.prHistoryService = prHistoryService ?? new PrHistoryService(this.projectRoot, this.fileSystem, this.commandRunner, this.groqDocService);
   }
 
   public run = async (): Promise<boolean> => {
@@ -80,6 +90,33 @@ class DocOrchestratorService implements IDocOrchestratorService {
     const contextOutput = await this.groqDocService.analyzeChanges(contextInput);
     const guides = this.loadGuides();
 
+    await this.prHistoryService.syncFromGit(appVersion);
+    const pullRequests = this.prHistoryService.getHistory();
+
+    this.metricsCollectorService.recordVersion(appVersion, commitHash);
+    const lighthouseMetrics = this.metricsCollectorService.collectLighthouseMetrics();
+    const bundleMetrics = this.metricsCollectorService.collectBundleMetrics();
+    const previousComparison = this.metricsCollectorService.getComparison(appVersion);
+    const versionHistory = this.metricsCollectorService.getHistory();
+
+    const metricsHistoryPath = join(this.projectRoot, 'docs', 'metrics-history.json');
+    if (this.fileSystem.existsSync(metricsHistoryPath)) {
+      this.fileSystem.writeFileSync(
+        join(docsOutputDir, 'metrics-history.json'),
+        this.fileSystem.readFileSync(metricsHistoryPath, 'utf-8'),
+        'utf-8',
+      );
+    }
+
+    const prHistoryPath = join(this.projectRoot, 'docs', 'pr-history.json');
+    if (this.fileSystem.existsSync(prHistoryPath)) {
+      this.fileSystem.writeFileSync(
+        join(docsOutputDir, 'pr-history.json'),
+        this.fileSystem.readFileSync(prHistoryPath, 'utf-8'),
+        'utf-8',
+      );
+    }
+
     const portalOptions: PortalBuilderOptions = {
       title: 'Trex HTTP Client — Documentação Técnica & API',
       version: appVersion,
@@ -88,6 +125,11 @@ class DocOrchestratorService implements IDocOrchestratorService {
       contextOutput,
       apiDocsPath: './api/index.html',
       guides,
+      lighthouseMetrics,
+      bundleMetrics,
+      versionHistory,
+      previousComparison,
+      pullRequests,
     };
 
     const portalHtml = this.portalBuilderService.buildPortalHtml(portalOptions);
@@ -159,7 +201,6 @@ class DocOrchestratorService implements IDocOrchestratorService {
       return '1.0.0';
     }
   };
-
 
   private readFileIfExists = (path: string): string => {
     if (this.fileSystem.existsSync(path)) {

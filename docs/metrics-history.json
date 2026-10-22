@@ -1,0 +1,123 @@
+[
+  {
+    "version": "1.12.0",
+    "releaseDate": "2026-10-20T01:00:00.000Z",
+    "commitHash": "1053120",
+    "lighthouse": {
+      "status": "success",
+      "auditedAt": "2026-10-20T00:15:00.000Z",
+      "url": "http://localhost:4173/Trex-Http-Client/",
+      "scores": {
+        "performance": 100,
+        "accessibility": 85,
+        "bestPractices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcpMs": 500,
+        "fcpFormatted": "0.5 s",
+        "lcpMs": 700,
+        "lcpFormatted": "0.7 s",
+        "clsScore": 0,
+        "clsFormatted": "0"
+      }
+    },
+    "bundle": {
+      "status": "passed",
+      "measuredAt": "2026-10-20T00:15:00.000Z",
+      "initialJsRawBytes": 880500,
+      "initialJsGzipBytes": 280288,
+      "totalJsGzipBytes": 280413,
+      "totalCssGzipBytes": 8074,
+      "maxInitialJsGzipLimit": 330000,
+      "maxTotalJsGzipLimit": 350000,
+      "maxTotalCssGzipLimit": 15000,
+      "isBudgetRespected": true
+    },
+    "pullRequestsCount": 1,
+    "pullRequests": [
+      26
+    ]
+  },
+  {
+    "version": "1.13.0",
+    "releaseDate": "2026-10-21T23:30:00.000Z",
+    "commitHash": "84788b8",
+    "lighthouse": {
+      "status": "success",
+      "auditedAt": "2026-10-21T23:30:00.000Z",
+      "url": "http://localhost:4173/Trex-Http-Client/",
+      "scores": {
+        "performance": 100,
+        "accessibility": 85,
+        "bestPractices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcpMs": 500,
+        "fcpFormatted": "0.5 s",
+        "lcpMs": 700,
+        "lcpFormatted": "0.7 s",
+        "clsScore": 0,
+        "clsFormatted": "0"
+      }
+    },
+    "bundle": {
+      "status": "passed",
+      "measuredAt": "2026-10-21T23:30:00.000Z",
+      "initialJsRawBytes": 885000,
+      "initialJsGzipBytes": 281500,
+      "totalJsGzipBytes": 281500,
+      "totalCssGzipBytes": 8200,
+      "maxInitialJsGzipLimit": 330000,
+      "maxTotalJsGzipLimit": 350000,
+      "maxTotalCssGzipLimit": 15000,
+      "isBudgetRespected": true
+    },
+    "pullRequestsCount": 1,
+    "pullRequests": [
+      28
+    ]
+  },
+  {
+    "version": "1.14.0",
+    "releaseDate": "2026-10-22T01:20:16.899Z",
+    "commitHash": "efb2d13",
+    "lighthouse": {
+      "status": "pending",
+      "auditedAt": "2026-10-21T23:30:00.000Z",
+      "url": "http://localhost:4173/Trex-Http-Client/",
+      "scores": {
+        "performance": 100,
+        "accessibility": 85,
+        "bestPractices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "fcpMs": 500,
+        "fcpFormatted": "0.5 s",
+        "lcpMs": 700,
+        "lcpFormatted": "0.7 s",
+        "clsScore": 0,
+        "clsFormatted": "0"
+      },
+      "errorMessage": "Auditoria da versão atual pendente. Exibindo última auditoria válida da versão 1.13.0 (2026-10-21T23:30:00.000Z)."
+    },
+    "bundle": {
+      "status": "unavailable",
+      "measuredAt": "2026-10-22T01:20:16.899Z",
+      "initialJsRawBytes": 0,
+      "initialJsGzipBytes": 0,
+      "totalJsGzipBytes": 0,
+      "totalCssGzipBytes": 0,
+      "maxInitialJsGzipLimit": 0,
+      "maxTotalJsGzipLimit": 0,
+      "maxTotalCssGzipLimit": 0,
+      "isBudgetRespected": false
+    },
+    "pullRequestsCount": 1,
+    "pullRequests": [
+      29
+    ]
+  }
+]

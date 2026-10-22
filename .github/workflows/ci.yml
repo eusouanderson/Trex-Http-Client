@@ -94,7 +94,7 @@ jobs:
 
       - name: Validate Documentation Artifacts
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: test -f ./dist/docs/index.html && test -f ./dist/docs/api/index.html
+        run: test -f ./dist/docs/index.html && test -f ./dist/docs/api/index.html && test -f ./dist/docs/metrics-history.json && test -f ./dist/docs/pr-history.json
 
       - name: Upload dist artifact for Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

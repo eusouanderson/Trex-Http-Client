@@ -48,6 +48,78 @@ interface GuideItem {
   content: string;
 }
 
+interface ILighthouseScores {
+  performance: number | null;
+  accessibility: number | null;
+  bestPractices: number | null;
+  seo: number | null;
+}
+
+interface ILighthouseLabMetrics {
+  fcpMs: number | null;
+  fcpFormatted: string | null;
+  lcpMs: number | null;
+  lcpFormatted: string | null;
+  clsScore: number | null;
+  clsFormatted: string | null;
+}
+
+interface ILighthouseReportSummary {
+  status: 'success' | 'partial' | 'pending' | 'unavailable';
+  auditedAt: string;
+  url: string;
+  reportHtmlPath?: string;
+  reportJsonPath?: string;
+  scores: ILighthouseScores;
+  metrics: ILighthouseLabMetrics;
+  errorMessage?: string;
+}
+
+interface IBundleMetricsSummary {
+  status: 'passed' | 'warn' | 'failed' | 'unavailable';
+  measuredAt: string;
+  initialJsRawBytes: number;
+  initialJsGzipBytes: number;
+  totalJsGzipBytes: number;
+  totalCssGzipBytes: number;
+  maxInitialJsGzipLimit: number;
+  maxTotalJsGzipLimit: number;
+  maxTotalCssGzipLimit: number;
+  isBudgetRespected: boolean;
+}
+
+interface IPullRequestDocItem {
+  number: number;
+  title: string;
+  url: string;
+  author: string;
+  mergedAt: string;
+  targetBranch: string;
+  mergeCommit: string;
+  summary: string;
+  targetVersion: string;
+}
+
+interface IVersionMetricsHistoryItem {
+  version: string;
+  releaseDate: string;
+  commitHash: string;
+  lighthouse: ILighthouseReportSummary;
+  bundle: IBundleMetricsSummary;
+  pullRequestsCount: number;
+  pullRequests: number[];
+}
+
+interface IVersionDiffComparison {
+  version: string;
+  previousVersion: string | null;
+  performanceDiff: number | null;
+  accessibilityDiff: number | null;
+  bestPracticesDiff: number | null;
+  seoDiff: number | null;
+  initialJsGzipDiffBytes: number | null;
+}
+
 interface PortalBuilderOptions {
   title: string;
   version: string;
@@ -56,6 +128,11 @@ interface PortalBuilderOptions {
   contextOutput: DocContextOutput;
   apiDocsPath: string;
   guides: GuideItem[];
+  lighthouseMetrics?: ILighthouseReportSummary;
+  bundleMetrics?: IBundleMetricsSummary;
+  versionHistory?: IVersionMetricsHistoryItem[];
+  previousComparison?: IVersionDiffComparison;
+  pullRequests?: IPullRequestDocItem[];
 }
 
 interface IGroqDocService {
@@ -72,10 +149,24 @@ interface IFileSystem {
   mkdirSync(path: string, options?: { recursive?: boolean }): void;
   readFileSync(path: string, encoding: 'utf-8'): string;
   writeFileSync(path: string, data: string, encoding: 'utf-8'): void;
+  readdirSync?(path: string): string[];
 }
 
 interface ICommandRunner {
   exec(command: string, cwd: string): string;
+}
+
+interface IMetricsCollectorService {
+  collectBundleMetrics(): IBundleMetricsSummary;
+  collectLighthouseMetrics(): ILighthouseReportSummary;
+  getHistory(): IVersionMetricsHistoryItem[];
+  recordVersion(version: string, commitHash: string, releaseDate?: string): IVersionMetricsHistoryItem;
+  getComparison(version: string): IVersionDiffComparison;
+}
+
+interface IPrHistoryService {
+  getHistory(): IPullRequestDocItem[];
+  syncFromGit(currentVersion: string): Promise<IPullRequestDocItem[]>;
 }
 
 interface IDocOrchestratorService {
@@ -90,12 +181,19 @@ export type {
   GroqChatCompletionResponse,
   GroqMessage,
   GuideItem,
+  IBundleMetricsSummary,
   ICommandRunner,
   IDocOrchestratorService,
   IFileSystem,
   IGroqDocService,
+  ILighthouseLabMetrics,
+  ILighthouseReportSummary,
+  ILighthouseScores,
+  IMetricsCollectorService,
   IPortalBuilderService,
+  IPrHistoryService,
+  IPullRequestDocItem,
+  IVersionDiffComparison,
+  IVersionMetricsHistoryItem,
   PortalBuilderOptions,
 };
-
-
