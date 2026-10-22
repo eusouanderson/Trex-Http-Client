@@ -36,7 +36,7 @@ const {
 
 <template>
   <div v-if="activeTab" class="h-full flex flex-col bg-surface-panel overflow-hidden select-text">
-    <div class="p-4 border-b border-surface-border bg-surface-ground/30">
+    <div class="request-url-bar p-4 border-b border-surface-border bg-surface-ground/30">
       <div class="flex items-center gap-2">
         <select
           :value="activeTab.method"
@@ -83,7 +83,7 @@ const {
       </div>
     </div>
 
-    <div class="flex items-center px-4 border-b border-surface-border bg-surface-ground/20">
+    <div class="request-category-tabs flex items-center px-4 border-b border-surface-border bg-surface-ground/20">
       <button
         type="button"
         class="py-2.5 px-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5"
@@ -171,7 +171,7 @@ const {
           <div
             v-for="param in activeTab.params"
             :key="param.id"
-            class="flex items-center border-b border-surface-border last:border-b-0 p-1.5 gap-2"
+            class="kv-row flex items-center border-b border-surface-border last:border-b-0 p-1.5 gap-2"
           >
             <input
               v-model="param.enabled"
@@ -228,7 +228,7 @@ const {
           <div
             v-for="header in activeTab.headers"
             :key="header.id"
-            class="flex items-center border-b border-surface-border last:border-b-0 p-1.5 gap-2"
+            class="kv-row flex items-center border-b border-surface-border last:border-b-0 p-1.5 gap-2"
           >
             <input
               v-model="header.enabled"

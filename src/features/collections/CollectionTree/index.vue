@@ -136,7 +136,7 @@ const handleFileImport = (event: Event): void => {
         :class="isExpanded(collection.id) ? 'border-surface-border bg-surface-panel/40 shadow-sm' : 'border-surface-border/50 bg-surface-ground/30 hover:border-surface-border'"
       >
         <div
-          class="flex items-center justify-between px-2.5 py-1.5 hover:bg-surface-hover cursor-pointer group transition-colors select-none"
+          class="collection-card-header flex items-center justify-between px-2.5 py-1.5 hover:bg-surface-hover cursor-pointer group transition-colors select-none"
           @click="toggleExpand(collection.id)"
           @contextmenu.prevent="openCollectionContextMenu($event, collection)"
         >
