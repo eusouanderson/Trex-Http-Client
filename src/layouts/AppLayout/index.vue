@@ -6,6 +6,7 @@ import { EnvironmentManagerModal, EnvironmentSelector } from '../../features/env
 import RequestBuilder from '../../features/request/RequestBuilder/index.vue';
 import ResponseViewer from '../../features/response/ResponseViewer/index.vue';
 import SettingsModal from '../../features/settings/SettingsModal/index.vue';
+import { PwaUpdateNotification } from '../../features/pwa';
 import { TrexLogo } from '../../shared/ui/TrexLogo';
 import { useAppLayout } from './use-app-layout';
 
@@ -167,6 +168,7 @@ const {
 
     <settings-modal @open-environment-manager="openEnvironmentManager" />
     <environment-manager-modal :is-open="isEnvironmentManagerOpen" @close="closeEnvironmentManager" />
+    <pwa-update-notification />
   </div>
 </template>
 

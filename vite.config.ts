@@ -16,7 +16,8 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+      injectRegister: null,
       includeAssets: ['logos/Trex.png', 'icons/*.png'],
       manifest: {
         name: 'Trex HTTP Client',

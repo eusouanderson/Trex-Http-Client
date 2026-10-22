@@ -221,6 +221,7 @@ describe('AppLayout Component', () => {
           SettingsModal: { template: '<div class="settings-modal-stub"></div>' },
           EnvironmentSelector: { template: '<div class="environment-selector-stub"></div>' },
           EnvironmentManagerModal: { template: '<div class="environment-manager-stub"></div>' },
+          PwaUpdateNotification: { template: '<div class="pwa-update-notification-stub"></div>' },
         },
       },
     });
@@ -230,6 +231,27 @@ describe('AppLayout Component', () => {
     updateSettings({ density: 'comfortable' });
     await nextTick();
     expect(wrapper.classes()).toContain('density-comfortable');
+  });
+
+  it('should render pwa update notification component in root shell', () => {
+    const wrapper = mount(AppLayout, {
+      global: {
+        stubs: {
+          Splitpanes: { template: '<div><slot /></div>' },
+          Pane: { template: '<div><slot /></div>' },
+          VueDraggable: { template: '<div><slot /></div>' },
+          CollectionTree: { template: '<div class="collection-tree-stub"></div>' },
+          RequestBuilder: { template: '<div class="request-builder-stub"></div>' },
+          ResponseViewer: { template: '<div class="response-viewer-stub"></div>' },
+          SettingsModal: { template: '<div class="settings-modal-stub"></div>' },
+          EnvironmentSelector: { template: '<div class="environment-selector-stub"></div>' },
+          EnvironmentManagerModal: { template: '<div class="environment-manager-stub"></div>' },
+          PwaUpdateNotification: { template: '<div class="pwa-update-notification-stub"></div>' },
+        },
+      },
+    });
+
+    expect(wrapper.find('.pwa-update-notification-stub').exists()).toBe(true);
   });
 });
 
