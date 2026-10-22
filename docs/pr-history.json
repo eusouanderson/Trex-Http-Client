@@ -1,0 +1,222 @@
+[
+  {
+    "number": 2,
+    "title": "chore: setup contribution guidelines and templates",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/2",
+    "author": "Anderson",
+    "mergedAt": "2026-10-06T18:31:48-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "e255dae",
+    "summary": "Atualização recente: chore: setup contribution guidelines and templates",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 3,
+    "title": "fix: make pwa icons relative to base url",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/3",
+    "author": "Anderson",
+    "mergedAt": "2026-10-06T18:41:12-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "8cf0e9f",
+    "summary": "Atualização recente: fix: make pwa icons relative to base url",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 4,
+    "title": "docs: add user-friendly readme and rename images",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/4",
+    "author": "Anderson",
+    "mergedAt": "2026-10-06T18:50:25-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "50379f5",
+    "summary": "Atualização recente: docs: add user-friendly readme and rename images",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 8,
+    "title": "feat(collections): importação de collections do postman",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/8",
+    "author": "Anderson",
+    "mergedAt": "2026-10-08T15:35:07-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "b7abb1f",
+    "summary": "Atualização recente: feat(collections): importação de collections do postman",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 9,
+    "title": "Fix/pipeline tests",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/9",
+    "author": "Anderson",
+    "mergedAt": "2026-10-08T15:47:29-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "0fc97c6",
+    "summary": "Atualização recente: Fix/pipeline tests",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 10,
+    "title": "feat(security): implementar sistema de autorizacao e gerenciamento de segredos",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/10",
+    "author": "Anderson",
+    "mergedAt": "2026-10-13T16:22:47-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "5fc0a76",
+    "summary": "Atualização recente: feat(security): implementar sistema de autorizacao e gerenciamento de segredos",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 11,
+    "title": "feat(request): implementar scripts de testes e extração de variáveis com tx e pm",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/11",
+    "author": "Anderson",
+    "mergedAt": "2026-10-13T18:19:16-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "1fd5da7",
+    "summary": "Atualização recente: feat(request): implementar scripts de testes e extração de variáveis com tx e pm",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 14,
+    "title": "feat(collections): permitir reorganizar colecoes e requisicoes por drag and drop",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/14",
+    "author": "Anderson",
+    "mergedAt": "2026-10-17T08:27:14-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "9a2ddf5",
+    "summary": "Atualização recente: feat(collections): permitir reorganizar colecoes e requisicoes por drag and drop",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 15,
+    "title": "feat(collections): adicionar menu de contexto e executor de colecoes",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/15",
+    "author": "Anderson",
+    "mergedAt": "2026-10-18T12:33:10-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "89eb067",
+    "summary": "Atualização recente: feat(collections): adicionar menu de contexto e executor de colecoes",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 17,
+    "title": "feat(theme): atualizar icones para dinossauros, ajustar contraste de strings e adicionar contribuidores",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/17",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T18:29:58-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "6c65164",
+    "summary": "Atualização recente: feat(theme): atualizar icones para dinossauros, ajustar contraste de strings e adicionar contribuidores",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 18,
+    "title": "feat(settings): adicionar seleção global de tipografia e organização de fontes",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/18",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T18:34:17-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "6d32228",
+    "summary": "Atualização recente: feat(settings): adicionar seleção global de tipografia e organização de fontes",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 20,
+    "title": "chore(deps): bump @vitest/mocker, @vitest/coverage-v8 and vitest",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/20",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T19:36:19-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "fe590c8",
+    "summary": "Atualização recente: chore(deps): bump @vitest/mocker, @vitest/coverage-v8 and vitest",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 22,
+    "title": "fix(icons): mover ícones para public e corrigir resolução de base url em produção",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/22",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T19:34:15-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "590afe4",
+    "summary": "Atualização recente: fix(icons): mover ícones para public e corrigir resolução de base url em produção",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 23,
+    "title": "fix(ci): compatibilizar testes com tinypool 2.2 e estabilizar pipeline",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/23",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T20:05:26-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "e6e3a0c",
+    "summary": "Atualização recente: fix(ci): compatibilizar testes com tinypool 2.2 e estabilizar pipeline",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 24,
+    "title": "feat(docs): implementar documentacao automatica inteligente com typedoc e groq",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/24",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T20:40:40-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "d1a4549",
+    "summary": "Atualização recente: feat(docs): implementar documentacao automatica inteligente com typedoc e groq",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 25,
+    "title": "feat(perf): implementar auditoria de bundle, orcamento e lighthouse ci",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/25",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T21:16:56-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "7297c4c",
+    "summary": "Atualização recente: feat(perf): implementar auditoria de bundle, orcamento e lighthouse ci",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 26,
+    "title": "feat(docs): integrar metricas lighthouse, aprimorar acessibilidade e atualizar readme",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/26",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T22:07:29-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "3955fb7",
+    "summary": "Atualização recente: feat(docs): integrar metricas lighthouse, aprimorar acessibilidade e atualizar readme",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 27,
+    "title": "fix(collections): unificar docs, limpar lockfiles, atualizar metricas lighthouse no readme e corrigir importacao de collections (closes #16)",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/27",
+    "author": "Anderson",
+    "mergedAt": "2026-10-19T23:46:34-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "ad0e1d3",
+    "summary": "Atualização recente: fix(collections): unificar docs, limpar lockfiles, atualizar metricas lighthouse no readme e corrigir importacao de collections (closes #16)",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 28,
+    "title": "feat(layout): remover status pronto e mover gerenciamento de ambientes para configuracoes",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/28",
+    "author": "Anderson",
+    "mergedAt": "2026-10-21T20:30:15-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "84788b8",
+    "summary": "Atualização recente: feat(layout): remover status pronto e mover gerenciamento de ambientes para configuracoes",
+    "targetVersion": "1.14.0"
+  },
+  {
+    "number": 29,
+    "title": "feat(layout): implementar opcao de layout com paineis separados",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/29",
+    "author": "Anderson",
+    "mergedAt": "2026-10-21T20:38:43-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "73000ed",
+    "summary": "Atualização recente: feat(layout): implementar opcao de layout com paineis separados",
+    "targetVersion": "1.14.0"
+  }
+]

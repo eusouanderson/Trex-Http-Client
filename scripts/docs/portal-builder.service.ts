@@ -1,4 +1,13 @@
-import type { GuideItem, IPortalBuilderService, PortalBuilderOptions } from './interfaces';
+import type {
+  GuideItem,
+  IBundleMetricsSummary,
+  ILighthouseReportSummary,
+  IPortalBuilderService,
+  IPullRequestDocItem,
+  IVersionDiffComparison,
+  IVersionMetricsHistoryItem,
+  PortalBuilderOptions,
+} from './interfaces';
 
 class PortalBuilderService implements IPortalBuilderService {
   public buildPortalHtml = (options: PortalBuilderOptions): string => {
@@ -27,6 +36,18 @@ class PortalBuilderService implements IPortalBuilderService {
         </a>
       `)
       .join('\n');
+
+    const performanceSectionHtml = this.buildPerformanceSection(
+      options.lighthouseMetrics,
+      options.bundleMetrics,
+      options.previousComparison,
+    );
+
+    const releasesSectionHtml = this.buildReleasesSection(
+      options.pullRequests ?? [],
+      options.versionHistory ?? [],
+      version,
+    );
 
     return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -92,6 +113,7 @@ class PortalBuilderService implements IPortalBuilderService {
     }
     .badge-dino { background: rgba(34, 197, 94, 0.12); color: var(--dino-accent); border-color: rgba(34, 197, 94, 0.3); }
     .badge-amber { background: rgba(245, 158, 11, 0.12); color: var(--amber-accent); border-color: rgba(245, 158, 11, 0.3); }
+    .badge-magma { background: rgba(239, 68, 68, 0.12); color: var(--magma-accent); border-color: rgba(239, 68, 68, 0.3); }
     .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; font-weight: 500; }
     .nav-links a:hover { color: var(--dino-accent); }
     .btn {
@@ -139,6 +161,7 @@ class PortalBuilderService implements IPortalBuilderService {
     .grid { display: grid; gap: 1.25rem; }
     .grid-cols-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
     .grid-cols-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .grid-cols-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
     .card {
       background: var(--bg-panel);
       border: 1px solid var(--border);
@@ -169,14 +192,6 @@ class PortalBuilderService implements IPortalBuilderService {
       padding: 1.5rem;
       margin: 2.5rem 0;
     }
-    .module-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(51, 47, 39, 0.5);
-    }
-    .module-item:last-child { border-bottom: none; }
     .code-pill {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.8rem;
@@ -186,6 +201,34 @@ class PortalBuilderService implements IPortalBuilderService {
       border: 1px solid var(--border);
       color: var(--dino-accent);
     }
+    .score-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 80px;
+      padding: 0.75rem 0.5rem;
+      background: var(--bg-ground);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .score-value { font-size: 1.75rem; font-weight: 900; line-height: 1; margin-bottom: 0.35rem; }
+    .score-label { font-size: 0.75rem; color: var(--text-muted); }
+    .diff-badge { font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.35rem; border-radius: 4px; margin-top: 0.25rem; }
+    .diff-pos { background: rgba(34, 197, 94, 0.15); color: var(--dino-accent); }
+    .diff-neg { background: rgba(239, 68, 68, 0.15); color: var(--magma-accent); }
+    .diff-neutral { background: rgba(168, 162, 158, 0.15); color: var(--text-muted); }
+    .pr-item {
+      padding: 1rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: border-color 0.15s ease;
+    }
+    .pr-item:hover { border-color: var(--dino-accent); }
     footer {
       border-top: 1px solid var(--border);
       padding: 3rem 0;
@@ -206,10 +249,11 @@ class PortalBuilderService implements IPortalBuilderService {
       </div>
       <nav class="nav-links">
         <a href="#modulos">Módulos</a>
-        <a href="#performance">Lighthouse CI</a>
+        <a href="#performance">Lighthouse & Performance</a>
+        <a href="#releases">Releases & PRs</a>
         <a href="#guias">Guias</a>
         <a href="#arquitetura">Arquitetura</a>
-        <a href="${this.escapeHtml(apiDocsPath)}">Referência da API TypeDoc</a>
+        <a href="${this.escapeHtml(apiDocsPath)}">API TypeDoc</a>
         <a href="/Trex-Http-Client/" class="btn btn-primary">Abrir Trex App</a>
       </nav>
     </div>
@@ -218,18 +262,22 @@ class PortalBuilderService implements IPortalBuilderService {
   <main>
     <section class="hero">
       <div class="container">
-        <div style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+        <div style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; justify-content:center;">
           <span class="badge badge-amber">Commit: ${this.escapeHtml(commitHash)}</span>
+          <span class="badge badge-dino">v${this.escapeHtml(version)}</span>
           <span class="badge badge-dino">100% OOP & Strict TypeScript</span>
         </div>
         <h1>Documentação Técnica Inteligente</h1>
-        <p>Referência técnica de API, arquitetura Feature-Sliced / DDD, contratos e guias operacionais do Trex HTTP Client.</p>
+        <p>Referência técnica de API, arquitetura Feature-Sliced / DDD, contratos, métricas Lighthouse e guias operacionais do Trex HTTP Client.</p>
         <div class="hero-actions">
           <a href="${this.escapeHtml(apiDocsPath)}" class="btn btn-primary">
             Explorar Referência da API (TypeDoc) ↗
           </a>
-          <a href="#guias" class="btn btn-secondary">
-            Consultar Guias Práticos ↓
+          <a href="#performance" class="btn btn-secondary">
+            Métricas de Qualidade & CI ↓
+          </a>
+          <a href="#releases" class="btn btn-secondary">
+            Histórico de Releases & PRs ↓
           </a>
           <a href="../../Trex-Http-Client/" class="btn btn-secondary">
             Acessar Aplicação Web
@@ -343,7 +391,7 @@ class PortalBuilderService implements IPortalBuilderService {
           <div class="card">
             <span class="code-pill">src/features/settings</span>
             <h3 style="font-size:1.15rem; font-weight:700; margin:0.75rem 0 0.5rem;">Configurações & Temas</h3>
-            <p style="color:var(--text-muted); font-size:0.9rem;">Gerenciamento de timeouts, retries, seletor com 8 fontes empacotadas e temas dinâmicos em variáveis CSS via SettingsService.</p>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Gerenciamento de timeouts, retries, densidade compacta/confortável, painéis separados e temas dinâmicos via SettingsService.</p>
             <div style="margin-top:1rem;">
               <a href="${this.escapeHtml(apiBaseDir)}modules/features_settings.html" style="color:var(--dino-accent); font-weight:600; font-size:0.85rem;">Ver símbolos da API →</a>
             </div>
@@ -351,63 +399,9 @@ class PortalBuilderService implements IPortalBuilderService {
         </div>
       </section>
 
-      <section id="performance" style="margin-top:4rem;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
-          <div>
-            <h2 class="section-title">Engenharia de Performance & Lighthouse CI</h2>
-            <p class="section-subtitle" style="margin-bottom:0;">Auditoria automatizada a cada Pull Request com orçamentos de bundle e metas rígidas de Core Web Vitals.</p>
-          </div>
-          <a href="./guides/performance-strategy-guide.html" style="color:var(--dino-accent); font-weight:700; font-size:0.9rem;">
-            Ver Estratégia de Performance Completa →
-          </a>
-        </div>
+      ${performanceSectionHtml}
 
-        <div class="grid grid-cols-2" style="margin-bottom:1.25rem;">
-          <div class="card" style="border-left:4px solid var(--dino-accent);">
-            <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0.75rem;">Índices de Auditoria Lighthouse (Preview Oficial)</div>
-            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
-                <span style="font-size:0.75rem; color:var(--text-muted);">Performance</span>
-              </div>
-              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
-                <span style="font-size:0.75rem; color:var(--text-muted);">Acessibilidade</span>
-              </div>
-              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
-                <span style="font-size:0.75rem; color:var(--text-muted);">Boas Práticas</span>
-              </div>
-              <div style="display:flex; flex-direction:column; align-items:center; min-width:76px; padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <span style="font-size:1.6rem; font-weight:900; color:var(--dino-accent);">100</span>
-                <span style="font-size:0.75rem; color:var(--text-muted);">SEO</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card" style="border-left:4px solid var(--amber-accent);">
-            <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0.75rem;">Métricas de Laboratório & Core Web Vitals</div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
-              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <div style="font-size:0.7rem; color:var(--text-muted);">First Contentful Paint (FCP)</div>
-                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">0.5 s <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Rápido)</span></div>
-              </div>
-              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <div style="font-size:0.7rem; color:var(--text-muted);">Largest Contentful Paint (LCP)</div>
-                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">0.7 s <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Meta: &lt; 2.5s)</span></div>
-              </div>
-              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <div style="font-size:0.7rem; color:var(--text-muted);">Cumulative Layout Shift (CLS)</div>
-                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">0 <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Estabilidade total)</span></div>
-              </div>
-              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
-                <div style="font-size:0.7rem; color:var(--text-muted);">Orçamento de Bundle</div>
-                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">Monitorado <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(GitHub Actions)</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      ${releasesSectionHtml}
 
       <section id="guias" style="margin-top:4rem;">
         <h2 class="section-title">Guias Práticos & Manuais</h2>
@@ -461,6 +455,208 @@ class PortalBuilderService implements IPortalBuilderService {
   </footer>
 </body>
 </html>`;
+  };
+
+  private buildPerformanceSection = (
+    lighthouse?: ILighthouseReportSummary,
+    bundle?: IBundleMetricsSummary,
+    comparison?: IVersionDiffComparison,
+  ): string => {
+    const pScore = lighthouse?.scores.performance !== null && lighthouse?.scores.performance !== undefined ? lighthouse.scores.performance.toString() : 'N/A';
+    const aScore = lighthouse?.scores.accessibility !== null && lighthouse?.scores.accessibility !== undefined ? lighthouse.scores.accessibility.toString() : 'N/A';
+    const bpScore = lighthouse?.scores.bestPractices !== null && lighthouse?.scores.bestPractices !== undefined ? lighthouse.scores.bestPractices.toString() : 'N/A';
+    const seoScore = lighthouse?.scores.seo !== null && lighthouse?.scores.seo !== undefined ? lighthouse.scores.seo.toString() : 'N/A';
+
+    const renderDiff = (diff: number | null | undefined): string => {
+      if (diff === null || diff === undefined) {
+        return '';
+      }
+      if (diff > 0) {
+        return `<span class="diff-badge diff-pos">+${diff.toString()}</span>`;
+      }
+      if (diff < 0) {
+        return `<span class="diff-badge diff-neg">${diff.toString()}</span>`;
+      }
+      return `<span class="diff-badge diff-neutral">0</span>`;
+    };
+
+    const isPending = lighthouse?.status === 'pending';
+    const isUnavailable = !lighthouse || lighthouse.status === 'unavailable';
+
+    const bannerHtml = isPending || isUnavailable
+      ? `
+        <div style="background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:0.75rem 1rem; margin-bottom:1rem; font-size:0.875rem; color:var(--amber-accent);">
+          <strong>Status da Auditoria:</strong> ${isPending ? 'Pendente' : 'Não executada'} — ${this.escapeHtml(lighthouse?.errorMessage ?? 'Aguardando execução do pipeline Lighthouse CI.')}
+        </div>
+      `
+      : '';
+
+    const fcpText = lighthouse?.metrics.fcpFormatted ?? (lighthouse?.metrics.fcpMs !== null && lighthouse?.metrics.fcpMs !== undefined ? `${(lighthouse.metrics.fcpMs / 1000).toFixed(2)} s` : 'N/A');
+    const lcpText = lighthouse?.metrics.lcpFormatted ?? (lighthouse?.metrics.lcpMs !== null && lighthouse?.metrics.lcpMs !== undefined ? `${(lighthouse.metrics.lcpMs / 1000).toFixed(2)} s` : 'N/A');
+    const clsText = lighthouse?.metrics.clsFormatted ?? (lighthouse?.metrics.clsScore !== null && lighthouse?.metrics.clsScore !== undefined ? lighthouse.metrics.clsScore.toString() : 'N/A');
+
+    const bundleJsGzipKb = bundle && bundle.initialJsGzipBytes > 0 ? (bundle.initialJsGzipBytes / 1024).toFixed(1) : 'N/A';
+    const bundleJsLimitKb = bundle && bundle.maxInitialJsGzipLimit > 0 ? (bundle.maxInitialJsGzipLimit / 1024).toFixed(1) : '322.3';
+    const isRespected = bundle?.isBudgetRespected === true;
+    const budgetStatusText = isRespected ? 'Orçamento Respeitado' : 'Verificação Pendente';
+    const budgetStatusClass = isRespected ? 'text-dino-accent' : 'text-amber-accent';
+
+    const previousVersionText = typeof comparison?.previousVersion === 'string' && comparison.previousVersion.length > 0
+      ? ` (vs v${this.escapeHtml(comparison.previousVersion)})`
+      : '';
+
+    const auditedDateText = typeof lighthouse?.auditedAt === 'string' && lighthouse.auditedAt.length > 0
+      ? `<span style="font-size:0.75rem; color:var(--text-muted);">${new Date(lighthouse.auditedAt).toLocaleDateString('pt-BR')}</span>`
+      : '';
+
+    return `
+      <section id="performance" style="margin-top:4rem;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+          <div>
+            <h2 class="section-title">Engenharia de Performance & Lighthouse CI</h2>
+            <p class="section-subtitle" style="margin-bottom:0;">Auditoria automatizada das métricas de laboratório e orçamento de bundle a cada release oficial.</p>
+          </div>
+          <a href="./guides/performance-strategy-guide.html" style="color:var(--dino-accent); font-weight:700; font-size:0.9rem;">
+            Ver Estratégia de Performance Completa →
+          </a>
+        </div>
+
+        ${bannerHtml}
+
+        <div class="grid grid-cols-2" style="margin-bottom:1.25rem;">
+          <div class="card" style="border-left:4px solid var(--dino-accent);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+              <span style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted);">Índices de Auditoria Lighthouse${previousVersionText}</span>
+              ${auditedDateText}
+            </div>
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+              <div class="score-box">
+                <span class="score-value" style="color:var(--dino-accent);">${this.escapeHtml(pScore)}</span>
+                <span class="score-label">Performance</span>
+                ${renderDiff(comparison?.performanceDiff)}
+              </div>
+              <div class="score-box">
+                <span class="score-value" style="color:var(--dino-accent);">${this.escapeHtml(aScore)}</span>
+                <span class="score-label">Acessibilidade</span>
+                ${renderDiff(comparison?.accessibilityDiff)}
+              </div>
+              <div class="score-box">
+                <span class="score-value" style="color:var(--dino-accent);">${this.escapeHtml(bpScore)}</span>
+                <span class="score-label">Boas Práticas</span>
+                ${renderDiff(comparison?.bestPracticesDiff)}
+              </div>
+              <div class="score-box">
+                <span class="score-value" style="color:var(--dino-accent);">${this.escapeHtml(seoScore)}</span>
+                <span class="score-label">SEO</span>
+                ${renderDiff(comparison?.seoDiff)}
+              </div>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">
+              Metas de referência: 100 pontos em cada categoria. Resultados medidos em laboratório com preset Desktop.
+            </div>
+          </div>
+
+          <div class="card" style="border-left:4px solid var(--amber-accent);">
+            <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0.75rem;">Métricas de Laboratório & Orçamento de Bundle</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">First Contentful Paint (FCP)</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">${this.escapeHtml(fcpText)} <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Meta: &le; 0.5s)</span></div>
+              </div>
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">Largest Contentful Paint (LCP)</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">${this.escapeHtml(lcpText)} <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Meta: &lt; 2.5s)</span></div>
+              </div>
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">Cumulative Layout Shift (CLS)</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">${this.escapeHtml(clsText)} <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">(Meta: 0)</span></div>
+              </div>
+              <div style="padding:0.6rem; background:var(--bg-ground); border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--text-muted);">JS Inicial Gzip / Limite</div>
+                <div style="font-size:1.15rem; font-weight:800; color:var(--dino-accent);">${this.escapeHtml(bundleJsGzipKb)} kB <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">/ ${this.escapeHtml(bundleJsLimitKb)} kB</span></div>
+                <div style="font-size:0.75rem; font-weight:700; margin-top:0.25rem;" class="${budgetStatusClass}">${this.escapeHtml(budgetStatusText)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  };
+
+  private buildReleasesSection = (
+    pullRequests: IPullRequestDocItem[],
+    versionHistory: IVersionMetricsHistoryItem[],
+    currentVersion: string,
+  ): string => {
+    const recentPrs = [...pullRequests].reverse().slice(0, 10);
+    const prsHtml = recentPrs.length > 0
+      ? recentPrs
+          .map((pr) => `
+            <div class="pr-item">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <a href="${this.escapeHtml(pr.url)}" target="_blank" rel="noopener noreferrer" style="font-weight:700; color:var(--dino-accent); font-size:0.95rem;">
+                    PR #${pr.number.toString()} ↗
+                  </a>
+                  <span class="badge badge-amber">v${this.escapeHtml(pr.targetVersion)}</span>
+                </div>
+                <span style="font-size:0.75rem; color:var(--text-muted);">${new Date(pr.mergedAt).toLocaleDateString('pt-BR')} • ${this.escapeHtml(pr.author)}</span>
+              </div>
+              <div style="font-weight:600; font-size:0.9rem; color:var(--text-main);">${this.escapeHtml(pr.title)}</div>
+              <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;">${this.escapeHtml(pr.summary)}</div>
+            </div>
+          `)
+          .join('\n')
+      : '<p style="color:var(--text-muted); font-size:0.9rem;">Nenhuma Pull Request registrada recentemente no repositório.</p>';
+
+    const versionsHtml = versionHistory.length > 0
+      ? versionHistory
+          .slice(-6)
+          .reverse()
+          .map((item) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0.75rem; background:var(--bg-panel); border:1px solid var(--border); border-radius:6px;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span style="font-weight:700; color:var(--dino-accent);">v${this.escapeHtml(item.version)}</span>
+                <span class="badge badge-amber">${this.escapeHtml(item.commitHash)}</span>
+              </div>
+              <div style="font-size:0.8rem; color:var(--text-muted);">
+                ${item.lighthouse.scores.performance !== null ? `Perf: ${item.lighthouse.scores.performance.toString()} | ` : ''}
+                ${(item.bundle.initialJsGzipBytes / 1024).toFixed(0)} kB gzip • ${new Date(item.releaseDate).toLocaleDateString('pt-BR')}
+              </div>
+            </div>
+          `)
+          .join('\n')
+      : `<p style="color:var(--text-muted); font-size:0.9rem;">Versão atual: v${this.escapeHtml(currentVersion)}</p>`;
+
+    return `
+      <section id="releases" style="margin-top:4rem;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+          <div>
+            <h2 class="section-title">Histórico de Releases & Pull Requests</h2>
+            <p class="section-subtitle" style="margin-bottom:0;">Registro rastreável e auditável de cada PR incorporada e evolução histórica das releases do Trex.</p>
+          </div>
+          <a href="../CHANGELOG.md" style="color:var(--dino-accent); font-weight:700; font-size:0.9rem;">
+            Ver Changelog Completo →
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2" style="gap:1.5rem;">
+          <div>
+            <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--text-main);">Pull Requests Incorporadas Recentemente</h3>
+            <div style="display:flex; flex-direction:column; gap:0.75rem;">
+              ${prsHtml}
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--text-main);">Evolução Histórica das Releases</h3>
+            <div style="display:flex; flex-direction:column; gap:0.5rem;">
+              ${versionsHtml}
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
   };
 
   public buildGuideHtml = (guide: GuideItem, options: PortalBuilderOptions): string => {
@@ -637,4 +833,3 @@ class PortalBuilderService implements IPortalBuilderService {
 }
 
 export { PortalBuilderService };
-

@@ -4,7 +4,10 @@ import type {
   ICommandRunner,
   IFileSystem,
   IGroqDocService,
+  IMetricsCollectorService,
   IPortalBuilderService,
+  IPrHistoryService,
+  PortalBuilderOptions,
 } from '../interfaces';
 
 describe('DocOrchestratorService', () => {
@@ -12,6 +15,8 @@ describe('DocOrchestratorService', () => {
   let mockPortalBuilder: IPortalBuilderService;
   let mockFileSystem: IFileSystem;
   let mockCommandRunner: ICommandRunner;
+  let mockMetricsCollector: IMetricsCollectorService;
+  let mockPrHistoryService: IPrHistoryService;
 
   let execSpy: ReturnType<typeof vi.fn>;
   let analyzeSpy: ReturnType<typeof vi.fn>;
@@ -21,6 +26,8 @@ describe('DocOrchestratorService', () => {
   let mkdirSpy: ReturnType<typeof vi.fn>;
   let readSpy: ReturnType<typeof vi.fn>;
   let writeSpy: ReturnType<typeof vi.fn>;
+  let recordVersionMock: ReturnType<typeof vi.fn>;
+  let syncFromGitMock: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -47,6 +54,8 @@ describe('DocOrchestratorService', () => {
     writeSpy = vi.fn();
 
     execSpy = vi.fn().mockReturnValue('mock-exec-result');
+    recordVersionMock = vi.fn();
+    syncFromGitMock = vi.fn().mockResolvedValue([]);
 
     mockGroqService = {
       analyzeChanges: analyzeSpy,
@@ -67,23 +76,82 @@ describe('DocOrchestratorService', () => {
     mockCommandRunner = {
       exec: execSpy,
     };
+
+    mockMetricsCollector = {
+      collectBundleMetrics: vi.fn().mockReturnValue({
+        status: 'passed',
+        measuredAt: '2026-10-21T00:00:00.000Z',
+        initialJsRawBytes: 800000,
+        initialJsGzipBytes: 280000,
+        totalJsGzipBytes: 280000,
+        totalCssGzipBytes: 8000,
+        maxInitialJsGzipLimit: 330000,
+        maxTotalJsGzipLimit: 350000,
+        maxTotalCssGzipLimit: 15000,
+        isBudgetRespected: true,
+      }),
+      collectLighthouseMetrics: vi.fn().mockReturnValue({
+        status: 'success',
+        auditedAt: '2026-10-21T00:00:00.000Z',
+        url: 'http://localhost:4173/Trex-Http-Client/',
+        scores: { performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
+        metrics: { fcpMs: 500, fcpFormatted: '0.5 s', lcpMs: 700, lcpFormatted: '0.7 s', clsScore: 0, clsFormatted: '0' },
+      }),
+      getHistory: vi.fn().mockReturnValue([]),
+      recordVersion: recordVersionMock,
+      getComparison: vi.fn().mockReturnValue({
+        version: '1.9.0',
+        previousVersion: null,
+        performanceDiff: null,
+        accessibilityDiff: null,
+        bestPracticesDiff: null,
+        seoDiff: null,
+        initialJsGzipDiffBytes: null,
+      }),
+    };
+
+    mockPrHistoryService = {
+      getHistory: vi.fn().mockReturnValue([
+        {
+          number: 28,
+          title: 'PR #28',
+          url: 'https://github.com/test/pull/28',
+          author: 'Test',
+          mergedAt: '2026-10-21T00:00:00.000Z',
+          targetBranch: 'main',
+          mergeCommit: 'abc1234',
+          summary: 'Summary 28',
+          targetVersion: '1.9.0',
+        },
+      ]),
+      syncFromGit: syncFromGitMock,
+    };
   });
 
-  it('should orchestrate document generation and return true', async () => {
+  it('should orchestrate document generation with metrics and PR history', async () => {
     const orchestrator = new DocOrchestratorService(
       '/mock-root',
       mockGroqService,
       mockPortalBuilder,
       mockFileSystem,
       mockCommandRunner,
+      mockMetricsCollector,
+      mockPrHistoryService,
     );
 
     const result = await orchestrator.run();
 
     expect(result).toBe(true);
     expect(execSpy).toHaveBeenCalledWith('npx typedoc', '/mock-root');
-    expect(analyzeSpy).toHaveBeenCalled();
+    expect(syncFromGitMock).toHaveBeenCalledWith('1.9.0');
+    expect(recordVersionMock).toHaveBeenCalled();
     expect(buildPortalSpy).toHaveBeenCalled();
+
+    const lastCall = (buildPortalSpy.mock.calls[0] as unknown as [PortalBuilderOptions])[0];
+    expect(lastCall.version).toBe('1.9.0');
+    expect(lastCall.lighthouseMetrics?.status).toBe('success');
+    expect(lastCall.bundleMetrics?.isBudgetRespected).toBe(true);
+    expect(lastCall.pullRequests?.[0]?.number).toBe(28);
     expect(writeSpy).toHaveBeenCalled();
   });
 
@@ -101,6 +169,8 @@ describe('DocOrchestratorService', () => {
       mockPortalBuilder,
       mockFileSystem,
       mockCommandRunner,
+      mockMetricsCollector,
+      mockPrHistoryService,
     );
 
     await expect(orchestrator.run()).rejects.toThrow('Falha na execução do TypeDoc: TypeDoc failure');
@@ -120,6 +190,8 @@ describe('DocOrchestratorService', () => {
       mockPortalBuilder,
       mockFileSystem,
       mockCommandRunner,
+      mockMetricsCollector,
+      mockPrHistoryService,
     );
 
     await expect(orchestrator.run()).rejects.toThrow('Falha na validação dos artefatos de documentação');
@@ -139,12 +211,13 @@ describe('DocOrchestratorService', () => {
       mockPortalBuilder,
       mockFileSystem,
       mockCommandRunner,
+      mockMetricsCollector,
+      mockPrHistoryService,
     );
 
     const result = await orchestrator.run();
     expect(result).toBe(true);
-    expect(buildPortalSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ version: '1.0.0' }),
-    );
+    const lastCall = (buildPortalSpy.mock.calls[0] as unknown as [PortalBuilderOptions])[0];
+    expect(lastCall.version).toBe('1.0.0');
   });
 });
