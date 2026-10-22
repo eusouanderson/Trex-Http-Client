@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.15.0...v1.16.0) (2026-10-22)
+
+
+### Features
+
+* **shortcuts:** implementar sistema global de atalhos de teclado e paleta de comandos ([5b77363](https://github.com/eusouanderson/Trex-Http-Client/commit/5b77363f0d484f437f92ba4bef2bcf47c813d259))
+
 # [1.15.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.14.0...v1.15.0) (2026-10-22)
 
 
