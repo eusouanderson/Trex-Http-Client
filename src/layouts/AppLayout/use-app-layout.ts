@@ -4,6 +4,7 @@ import { useCollections } from '../../features/collections';
 import type { CollectionItem } from '../../features/collections/interfaces';
 import { useRequest } from '../../features/request';
 import { useSettings } from '../../features/settings';
+import { useShortcuts } from '../../features/shortcuts';
 import { ThemeStyleService } from '../../features/settings/theme-style.service';
 import type { SidebarTab } from './interfaces';
 
@@ -32,9 +33,12 @@ interface UseAppLayoutReturn {
   isEnvironmentManagerOpen: Ref<boolean>;
   openEnvironmentManager: () => void;
   closeEnvironmentManager: () => void;
+  isCommandPaletteOpen: Ref<boolean>;
+  closeCommandPalette: () => void;
 }
 
 const useAppLayout = (): UseAppLayoutReturn => {
+  const { isCommandPaletteOpen, closeCommandPalette } = useShortcuts();
   const { settings, isOpen: isSettingsOpen, openSettings, closeSettings } =
     useSettings();
   const {
@@ -142,6 +146,12 @@ const useAppLayout = (): UseAppLayoutReturn => {
     isEnvManagerOpen.value = false;
   };
 
+  if (typeof window !== 'undefined') {
+    window.addEventListener('trex:open-environment-manager', () => {
+      isEnvManagerOpen.value = true;
+    });
+  }
+
   return {
     isSidebarOpen: isSidebarOpenState,
     activeSidebarTab: activeSidebarTabState,
@@ -163,6 +173,8 @@ const useAppLayout = (): UseAppLayoutReturn => {
     isEnvironmentManagerOpen: isEnvManagerOpen,
     openEnvironmentManager,
     closeEnvironmentManager,
+    isCommandPaletteOpen,
+    closeCommandPalette,
   };
 };
 

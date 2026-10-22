@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
 import { ThemeIcon } from '../../../shared/ui/ThemeIcon';
 import { TrexLogo } from '../../../shared/ui/TrexLogo';
+import { ShortcutsSection } from '../../shortcuts';
 import { useSettings } from '../use-settings';
 import type { SettingsModalEmits } from './interfaces';
 import { useSettingsModal } from './use-settings-modal';
@@ -144,6 +145,15 @@ const isCustomTheme = (themeId: string): boolean => {
           >
             <span>🌐</span>
             <span>Rede & HTTP</span>
+          </button>
+          <button
+            type="button"
+            class="flex items-center w-full gap-2 px-3 py-2 text-xs font-medium text-left transition-colors rounded-lg cursor-pointer"
+            :class="activeTab === 'shortcuts' ? 'bg-dino-500/20 text-dino-300 border border-dino-500/40' : 'text-fossil-300 hover:bg-surface-hover'"
+            @click="setTab('shortcuts')"
+          >
+            <span>⌨️</span>
+            <span>Atalhos</span>
           </button>
           <button
             type="button"
@@ -541,6 +551,10 @@ const isCustomTheme = (themeId: string): boolean => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div v-if="activeTab === 'shortcuts'" class="space-y-5">
+            <shortcuts-section />
           </div>
         </section>
       </div>

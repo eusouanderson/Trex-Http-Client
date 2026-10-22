@@ -1,4 +1,4 @@
-type SettingsTab = 'general' | 'theme' | 'json' | 'network' | 'contributors' | 'environments';
+type SettingsTab = 'general' | 'theme' | 'json' | 'network' | 'contributors' | 'environments' | 'shortcuts';
 
 interface SettingsModalProps {
   modelValue?: boolean;

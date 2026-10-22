@@ -4,37 +4,9 @@ import type {
   CollectionItemType,
   ParsedCollectionItem,
   ParsedCollectionResult,
+  RawTrexCollection
 } from './interfaces';
 
-interface TrexInfo {
-  name?: string;
-  description?: string;
-  schema?: string;
-}
-
-interface RawTrexItem {
-  id?: string;
-  name?: string;
-  type?: string;
-  parentId?: string | null;
-  method?: string;
-  url?: string;
-  headers?: Record<string, string>;
-  params?: Record<string, string>;
-  body?: string;
-  auth?: AuthConfig;
-  testScript?: string;
-  status?: number;
-}
-
-interface RawTrexCollection {
-  info?: TrexInfo;
-  id?: string;
-  name?: string;
-  description?: string;
-  auth?: AuthConfig;
-  items?: RawTrexItem[];
-}
 
 class TrexParserService {
   public readonly parse = (jsonString: string): ParsedCollectionResult => {

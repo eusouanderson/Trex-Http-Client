@@ -95,6 +95,7 @@ interface ClientSettings {
   globalHeaders: Record<string, string>;
   jsonTheme: JsonThemeSettings;
   customThemes: CustomTheme[];
+  customShortcuts?: Record<string, string>;
 }
 
 interface ISettingsService {

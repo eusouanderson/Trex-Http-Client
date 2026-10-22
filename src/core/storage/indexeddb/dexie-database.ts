@@ -1,14 +1,9 @@
 import Dexie, { type EntityTable } from 'dexie';
 import type { Collection } from '../../../features/collections/interfaces';
 import type { Environment } from '../../../features/environments/interfaces';
-import type { ClientSettings } from '../../../features/settings/interfaces';
-import type { RequestHistoryItem, AppStateRecord } from '../interfaces';
+import type { AppStateRecord, RequestHistoryItem } from '../interfaces';
+import type { SettingsRecord } from './interfaces';
 
-interface SettingsRecord {
-  id: string;
-  data: ClientSettings;
-  updatedAt: number;
-}
 
 class TrexDexieDatabase extends Dexie {
   public collections!: EntityTable<Collection, 'id'>;

@@ -7,6 +7,7 @@ import RequestBuilder from '../../features/request/RequestBuilder/index.vue';
 import ResponseViewer from '../../features/response/ResponseViewer/index.vue';
 import SettingsModal from '../../features/settings/SettingsModal/index.vue';
 import { PwaUpdateNotification } from '../../features/pwa';
+import { CommandPalette } from '../../features/shortcuts';
 import { TrexLogo } from '../../shared/ui/TrexLogo';
 import { useAppLayout } from './use-app-layout';
 
@@ -26,6 +27,8 @@ const {
   isEnvironmentManagerOpen,
   openEnvironmentManager,
   closeEnvironmentManager,
+  isCommandPaletteOpen,
+  closeCommandPalette,
 } = useAppLayout();
 </script>
 
@@ -168,6 +171,7 @@ const {
 
     <settings-modal @open-environment-manager="openEnvironmentManager" />
     <environment-manager-modal :is-open="isEnvironmentManagerOpen" @close="closeEnvironmentManager" />
+    <command-palette :is-open="isCommandPaletteOpen" @close="closeCommandPalette" />
     <pwa-update-notification />
   </div>
 </template>

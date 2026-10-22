@@ -179,4 +179,22 @@ describe('useAppLayout', () => {
     resetSettings();
     expect(layout.customThemeStyles.value).toEqual({});
   });
+
+  it('manages command palette and environment manager events', () => {
+    const layout = useAppLayout();
+    expect(layout.isEnvironmentManagerOpen.value).toBe(false);
+
+    layout.openEnvironmentManager();
+    expect(layout.isEnvironmentManagerOpen.value).toBe(true);
+
+    layout.closeEnvironmentManager();
+    expect(layout.isEnvironmentManagerOpen.value).toBe(false);
+
+    window.dispatchEvent(new CustomEvent('trex:open-environment-manager'));
+    expect(layout.isEnvironmentManagerOpen.value).toBe(true);
+
+    expect(layout.isCommandPaletteOpen.value).toBe(false);
+    layout.closeCommandPalette();
+    expect(layout.isCommandPaletteOpen.value).toBe(false);
+  });
 });

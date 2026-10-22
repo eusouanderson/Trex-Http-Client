@@ -1,58 +1,5 @@
 import type { HttpMethod } from '../../core/http/interfaces';
-import type { CreateItemInput } from './interfaces';
-
-interface PostmanHeader {
-  key?: string;
-  value?: string;
-  disabled?: boolean;
-}
-
-interface PostmanUrl {
-  raw?: string;
-  query?: { key?: string; value?: string; disabled?: boolean }[];
-  variable?: { key?: string; value?: string }[];
-}
-
-interface PostmanUrlEncoded {
-  key?: string;
-  value?: string;
-  disabled?: boolean;
-}
-
-interface PostmanBody {
-  mode?: string;
-  raw?: string;
-  urlencoded?: PostmanUrlEncoded[];
-}
-
-interface PostmanRequest {
-  method?: string;
-  url?: string | PostmanUrl;
-  header?: PostmanHeader[];
-  body?: PostmanBody;
-}
-
-interface PostmanItem {
-  name?: string;
-  item?: PostmanItem[];
-  request?: PostmanRequest;
-}
-
-interface PostmanInfo {
-  name?: string;
-}
-
-interface PostmanVariable {
-  key?: string;
-  value?: string;
-  disabled?: boolean;
-}
-
-interface PostmanCollection {
-  info?: PostmanInfo;
-  item?: PostmanItem[];
-  variable?: PostmanVariable[];
-}
+import type { CreateItemInput, PostmanCollection, PostmanItem, PostmanRequest } from './interfaces';
 
 export class PostmanParserService {
   public parse(jsonString: string): { name: string; items: CreateItemInput[]; variables: { key: string; value: string; enabled: boolean }[] } {

@@ -145,6 +145,15 @@ interface UseSettingsModalReturn {
 const activeTabState = ref<SettingsTab>('general');
 const customThemeErrorState = ref<string | null>(null);
 
+if (typeof window !== 'undefined') {
+  window.addEventListener('trex:open-settings-tab', (e: Event) => {
+    const customEvent = e as CustomEvent<{ tab?: SettingsTab }>;
+    if (customEvent.detail.tab !== undefined) {
+      activeTabState.value = customEvent.detail.tab;
+    }
+  });
+}
+
 const useSettingsModal = (options?: UseSettingsModalOptions): UseSettingsModalReturn => {
   const {
     settings,

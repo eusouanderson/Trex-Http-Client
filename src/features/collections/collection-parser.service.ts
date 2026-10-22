@@ -1,17 +1,6 @@
-import type { ICollectionParserService, ParsedCollectionResult } from './interfaces';
+import type { GenericCollectionProbe, ICollectionParserService, ParsedCollectionResult } from './interfaces';
 import { PostmanParserService } from './postman-parser.service';
 import { TrexParserService } from './trex-parser.service';
-
-interface GenericCollectionProbe {
-  info?: {
-    name?: string;
-    schema?: string;
-  };
-  schema?: string;
-  name?: string;
-  item?: unknown;
-  items?: unknown;
-}
 
 class CollectionParserService implements ICollectionParserService {
   constructor(

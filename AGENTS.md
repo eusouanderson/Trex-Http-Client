@@ -13,8 +13,8 @@ Este documento é a fonte única da verdade para qualquer modelo de linguagem, a
 5. **Componentes `.vue` ultrafinos**: Mantenha nos arquivos `.vue` estritamente HTML e CSS. Extraia 100% da lógica e do estado local para composables dedicados. Use tags em `kebab-case`.
 6. **Desenvolvimento orientado a testes (TDD)**: Escreva sempre o teste unitário na pasta `tests/` antes de escrever o código de implementação.
 7. **Arrow functions e exportações ao final**: Todas as funções devem ser declaradas como arrow functions (`const minhaFunc = (): ReturnType => { ... }`). Exporte as funções e utilitários agrupados no final do arquivo (`export { func1, func2 }`), proibindo exportações inline (`export const`).
-8. **Reaproveitamento e Composição**: Antes de criar código ou componentes novos, verifique o Design System (`design-system-mcp`), `src/shared/ui/` e `@vueuse/core`. Priorize composição com slots em vez de proliferação de props booleanas. É proibido duplicar código ou componentes entre domínios.
-9. **100% Orientado a Objetos (OOP)**: Toda lógica de negócio, infraestrutura (`src/core/`), serviços, repositórios e entidades deve ser modelada exclusivamente através de Classes e princípios de OOP (encapsulamento, injeção de dependência e inversão de controle). Os composables do Vue atuam como adaptadores reativos (Presenters) ligando as classes ao template.
+8. **100% Orientado a Objetos (OOP)**: Toda lógica de negócio, infraestrutura (`src/core/`), serviços, repositórios e entidades deve ser modelada exclusivamente através de Classes e princípios de OOP (encapsulamento, injeção de dependência e inversão de controle). Os composables do Vue atuam como adaptadores reativos (Presenters) ligando as classes ao template.
+9. **Verificação do eslint** Sempre escrever código que passe nas regras do `eslint`. Execute `npm run lint` antes de finalizar qualquer modificação para garantir conformidade com as regras de estilo e qualidade do projeto.
 
 ---
 
