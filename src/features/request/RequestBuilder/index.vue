@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HttpMethod } from '../../../core/http/interfaces';
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
+import { ShortcutTooltip } from '../../../shared/ui/ShortcutTooltip';
 import { AuthEditor } from '../AuthEditor';
 import { TestScriptEditor } from '../TestScriptEditor';
 import type { RequestBuilderEmits, RequestBuilderProps } from './interfaces';
@@ -70,16 +71,18 @@ const {
           @keydown.enter="send()"
         />
 
-        <button
-          type="button"
-          :disabled="isLoading"
-          class="px-5 py-2 bg-dino-500 hover:bg-dino-600 disabled:opacity-50 text-surface-ground font-bold text-xs rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-dino-500/10 cursor-pointer"
-          @click="send()"
-        >
-          <span v-if="isLoading" class="animate-spin text-sm">🔄</span>
-          <img v-else :src="logoSrc" alt="T-Rex" class="w-4 h-4 object-contain" />
-          <span>{{ isLoading ? 'Enviando...' : 'Enviar' }}</span>
-        </button>
+        <shortcut-tooltip shortcut-id="send-request" position="bottom">
+          <button
+            type="button"
+            :disabled="isLoading"
+            class="px-5 py-2 bg-dino-500 hover:bg-dino-600 disabled:opacity-50 text-surface-ground font-bold text-xs rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-dino-500/10 cursor-pointer"
+            @click="send()"
+          >
+            <span v-if="isLoading" class="animate-spin text-sm">🔄</span>
+            <img v-else :src="logoSrc" alt="T-Rex" class="w-4 h-4 object-contain" />
+            <span>{{ isLoading ? 'Enviando...' : 'Enviar' }}</span>
+          </button>
+        </shortcut-tooltip>
       </div>
     </div>
 
@@ -307,14 +310,19 @@ const {
             </div>
           </div>
 
-          <button
+          <shortcut-tooltip
             v-if="activeTab.bodyType === 'json'"
-            type="button"
-            class="px-2 py-1 text-xs bg-surface-border hover:bg-surface-hover text-bone-200 rounded transition-colors"
-            @click="formatJsonBody"
+            shortcut-id="format-body"
+            position="left"
           >
-            ✨ Formatar JSON
-          </button>
+            <button
+              type="button"
+              class="px-2 py-1 text-xs bg-surface-border hover:bg-surface-hover text-bone-200 rounded transition-colors"
+              @click="formatJsonBody"
+            >
+              ✨ Formatar JSON
+            </button>
+          </shortcut-tooltip>
         </div>
 
         <div v-if="activeTab.bodyType !== 'none'" class="flex-1 flex flex-col min-h-[220px]">

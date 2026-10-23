@@ -1,0 +1,186 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
+import {
+  ShortcutTooltip,
+  ShortcutTooltipService,
+  shortcutTooltipService,
+  useShortcutTooltip,
+} from '../index';
+import { shortcutRegistryService } from '../../../../core/shortcuts';
+
+describe('ShortcutTooltip component', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    shortcutRegistryService.register({
+      id: 'test-button-shortcut',
+      name: 'Executar Botão',
+      description: 'Executa a ação do botão',
+      category: 'general',
+      defaultKeyCombo: 'ctrl+b',
+      action: vi.fn(),
+    });
+    shortcutRegistryService.register({
+      id: 'empty-name-shortcut',
+      name: '',
+      description: '',
+      category: 'general',
+      defaultKeyCombo: 'ctrl+e',
+      action: vi.fn(),
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    shortcutRegistryService.unregister('test-button-shortcut');
+    shortcutRegistryService.unregister('empty-name-shortcut');
+  });
+
+  it('exports public API items properly from index', () => {
+    expect(ShortcutTooltip).toBeDefined();
+    expect(ShortcutTooltipService).toBeDefined();
+    expect(shortcutTooltipService).toBeDefined();
+    expect(useShortcutTooltip).toBeDefined();
+  });
+
+  it('renders slot content correctly', () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        shortcutId: 'test-button-shortcut',
+      },
+      slots: {
+        default: '<button id="my-btn">Meu Botão</button>',
+      },
+    });
+
+    expect(wrapper.find('#my-btn').exists()).toBe(true);
+    expect(wrapper.find('#my-btn').text()).toBe('Meu Botão');
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
+  });
+
+  it('shows tooltip on mouseenter and hides on mouseleave with default delay', async () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        shortcutId: 'test-button-shortcut',
+      },
+      slots: {
+        default: '<button>Hover Me</button>',
+      },
+    });
+
+    await wrapper.trigger('mouseenter');
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
+
+    vi.advanceTimersByTime(300);
+    await wrapper.vm.$nextTick();
+
+    const tooltip = wrapper.find('[role="tooltip"]');
+    expect(tooltip.exists()).toBe(true);
+    expect(tooltip.text()).toContain('Executar Botão');
+    expect(tooltip.find('kbd').exists()).toBe(true);
+
+    await wrapper.trigger('mouseleave');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
+  });
+
+  it('shows tooltip immediately on focusin when delayMs is 0 and hides on focusout', async () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        shortcutId: 'test-button-shortcut',
+        delayMs: 0,
+      },
+      slots: {
+        default: '<button>Focus Me</button>',
+      },
+    });
+
+    await wrapper.trigger('focusin');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(true);
+
+    await wrapper.trigger('focusout');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
+  });
+
+  it('does not display tooltip when disabled prop is true', async () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        shortcutId: 'test-button-shortcut',
+        disabled: true,
+        delayMs: 0,
+      },
+      slots: {
+        default: '<button>Disabled Tooltip</button>',
+      },
+    });
+
+    await wrapper.trigger('mouseenter');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
+  });
+
+  it('applies custom position classes', async () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        shortcutId: 'test-button-shortcut',
+        position: 'bottom',
+        delayMs: 0,
+      },
+      slots: {
+        default: '<button>Bottom</button>',
+      },
+    });
+
+    await wrapper.trigger('mouseenter');
+    await wrapper.vm.$nextTick();
+
+    const tooltip = wrapper.find('[role="tooltip"]');
+    expect(tooltip.classes()).toContain('top-full');
+  });
+
+  it('renders text label without kbd when shortcutId is not provided', async () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        text: 'Apenas Ajuda',
+        delayMs: 0,
+      },
+      slots: {
+        default: '<button>Text Only</button>',
+      },
+    });
+
+    await wrapper.trigger('mouseenter');
+    await wrapper.vm.$nextTick();
+
+    const tooltip = wrapper.find('[role="tooltip"]');
+    expect(tooltip.exists()).toBe(true);
+    expect(tooltip.text()).toBe('Apenas Ajuda');
+    expect(tooltip.find('kbd').exists()).toBe(false);
+  });
+
+  it('renders kbd without label when shortcut name is empty', async () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        shortcutId: 'empty-name-shortcut',
+        delayMs: 0,
+      },
+      slots: {
+        default: '<button>Kbd Only</button>',
+      },
+    });
+
+    await wrapper.trigger('mouseenter');
+    await wrapper.vm.$nextTick();
+
+    const tooltip = wrapper.find('[role="tooltip"]');
+    expect(tooltip.exists()).toBe(true);
+    expect(tooltip.find('span').exists()).toBe(false);
+    expect(tooltip.find('kbd').exists()).toBe(true);
+  });
+});
+
