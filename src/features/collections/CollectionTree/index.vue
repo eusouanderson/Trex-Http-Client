@@ -5,6 +5,7 @@ import type { CollectionItem } from '../interfaces';
 import type { CollectionTreeProps, CollectionTreeEmits } from './interfaces';
 import { useCollectionTree } from './use-collection-tree';
 import { ContextMenu } from '../../../shared/ui/ContextMenu';
+import { ShortcutTooltip } from '../../../shared/ui/ShortcutTooltip';
 import { CollectionRunnerModal } from '../CollectionRunnerModal';
 
 defineProps<CollectionTreeProps>();
@@ -96,14 +97,16 @@ const handleFileImport = (event: Event): void => {
             class="hidden"
             @change="handleFileImport"
           />
-          <button
-            type="button"
-            class="px-2 py-1 text-xs font-semibold text-dino-300 hover:text-dino-200 bg-dino-500/10 hover:bg-dino-500/20 border border-dino-500/30 rounded flex items-center gap-1 transition-colors"
-            @click="addNewCollection()"
-          >
-            <span>+</span>
-            <span>Nova</span>
-          </button>
+          <shortcut-tooltip shortcut-id="new-collection" position="bottom">
+            <button
+              type="button"
+              class="px-2 py-1 text-xs font-semibold text-dino-300 hover:text-dino-200 bg-dino-500/10 hover:bg-dino-500/20 border border-dino-500/30 rounded flex items-center gap-1 transition-colors"
+              @click="addNewCollection()"
+            >
+              <span>+</span>
+              <span>Nova</span>
+            </button>
+          </shortcut-tooltip>
         </div>
       </div>
 
@@ -202,15 +205,17 @@ const handleFileImport = (event: Event): void => {
             @click.stop
             @dblclick.stop
           >
-            <button
-              type="button"
-              title="Nova Requisição"
-              class="w-5 h-5 flex items-center justify-center text-xs text-dino-400 hover:bg-surface-border rounded"
-              @click.stop="addNewRequest(collection.id)"
-              @dblclick.stop
-            >
-              +
-            </button>
+            <shortcut-tooltip shortcut-id="new-tab" position="top">
+              <button
+                type="button"
+                title="Nova Requisição"
+                class="w-5 h-5 flex items-center justify-center text-xs text-dino-400 hover:bg-surface-border rounded"
+                @click.stop="addNewRequest(collection.id)"
+                @dblclick.stop
+              >
+                +
+              </button>
+            </shortcut-tooltip>
             <button
               type="button"
               title="Excluir Coleção"
