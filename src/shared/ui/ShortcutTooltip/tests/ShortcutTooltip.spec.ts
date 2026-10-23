@@ -76,7 +76,7 @@ describe('ShortcutTooltip component', () => {
 
     const tooltip = wrapper.find('[role="tooltip"]');
     expect(tooltip.exists()).toBe(true);
-    expect(tooltip.text()).toContain('Executar Botão');
+    expect(tooltip.text()).toBe('Ctrl + B');
     expect(tooltip.find('kbd').exists()).toBe(true);
 
     await wrapper.trigger('mouseleave');
@@ -181,6 +181,27 @@ describe('ShortcutTooltip component', () => {
     expect(tooltip.exists()).toBe(true);
     expect(tooltip.find('span').exists()).toBe(false);
     expect(tooltip.find('kbd').exists()).toBe(true);
+  });
+
+  it('renders both custom text label and shortcut kbd when both are provided', async () => {
+    const wrapper = mount(ShortcutTooltip, {
+      props: {
+        shortcutId: 'test-button-shortcut',
+        text: 'Custom',
+        delayMs: 0,
+      },
+      slots: {
+        default: '<button>Custom</button>',
+      },
+    });
+
+    await wrapper.trigger('mouseenter');
+    await wrapper.vm.$nextTick();
+
+    const tooltip = wrapper.find('[role="tooltip"]');
+    expect(tooltip.exists()).toBe(true);
+    expect(tooltip.find('span').text()).toBe('Custom');
+    expect(tooltip.find('kbd').text()).toBe('Ctrl + B');
   });
 });
 

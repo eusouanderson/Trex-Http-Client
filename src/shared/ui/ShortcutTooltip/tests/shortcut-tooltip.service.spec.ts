@@ -101,7 +101,7 @@ describe('ShortcutTooltipService', () => {
   });
 
   describe('resolveTooltipContent', () => {
-    it('resolves name and formatted combo when shortcut exists and text is omitted', () => {
+    it('resolves formatted combo and empty label when shortcut exists and text is omitted', () => {
       const service = new ShortcutTooltipService(
         createMockRegistry(mockShortcut),
         createMockPlatform('Ctrl + Enter'),
@@ -111,7 +111,7 @@ describe('ShortcutTooltipService', () => {
       });
 
       expect(result).toEqual({
-        label: 'Ação de Teste',
+        label: '',
         shortcutKey: 'Ctrl + Enter',
       });
     });

@@ -48,13 +48,10 @@ class ShortcutTooltipService implements IShortcutTooltipService {
         ? this.registry.get(props.shortcutId)
         : undefined;
 
-    let label = props.text ?? '';
+    const label = props.text ?? '';
     let shortcutKey = '';
 
     if (shortcut !== undefined) {
-      if (label.length === 0) {
-        label = shortcut.name;
-      }
       const combo = this.registry.getActiveCombo(shortcut);
       shortcutKey = this.platform.formatKeyCombo(combo);
     }
