@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { defineComponent, reactive } from 'vue';
 import { mount } from '@vue/test-utils';
-import type { IShortcutTooltipService, ShortcutTooltipProps } from '../interfaces';
+import type {
+  IShortcutTooltipService,
+  ShortcutTooltipProps,
+  TooltipPositionStyle,
+} from '../interfaces';
 import { useShortcutTooltip } from '../use-shortcut-tooltip';
 
 describe('useShortcutTooltip', () => {
@@ -14,16 +18,33 @@ describe('useShortcutTooltip', () => {
     vi.useRealTimers();
   });
 
+  const mockStyle: TooltipPositionStyle = {
+    top: '94px',
+    left: '230px',
+    transform: 'translate(-50%, -100%)',
+  };
+
   const createMockService = (
     label = 'Enviar Requisição',
     shortcutKey = 'Ctrl + Enter',
-    positionClass = 'bottom-full left-1/2 -translate-x-1/2 mb-1.5',
+    tooltipStyle: TooltipPositionStyle = mockStyle,
   ): IShortcutTooltipService => {
     return {
-      getPositionClass: () => positionClass,
+      calculateTooltipStyle: () => tooltipStyle,
       resolveTooltipContent: () => ({ label, shortcutKey }),
     };
   };
+
+  const TestComponent = defineComponent({
+    props: {
+      shortcutId: { type: String, default: 'send-request' },
+      delayMs: { type: Number, default: 0 },
+    },
+    setup(props) {
+      return { ...useShortcutTooltip(props, createMockService()) };
+    },
+    template: '<div ref="triggerRef"><button>Trigger</button></div>',
+  });
 
   it('initializes with hidden state and computes values from service', () => {
     const props = reactive<ShortcutTooltipProps>({
@@ -31,12 +52,14 @@ describe('useShortcutTooltip', () => {
       position: 'top',
     });
     const service = createMockService();
-    const { isVisible, label, shortcutKey, positionClass } = useShortcutTooltip(props, service);
+    const { isVisible, label, shortcutKey, tooltipStyle, triggerRef } =
+      useShortcutTooltip(props, service);
 
     expect(isVisible.value).toBe(false);
     expect(label.value).toBe('Enviar Requisição');
     expect(shortcutKey.value).toBe('Ctrl + Enter');
-    expect(positionClass.value).toBe('bottom-full left-1/2 -translate-x-1/2 mb-1.5');
+    expect(tooltipStyle.value).toEqual(mockStyle);
+    expect(triggerRef.value).toBeNull();
   });
 
   it('shows tooltip immediately when delayMs is 0 or negative', () => {
@@ -149,20 +172,45 @@ describe('useShortcutTooltip', () => {
     expect(isVisible.value).toBe(false);
   });
 
-  it('clears active timer when component unmounts', () => {
-    const service = createMockService();
-    const TestComponent = defineComponent({
-      props: {
-        shortcutId: { type: String, default: 'send-request' },
-        delayMs: { type: Number, default: 300 },
-      },
-      setup(props) {
-        return { ...useShortcutTooltip(props, service) };
-      },
-      template: '<div />',
+  it('updates position and handles window scroll and resize in mounted component', () => {
+    const wrapper = mount(TestComponent, { attachTo: document.body });
+    const triggerEl = wrapper.element as HTMLElement;
+    vi.spyOn(triggerEl, 'getBoundingClientRect').mockReturnValue({
+      top: 50,
+      bottom: 80,
+      left: 100,
+      right: 150,
+      width: 50,
+      height: 30,
+      x: 100,
+      y: 50,
+      toJSON: vi.fn(),
     });
 
-    const wrapper = mount(TestComponent);
+    wrapper.vm.show();
+    expect(wrapper.vm.isVisible).toBe(true);
+
+    window.dispatchEvent(new Event('scroll'));
+    expect(wrapper.vm.isVisible).toBe(false);
+
+    window.dispatchEvent(new Event('resize'));
+    expect(wrapper.vm.isVisible).toBe(false);
+
+    wrapper.vm.show();
+    expect(wrapper.vm.isVisible).toBe(true);
+    window.dispatchEvent(new Event('resize'));
+    expect(wrapper.vm.isVisible).toBe(false);
+
+    wrapper.unmount();
+  });
+
+  it('clears active timer when component unmounts', () => {
+    const wrapper = mount(TestComponent, {
+      props: {
+        delayMs: 300,
+      },
+    });
+
     wrapper.vm.show();
     expect(wrapper.vm.isVisible).toBe(false);
 
@@ -170,4 +218,3 @@ describe('useShortcutTooltip', () => {
     vi.advanceTimersByTime(500);
   });
 });
-
