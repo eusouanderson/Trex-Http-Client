@@ -9,6 +9,7 @@ import type {
   ShortcutTooltipContent,
   ShortcutTooltipPosition,
   ShortcutTooltipProps,
+  TooltipPositionStyle,
   UseShortcutTooltipReturn,
 } from './interfaces';
 
@@ -24,6 +25,6 @@ export type {
   ShortcutTooltipContent,
   ShortcutTooltipPosition,
   ShortcutTooltipProps,
+  TooltipPositionStyle,
   UseShortcutTooltipReturn,
 };
-

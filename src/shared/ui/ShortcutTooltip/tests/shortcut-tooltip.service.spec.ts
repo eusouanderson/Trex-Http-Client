@@ -48,60 +48,100 @@ describe('ShortcutTooltipService', () => {
     };
   };
 
-  describe('getPositionClass', () => {
-    it('returns correct class for bottom position', () => {
+  const mockRect = {
+    top: 100,
+    bottom: 130,
+    left: 200,
+    right: 260,
+    width: 60,
+    height: 30,
+    x: 200,
+    y: 100,
+    toJSON: () => ({}),
+  } as DOMRect;
+
+  describe('calculateTooltipStyle', () => {
+    it('returns zero position when rect is null', () => {
       const service = new ShortcutTooltipService(
         createMockRegistry(),
         createMockPlatform(),
       );
-      expect(service.getPositionClass('bottom')).toBe(
-        'top-full left-1/2 -translate-x-1/2 mt-1.5',
-      );
+      expect(service.calculateTooltipStyle(null, 'top')).toEqual({
+        top: '0px',
+        left: '0px',
+        transform: 'none',
+      });
     });
 
-    it('returns correct class for left position', () => {
+    it('returns correct style for bottom position', () => {
       const service = new ShortcutTooltipService(
         createMockRegistry(),
         createMockPlatform(),
       );
-      expect(service.getPositionClass('left')).toBe(
-        'right-full top-1/2 -translate-y-1/2 mr-1.5',
-      );
+      expect(service.calculateTooltipStyle(mockRect, 'bottom')).toEqual({
+        top: '136px',
+        left: '230px',
+        transform: 'translate(-50%, 0)',
+      });
     });
 
-    it('returns correct class for right position', () => {
+    it('returns correct style for left position', () => {
       const service = new ShortcutTooltipService(
         createMockRegistry(),
         createMockPlatform(),
       );
-      expect(service.getPositionClass('right')).toBe(
-        'left-full top-1/2 -translate-y-1/2 ml-1.5',
-      );
+      expect(service.calculateTooltipStyle(mockRect, 'left')).toEqual({
+        top: '115px',
+        left: '194px',
+        transform: 'translate(-100%, -50%)',
+      });
     });
 
-    it('returns default class for top position', () => {
+    it('returns correct style for right position', () => {
       const service = new ShortcutTooltipService(
         createMockRegistry(),
         createMockPlatform(),
       );
-      expect(service.getPositionClass('top')).toBe(
-        'bottom-full left-1/2 -translate-x-1/2 mb-1.5',
-      );
+      expect(service.calculateTooltipStyle(mockRect, 'right')).toEqual({
+        top: '115px',
+        left: '266px',
+        transform: 'translate(0, -50%)',
+      });
     });
 
-    it('returns default class when position is undefined', () => {
+    it('returns default style for top position', () => {
       const service = new ShortcutTooltipService(
         createMockRegistry(),
         createMockPlatform(),
       );
-      expect(service.getPositionClass(undefined)).toBe(
-        'bottom-full left-1/2 -translate-x-1/2 mb-1.5',
+      expect(service.calculateTooltipStyle(mockRect, 'top')).toEqual({
+        top: '94px',
+        left: '230px',
+        transform: 'translate(-50%, -100%)',
+      });
+    });
+
+    it('returns default style when position is undefined', () => {
+      const service = new ShortcutTooltipService(
+        createMockRegistry(),
+        createMockPlatform(),
       );
+      expect(service.calculateTooltipStyle(mockRect, undefined)).toEqual({
+        top: '94px',
+        left: '230px',
+        transform: 'translate(-50%, -100%)',
+      });
+    });
+
+    it('uses singleton instance with default dependencies', () => {
+      expect(shortcutTooltipService).toBeInstanceOf(ShortcutTooltipService);
+      const style = shortcutTooltipService.calculateTooltipStyle(mockRect);
+      expect(style.top).toBe('94px');
     });
   });
 
   describe('resolveTooltipContent', () => {
-    it('resolves name and formatted combo when shortcut exists and text is omitted', () => {
+    it('resolves formatted combo and empty label when shortcut exists and text is omitted', () => {
       const service = new ShortcutTooltipService(
         createMockRegistry(mockShortcut),
         createMockPlatform('Ctrl + Enter'),
@@ -111,7 +151,7 @@ describe('ShortcutTooltipService', () => {
       });
 
       expect(result).toEqual({
-        label: 'Ação de Teste',
+        label: '',
         shortcutKey: 'Ctrl + Enter',
       });
     });
@@ -175,12 +215,5 @@ describe('ShortcutTooltipService', () => {
         shortcutKey: '',
       });
     });
-
-    it('uses singleton instance with default dependencies', () => {
-      expect(shortcutTooltipService).toBeInstanceOf(ShortcutTooltipService);
-      const pos = shortcutTooltipService.getPositionClass();
-      expect(pos).toBe('bottom-full left-1/2 -translate-x-1/2 mb-1.5');
-    });
   });
 });
-
