@@ -144,6 +144,24 @@ const useRequest = (): UseRequestReturn => {
     if (patch.testScript !== undefined) {
       collectionPatch.testScript = patch.testScript;
     }
+    if (patch.headers !== undefined) {
+      const headersRecord: Record<string, string> = {};
+      patch.headers.forEach((h) => {
+        if (h.key.trim().length > 0) {
+          headersRecord[h.key] = h.value;
+        }
+      });
+      collectionPatch.headers = headersRecord;
+    }
+    if (patch.params !== undefined) {
+      const paramsRecord: Record<string, string> = {};
+      patch.params.forEach((p) => {
+        if (p.key.trim().length > 0) {
+          paramsRecord[p.key] = p.value;
+        }
+      });
+      collectionPatch.params = paramsRecord;
+    }
 
     if (Object.keys(collectionPatch).length > 0) {
       const { updateItemById } = useCollections();

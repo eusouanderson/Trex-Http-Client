@@ -277,4 +277,37 @@ describe('useRequest', () => {
 
     expect(executionResult.value?.testResults?.totalPassed).toBe(1);
   });
+
+  it('should persist headers and params in collection item on updateActiveTab', () => {
+    const { createTab, setActiveTab, updateActiveTab } = useRequest();
+    const { collections } = useCollections();
+
+    const targetItem = collections.value[0]?.items[0];
+    expect(targetItem).toBeDefined();
+    if (!targetItem) {
+      return;
+    }
+
+    const tab = createTab({
+      id: targetItem.id,
+      name: 'Req Headers Params',
+    });
+    setActiveTab(tab.id);
+
+    updateActiveTab({
+      headers: [
+        { id: 'h1', key: 'X-Trex-Id', value: '42', enabled: true },
+        { id: 'h2', key: '   ', value: 'ignore', enabled: true },
+      ],
+      params: [
+        { id: 'p1', key: 'page', value: '5', enabled: true },
+        { id: 'p2', key: '', value: 'ignore', enabled: true },
+      ],
+    });
+
+    const updatedCol = collections.value[0];
+    const updatedItem = updatedCol?.items.find((i) => i.id === targetItem.id);
+    expect(updatedItem?.headers).toEqual({ 'X-Trex-Id': '42' });
+    expect(updatedItem?.params).toEqual({ page: '5' });
+  });
 });

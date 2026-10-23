@@ -3,6 +3,8 @@ import type {
   ShortcutCategory,
   ShortcutConflict,
 } from '../../core/shortcuts/interfaces';
+import type { Collection, CreateItemInput } from '../collections/interfaces';
+import type { RequestTab } from '../request/interfaces';
 
 interface ShortcutItemViewModel {
   id: string;
@@ -25,6 +27,27 @@ interface CommandPaletteItem {
   action: () => void | Promise<void>;
 }
 
+interface ShortcutRequestGenerationResult {
+  itemInput: CreateItemInput;
+  tabInput: Omit<RequestTab, 'id'>;
+}
+
+interface IShortcutRequestService {
+  resolveTargetCollection(
+    collections: Collection[],
+    activeTab?: RequestTab | null,
+    selectedItemId?: string | null,
+  ): Collection | null;
+  createNewRequest(
+    targetCollectionId: string,
+    initial?: Partial<CreateItemInput>,
+  ): ShortcutRequestGenerationResult;
+  duplicateRequest(
+    sourceTab: RequestTab,
+    targetCollectionId: string,
+  ): ShortcutRequestGenerationResult;
+}
+
 interface UseShortcutsReturn {
   shortcuts: ComputedRef<ShortcutItemViewModel[]>;
   searchQuery: Ref<string>;
@@ -41,6 +64,9 @@ interface UseShortcutsReturn {
 export type {
   ShortcutItemViewModel,
   CommandPaletteItem,
+  ShortcutRequestGenerationResult,
+  IShortcutRequestService,
   UseShortcutsReturn,
 };
+
 
