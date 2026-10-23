@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.16.1...v1.17.0) (2026-10-23)
+
+
+### Features
+
+* **shortcuts:** adicionar tooltips com atalhos de teclado nos botoes ([b504fee](https://github.com/eusouanderson/Trex-Http-Client/commit/b504fee95f25698ee785685409c9a897789b4281))
+
 ## [1.16.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.16.0...v1.16.1) (2026-10-23)
 
 
