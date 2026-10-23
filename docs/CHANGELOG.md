@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.16.0...v1.16.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **shortcuts:** persistir requisicoes criadas e duplicadas via atalhos em colecoes ([#36](https://github.com/eusouanderson/Trex-Http-Client/issues/36)) ([d361d6d](https://github.com/eusouanderson/Trex-Http-Client/commit/d361d6d18cc92582fbd901251bc406209c4b5546))
+
 # [1.16.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.15.0...v1.16.0) (2026-10-22)
 
 
