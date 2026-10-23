@@ -6,6 +6,7 @@ import { useRequest } from '../request';
 import { useSettings } from '../settings';
 import type { SettingsTab } from '../settings/SettingsModal/interfaces';
 import type { ShortcutItemViewModel, UseShortcutsReturn } from './interfaces';
+import { shortcutRequestService } from './shortcut-request.service';
 
 const isCommandPaletteOpenState = ref<boolean>(false);
 const searchQueryState = ref<string>('');
@@ -168,20 +169,25 @@ const registerDefaultShortcuts = (): void => {
       defaultKeyCombo: 'ctrl+shift+d',
       allowInInputs: false,
       action: () => {
-        const { activeTab, createTab } = useRequest();
-        if (activeTab.value) {
-          createTab({
-            name: `${activeTab.value.name} (Cópia)`,
-            method: activeTab.value.method,
-            url: activeTab.value.url,
-            params: activeTab.value.params.map((p) => ({ ...p, id: `p-${Date.now().toString()}-${Math.random().toString(36).slice(2, 6)}` })),
-            headers: activeTab.value.headers.map((h) => ({ ...h, id: `h-${Date.now().toString()}-${Math.random().toString(36).slice(2, 6)}` })),
-            bodyType: activeTab.value.bodyType,
-            body: activeTab.value.body,
-            auth: activeTab.value.auth,
-            testScript: activeTab.value.testScript,
-          });
+        const { activeTab, openTab } = useRequest();
+        if (!activeTab.value) {
+          return;
         }
+
+        const { collections, addItem, createCollection, selectItem } = useCollections();
+        const targetCol =
+          shortcutRequestService.resolveTargetCollection(
+            collections.value,
+            activeTab.value,
+          ) ?? createCollection('Coleção T-Rex');
+
+        const { itemInput, tabInput } = shortcutRequestService.duplicateRequest(
+          activeTab.value,
+          targetCol.id,
+        );
+        const item = addItem(targetCol.id, itemInput);
+        openTab({ ...tabInput, id: item.id });
+        selectItem(item.id);
       },
     },
     {
@@ -194,7 +200,17 @@ const registerDefaultShortcuts = (): void => {
       action: () => {
         const { activeTab, updateActiveTab } = useRequest();
         if (activeTab.value) {
-          updateActiveTab({ isDirty: false });
+          updateActiveTab({
+            isDirty: false,
+            name: activeTab.value.name,
+            method: activeTab.value.method,
+            url: activeTab.value.url,
+            body: activeTab.value.body,
+            headers: activeTab.value.headers,
+            params: activeTab.value.params,
+            auth: activeTab.value.auth,
+            testScript: activeTab.value.testScript,
+          });
         }
       },
     },
@@ -225,8 +241,19 @@ const registerDefaultShortcuts = (): void => {
       defaultKeyCombo: 'ctrl+alt+n',
       allowInInputs: false,
       action: () => {
-        const { createTab } = useRequest();
-        createTab();
+        const { collections, addItem, createCollection, selectItem } = useCollections();
+        const { activeTab, openTab } = useRequest();
+        const targetCol =
+          shortcutRequestService.resolveTargetCollection(
+            collections.value,
+            activeTab.value,
+          ) ?? createCollection('Coleção T-Rex');
+        const { itemInput, tabInput } = shortcutRequestService.createNewRequest(
+          targetCol.id,
+        );
+        const item = addItem(targetCol.id, itemInput);
+        openTab({ ...tabInput, id: item.id });
+        selectItem(item.id);
       },
     },
     {
