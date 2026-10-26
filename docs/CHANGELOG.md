@@ -1,3 +1,11 @@
+## [1.17.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.17.0...v1.17.1) (2026-10-26)
+
+
+### Bug Fixes
+
+* **shortcuts:** exibir apenas atalho de forma discreta no tooltip ([95eec90](https://github.com/eusouanderson/Trex-Http-Client/commit/95eec90935528dd4001371171e509dfab845f63c))
+* **shortcuts:** teleportar tooltip para o body com posicionamento fixo ([999a0f8](https://github.com/eusouanderson/Trex-Http-Client/commit/999a0f82355266aa880b5ad139fb461c4d6a8c60))
+
 # [1.17.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.16.1...v1.17.0) (2026-10-23)
 
 
