@@ -11,6 +11,7 @@ import type {
   ShortcutTooltipContent,
   ShortcutTooltipPosition,
   ShortcutTooltipProps,
+  TooltipPositionStyle,
 } from './interfaces';
 
 class ShortcutTooltipService implements IShortcutTooltipService {
@@ -25,19 +26,47 @@ class ShortcutTooltipService implements IShortcutTooltipService {
     this.platform = platform;
   }
 
-  public readonly getPositionClass = (
+  public readonly calculateTooltipStyle = (
+    rect: DOMRect | null,
     position?: ShortcutTooltipPosition,
-  ): string => {
+  ): TooltipPositionStyle => {
+    if (rect === null) {
+      return {
+        top: '0px',
+        left: '0px',
+        transform: 'none',
+      };
+    }
+
     if (position === 'bottom') {
-      return 'top-full left-1/2 -translate-x-1/2 mt-1.5';
+      return {
+        top: `${(rect.bottom + 6).toString()}px`,
+        left: `${(rect.left + rect.width / 2).toString()}px`,
+        transform: 'translate(-50%, 0)',
+      };
     }
+
     if (position === 'left') {
-      return 'right-full top-1/2 -translate-y-1/2 mr-1.5';
+      return {
+        top: `${(rect.top + rect.height / 2).toString()}px`,
+        left: `${(rect.left - 6).toString()}px`,
+        transform: 'translate(-100%, -50%)',
+      };
     }
+
     if (position === 'right') {
-      return 'left-full top-1/2 -translate-y-1/2 ml-1.5';
+      return {
+        top: `${(rect.top + rect.height / 2).toString()}px`,
+        left: `${(rect.right + 6).toString()}px`,
+        transform: 'translate(0, -50%)',
+      };
     }
-    return 'bottom-full left-1/2 -translate-x-1/2 mb-1.5';
+
+    return {
+      top: `${(rect.top - 6).toString()}px`,
+      left: `${(rect.left + rect.width / 2).toString()}px`,
+      transform: 'translate(-50%, -100%)',
+    };
   };
 
   public readonly resolveTooltipContent = (
@@ -48,13 +77,10 @@ class ShortcutTooltipService implements IShortcutTooltipService {
         ? this.registry.get(props.shortcutId)
         : undefined;
 
-    let label = props.text ?? '';
+    const label = props.text ?? '';
     let shortcutKey = '';
 
     if (shortcut !== undefined) {
-      if (label.length === 0) {
-        label = shortcut.name;
-      }
       const combo = this.registry.getActiveCombo(shortcut);
       shortcutKey = this.platform.formatKeyCombo(combo);
     }
@@ -66,4 +92,3 @@ class ShortcutTooltipService implements IShortcutTooltipService {
 const shortcutTooltipService = new ShortcutTooltipService();
 
 export { ShortcutTooltipService, shortcutTooltipService };
-

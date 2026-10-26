@@ -36,6 +36,21 @@ describe('ShortcutTooltip component', () => {
     shortcutRegistryService.unregister('empty-name-shortcut');
   });
 
+  const mountTooltip = (
+    props: Record<string, unknown> = {},
+    slots: Record<string, string> = { default: '<button id="btn">Click</button>' },
+  ): ReturnType<typeof mount> => {
+    return mount(ShortcutTooltip, {
+      props,
+      slots,
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
+    });
+  };
+
   it('exports public API items properly from index', () => {
     expect(ShortcutTooltip).toBeDefined();
     expect(ShortcutTooltipService).toBeDefined();
@@ -44,14 +59,10 @@ describe('ShortcutTooltip component', () => {
   });
 
   it('renders slot content correctly', () => {
-    const wrapper = mount(ShortcutTooltip, {
-      props: {
-        shortcutId: 'test-button-shortcut',
-      },
-      slots: {
-        default: '<button id="my-btn">Meu Botão</button>',
-      },
-    });
+    const wrapper = mountTooltip(
+      { shortcutId: 'test-button-shortcut' },
+      { default: '<button id="my-btn">Meu Botão</button>' },
+    );
 
     expect(wrapper.find('#my-btn').exists()).toBe(true);
     expect(wrapper.find('#my-btn').text()).toBe('Meu Botão');
@@ -59,14 +70,10 @@ describe('ShortcutTooltip component', () => {
   });
 
   it('shows tooltip on mouseenter and hides on mouseleave with default delay', async () => {
-    const wrapper = mount(ShortcutTooltip, {
-      props: {
-        shortcutId: 'test-button-shortcut',
-      },
-      slots: {
-        default: '<button>Hover Me</button>',
-      },
-    });
+    const wrapper = mountTooltip(
+      { shortcutId: 'test-button-shortcut' },
+      { default: '<button>Hover Me</button>' },
+    );
 
     await wrapper.trigger('mouseenter');
     expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
@@ -76,7 +83,7 @@ describe('ShortcutTooltip component', () => {
 
     const tooltip = wrapper.find('[role="tooltip"]');
     expect(tooltip.exists()).toBe(true);
-    expect(tooltip.text()).toContain('Executar Botão');
+    expect(tooltip.text()).toBe('Ctrl + B');
     expect(tooltip.find('kbd').exists()).toBe(true);
 
     await wrapper.trigger('mouseleave');
@@ -85,15 +92,13 @@ describe('ShortcutTooltip component', () => {
   });
 
   it('shows tooltip immediately on focusin when delayMs is 0 and hides on focusout', async () => {
-    const wrapper = mount(ShortcutTooltip, {
-      props: {
+    const wrapper = mountTooltip(
+      {
         shortcutId: 'test-button-shortcut',
         delayMs: 0,
       },
-      slots: {
-        default: '<button>Focus Me</button>',
-      },
-    });
+      { default: '<button>Focus Me</button>' },
+    );
 
     await wrapper.trigger('focusin');
     await wrapper.vm.$nextTick();
@@ -107,16 +112,14 @@ describe('ShortcutTooltip component', () => {
   });
 
   it('does not display tooltip when disabled prop is true', async () => {
-    const wrapper = mount(ShortcutTooltip, {
-      props: {
+    const wrapper = mountTooltip(
+      {
         shortcutId: 'test-button-shortcut',
         disabled: true,
         delayMs: 0,
       },
-      slots: {
-        default: '<button>Disabled Tooltip</button>',
-      },
-    });
+      { default: '<button>Disabled Tooltip</button>' },
+    );
 
     await wrapper.trigger('mouseenter');
     await wrapper.vm.$nextTick();
@@ -124,35 +127,32 @@ describe('ShortcutTooltip component', () => {
     expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
   });
 
-  it('applies custom position classes', async () => {
-    const wrapper = mount(ShortcutTooltip, {
-      props: {
+  it('applies custom position style for bottom position', async () => {
+    const wrapper = mountTooltip(
+      {
         shortcutId: 'test-button-shortcut',
         position: 'bottom',
         delayMs: 0,
       },
-      slots: {
-        default: '<button>Bottom</button>',
-      },
-    });
+      { default: '<button>Bottom</button>' },
+    );
 
     await wrapper.trigger('mouseenter');
     await wrapper.vm.$nextTick();
 
     const tooltip = wrapper.find('[role="tooltip"]');
-    expect(tooltip.classes()).toContain('top-full');
+    expect(tooltip.exists()).toBe(true);
+    expect(tooltip.attributes('style')).toContain('translate(-50%, 0)');
   });
 
   it('renders text label without kbd when shortcutId is not provided', async () => {
-    const wrapper = mount(ShortcutTooltip, {
-      props: {
+    const wrapper = mountTooltip(
+      {
         text: 'Apenas Ajuda',
         delayMs: 0,
       },
-      slots: {
-        default: '<button>Text Only</button>',
-      },
-    });
+      { default: '<button>Text Only</button>' },
+    );
 
     await wrapper.trigger('mouseenter');
     await wrapper.vm.$nextTick();
@@ -164,15 +164,13 @@ describe('ShortcutTooltip component', () => {
   });
 
   it('renders kbd without label when shortcut name is empty', async () => {
-    const wrapper = mount(ShortcutTooltip, {
-      props: {
+    const wrapper = mountTooltip(
+      {
         shortcutId: 'empty-name-shortcut',
         delayMs: 0,
       },
-      slots: {
-        default: '<button>Kbd Only</button>',
-      },
-    });
+      { default: '<button>Kbd Only</button>' },
+    );
 
     await wrapper.trigger('mouseenter');
     await wrapper.vm.$nextTick();
@@ -182,5 +180,23 @@ describe('ShortcutTooltip component', () => {
     expect(tooltip.find('span').exists()).toBe(false);
     expect(tooltip.find('kbd').exists()).toBe(true);
   });
-});
 
+  it('renders both custom text label and shortcut kbd when both are provided', async () => {
+    const wrapper = mountTooltip(
+      {
+        shortcutId: 'test-button-shortcut',
+        text: 'Custom',
+        delayMs: 0,
+      },
+      { default: '<button>Custom</button>' },
+    );
+
+    await wrapper.trigger('mouseenter');
+    await wrapper.vm.$nextTick();
+
+    const tooltip = wrapper.find('[role="tooltip"]');
+    expect(tooltip.exists()).toBe(true);
+    expect(tooltip.find('span').text()).toBe('Custom');
+    expect(tooltip.find('kbd').text()).toBe('Ctrl + B');
+  });
+});
