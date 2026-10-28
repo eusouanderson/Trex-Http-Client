@@ -40,6 +40,7 @@ const {
   activeEnvironmentName,
   totalEnvironments,
   openEnvironmentManager,
+  issuesUrl,
 } = useSettingsModal({
   onOpenEnvironmentManager: () => {
     emit('openEnvironmentManager');
@@ -287,6 +288,28 @@ const isCustomTheme = (themeId: string): boolean => {
                 >
                   Abrir
                 </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block mb-2 text-xs font-semibold text-bone-200">Feedback e Sugestões</label>
+              <div class="flex items-center justify-between p-3 rounded-lg border border-surface-border bg-surface-ground/30">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">💡</span>
+                  <div>
+                    <span class="text-xs font-medium text-bone-100 block">Reportar Bugs ou Propor Features</span>
+                    <span class="text-[11px] text-fossil-400">Encontrou algum problema ou tem sugestões? Abra uma issue no GitHub</span>
+                  </div>
+                </div>
+                <a
+                  :href="issuesUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-fossil-300 hover:text-bone-100 bg-surface-card hover:bg-surface-hover border border-surface-border rounded-lg transition-colors cursor-pointer"
+                >
+                  <span>Reportar Issue</span>
+                  <span class="text-[10px] text-fossil-500">↗</span>
+                </a>
               </div>
             </div>
           </div>
@@ -563,16 +586,25 @@ const isCustomTheme = (themeId: string): boolean => {
         <div class="flex items-center gap-4">
           <button
             type="button"
-            class="text-xs transition-colors text-fossil-400 hover:text-magma-400"
+            class="text-xs transition-colors text-fossil-400 hover:text-magma-400 cursor-pointer"
             @click="resetAll"
           >
             Restaurar Padrões
           </button>
+          <a
+            :href="issuesUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs text-fossil-400 hover:text-dino-300 transition-colors flex items-center gap-1 cursor-pointer"
+          >
+            <span>Feedback / Bugs</span>
+            <span class="text-[10px]">↗</span>
+          </a>
           <span class="font-mono text-xs text-fossil-500">v{{ appVersion }} ({{ commitHash }})</span>
         </div>
         <button
           type="button"
-          class="px-4 py-2 text-xs font-semibold transition-colors rounded-lg bg-dino-500 hover:bg-dino-600 text-surface-ground"
+          class="px-4 py-2 text-xs font-semibold transition-colors rounded-lg bg-dino-500 hover:bg-dino-600 text-surface-ground cursor-pointer"
           @click="close"
         >
           Concluído

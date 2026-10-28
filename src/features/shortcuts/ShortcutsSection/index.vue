@@ -49,24 +49,24 @@ const {
       </button>
     </div>
 
-    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-      <div class="relative flex-1">
+    <div class="space-y-3">
+      <div class="relative w-full">
         <input
           v-model="searchQuery"
           type="text"
           placeholder="Buscar atalho por nome, descrição ou tecla..."
           aria-label="Buscar atalho"
-          class="w-full bg-surface-ground border border-surface-border rounded-lg pl-8 pr-3 py-1.5 text-xs text-bone-100 placeholder-fossil-500 focus:outline-none focus:border-dino-400"
+          class="w-full bg-surface-ground border border-surface-border rounded-lg pl-8 pr-3 py-2 text-xs text-bone-100 placeholder-fossil-500 focus:outline-none focus:border-dino-400 transition-colors"
         />
-        <span class="absolute left-2.5 top-1.5 text-xs text-fossil-400">🔍</span>
+        <span class="absolute left-2.5 top-2.5 text-xs text-fossil-400">🔍</span>
       </div>
 
-      <div class="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
         <button
           v-for="cat in categories"
           :key="cat.id"
           type="button"
-          class="px-2.5 py-1 text-[11px] font-medium rounded-lg whitespace-nowrap transition-colors cursor-pointer"
+          class="px-2.5 py-1 text-[11px] font-medium rounded-lg whitespace-nowrap transition-colors cursor-pointer shrink-0"
           :class="selectedCategory === cat.id
             ? 'bg-dino-500 text-surface-ground font-bold'
             : 'bg-surface-ground border border-surface-border text-fossil-300 hover:bg-surface-hover hover:text-bone-100'"

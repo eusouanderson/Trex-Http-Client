@@ -405,5 +405,19 @@ describe('SettingsModal Component', () => {
     await defaultBtn?.trigger('click');
     expect(settings.value.panelLayout).toBe('default');
   });
+
+  it('should render link to github issues in general tab and footer', () => {
+    const wrapper = mount(SettingsModal);
+
+    const issuesLinks = wrapper
+      .findAll('a')
+      .filter((a) => a.attributes('href') === 'https://github.com/eusouanderson/Trex-Http-Client/issues');
+
+    expect(issuesLinks.length).toBeGreaterThanOrEqual(1);
+    issuesLinks.forEach((link) => {
+      expect(link.attributes('target')).toBe('_blank');
+      expect(link.attributes('rel')).toContain('noopener');
+    });
+  });
 });
 
