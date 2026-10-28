@@ -260,6 +260,18 @@ class DocOrchestratorService implements IDocOrchestratorService {
       });
     }
 
+    const demoEndpointsGuidePath = join(this.projectRoot, 'docs', 'demo-endpoints-guide.md');
+    if (this.fileSystem.existsSync(demoEndpointsGuidePath)) {
+      const content = this.fileSystem.readFileSync(demoEndpointsGuidePath, 'utf-8');
+      guides.push({
+        id: 'demo-endpoints-guide',
+        title: 'Guia de Endpoints Próprios & Demonstrações HTTP',
+        description: 'Documentação dos endpoints integrados do Trex (GET, POST, PUT, DELETE, Auth Bearer/Basic/ApiKey, simulação de erros e atraso).',
+        fileName: 'demo-endpoints-guide',
+        content,
+      });
+    }
+
     const roadmapGuidePath = join(this.projectRoot, 'docs', 'future-features-roadmap.md');
     if (this.fileSystem.existsSync(roadmapGuidePath)) {
       const content = this.fileSystem.readFileSync(roadmapGuidePath, 'utf-8');

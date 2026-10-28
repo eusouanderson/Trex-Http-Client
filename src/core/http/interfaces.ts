@@ -85,7 +85,7 @@ interface IInterceptorManager<T> {
 }
 
 type InferSchemaType<TSchema, TFallback> =
-  TSchema extends z.ZodTypeAny ? z.infer<TSchema> : TFallback;
+  TSchema extends z.ZodType ? z.infer<TSchema> : TFallback;
 
 interface ITrexClient {
   get<T = unknown, S = unknown>(

@@ -19,6 +19,7 @@ Cliente HTTP moderno, ultrarrápido, offline-first e com temática jurássica di
 - 🏛️ **Manual de Arquitetura:** [Manual de Arquitetura do Sistema](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/architecture-guide.html)
 - ⌨️ **Manual de Atalhos de Teclado:** [Atalhos Globais & Paleta de Comandos](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/keyboard-shortcuts-guide.html)
 - 🧪 **Guia de Scripts de Teste:** [Guia Prático de Testes (tx.* / pm.*)](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/test-scripts-guide.html)
+- 🦖 **Guia de Endpoints Próprios & Demonstrações:** [Endpoints Públicos & Demonstrações HTTP](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/demo-endpoints-guide.html)
 - 🗺️ **Roadmap de Features Futuras:** [Planejamento & Especificações Técnicas](https://eusouanderson.github.io/Trex-Http-Client/docs/guides/future-features-roadmap.html)
 - 📖 **Referência TypeDoc da API:** [Explorar Símbolos & Classes](https://eusouanderson.github.io/Trex-Http-Client/docs/api/)
 

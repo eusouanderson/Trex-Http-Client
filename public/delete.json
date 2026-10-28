@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "message": "Registro de espécime fóssil removido do acervo com sucesso",
+  "endpoint": "https://eusouanderson.github.io/Trex-Http-Client/delete",
+  "source": "Trex HTTP Client Engine"
+}
+

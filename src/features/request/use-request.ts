@@ -16,7 +16,7 @@ const defaultTab: RequestTab = {
   id: 'req-dino-1',
   name: 'Listar Dinossauros',
   method: 'GET',
-  url: 'https://jsonplaceholder.typicode.com/posts',
+  url: 'https://eusouanderson.github.io/Trex-Http-Client/get',
   params: [{ id: 'p1', key: 'limit', value: '10', enabled: true }],
   headers: [{ id: 'h1', key: 'Accept', value: 'application/json', enabled: true }],
   bodyType: 'none',
@@ -28,9 +28,23 @@ const defaultTab: RequestTab = {
 
 const tabsState = ref<RequestTab[]>([defaultTab]);
 const activeTabIdState = ref<string>(defaultTab.id);
-const executionResultState = ref<ExecutionResult | null>(null);
-const validationIssuesState = ref<ValidationIssue[]>([]);
-const isLoadingState = ref<boolean>(false);
+const executionResultsByTabState = ref<Record<string, ExecutionResult | null>>({});
+const validationIssuesByTabState = ref<Record<string, ValidationIssue[]>>({});
+const loadingByTabState = ref<Record<string, boolean>>({});
+
+const removeKey = <T>(record: Record<string, T>, targetKey: string): Record<string, T> => {
+  const next: Record<string, T> = {};
+  for (const key of Object.keys(record)) {
+    if (key !== targetKey) {
+      const val = record[key];
+      if (val !== undefined) {
+        next[key] = val;
+      }
+    }
+  }
+  return next;
+};
+
 const requestRunner = new RequestRunnerService();
 const authRegistry = createDefaultAuthRegistry();
 const variableResolver = new VariableResolverService();
@@ -42,9 +56,9 @@ interface UseRequestReturn {
   tabs: typeof tabsState;
   activeTabId: typeof activeTabIdState;
   activeTab: ComputedRef<RequestTab | null>;
-  executionResult: typeof executionResultState;
-  validationIssues: typeof validationIssuesState;
-  isLoading: typeof isLoadingState;
+  executionResult: ComputedRef<ExecutionResult | null>;
+  validationIssues: ComputedRef<ValidationIssue[]>;
+  isLoading: ComputedRef<boolean>;
   openTab: (tab: RequestTab) => void;
   closeTab: (tabId: string) => void;
   setActiveTab: (tabId: string) => void;
@@ -55,7 +69,8 @@ interface UseRequestReturn {
   addHeader: () => void;
   removeHeader: (id: string) => void;
   sendRequest: (timeoutMs?: number) => Promise<void>;
-  clearValidationIssues: () => void;
+  setValidationIssues: (issues: ValidationIssue[], tabId?: string) => void;
+  clearValidationIssues: (tabId?: string) => void;
   reorderTabs: (newTabs: RequestTab[]) => void;
   renameTab: (tabId: string, name: string) => void;
 }
@@ -64,6 +79,30 @@ const useRequest = (): UseRequestReturn => {
   const activeTab = computed<RequestTab | null>(() => {
     const found = tabsState.value.find((t) => t.id === activeTabIdState.value);
     return found ?? tabsState.value[0] ?? null;
+  });
+
+  const executionResult = computed<ExecutionResult | null>(() => {
+    const targetId = activeTab.value?.id;
+    if (typeof targetId === 'string' && targetId.length > 0) {
+      return executionResultsByTabState.value[targetId] ?? null;
+    }
+    return null;
+  });
+
+  const validationIssues = computed<ValidationIssue[]>(() => {
+    const targetId = activeTab.value?.id;
+    if (typeof targetId === 'string' && targetId.length > 0) {
+      return validationIssuesByTabState.value[targetId] ?? [];
+    }
+    return [];
+  });
+
+  const isLoading = computed<boolean>(() => {
+    const targetId = activeTab.value?.id;
+    if (typeof targetId === 'string' && targetId.length > 0) {
+      return loadingByTabState.value[targetId] ?? false;
+    }
+    return false;
   });
 
   const setActiveTab = (tabId: string): void => {
@@ -85,6 +124,10 @@ const useRequest = (): UseRequestReturn => {
     }
     tabsState.value = tabsState.value.filter((t) => t.id !== tabId);
 
+    executionResultsByTabState.value = removeKey(executionResultsByTabState.value, tabId);
+    validationIssuesByTabState.value = removeKey(validationIssuesByTabState.value, tabId);
+    loadingByTabState.value = removeKey(loadingByTabState.value, tabId);
+
     if (tabsState.value.length === 0) {
       activeTabIdState.value = '';
       return;
@@ -105,7 +148,7 @@ const useRequest = (): UseRequestReturn => {
       id: `tab-${Date.now().toString()}-${uniqueSuffix}`,
       name: 'Nova Requisição',
       method: 'GET',
-      url: 'https://jsonplaceholder.typicode.com/todos/1',
+      url: 'https://eusouanderson.github.io/Trex-Http-Client/get',
       params: [],
       headers: [],
       bodyType: 'none',
@@ -222,28 +265,43 @@ const useRequest = (): UseRequestReturn => {
     });
   };
 
-  const clearValidationIssues = (): void => {
-    validationIssuesState.value = [];
+  const setValidationIssues = (issues: ValidationIssue[], tabId?: string): void => {
+    const targetId = typeof tabId === 'string' && tabId.length > 0 ? tabId : activeTab.value?.id;
+    if (typeof targetId === 'string' && targetId.length > 0) {
+      validationIssuesByTabState.value = {
+        ...validationIssuesByTabState.value,
+        [targetId]: [...issues],
+      };
+    }
+  };
+
+  const clearValidationIssues = (tabId?: string): void => {
+    setValidationIssues([], tabId);
   };
 
   const sendRequest = async (timeoutMs?: number): Promise<void> => {
-    if (!activeTab.value) {
+    const currentTab = activeTab.value;
+    if (!currentTab) {
       return;
     }
-    clearValidationIssues();
-    isLoadingState.value = true;
+    const tabId = currentTab.id;
+    clearValidationIssues(tabId);
+    loadingByTabState.value = {
+      ...loadingByTabState.value,
+      [tabId]: true,
+    };
     try {
       const { activeEnvironment } = useEnvironments();
       const { collections } = useCollections();
 
       const activeEnv = activeEnvironment.value;
       let parentCollection: Collection | null = null;
-      if (activeTab.value.collectionId !== undefined && activeTab.value.collectionId.length > 0) {
-        parentCollection = collections.value.find((c) => c.id === activeTab.value?.collectionId) ?? null;
+      if (currentTab.collectionId !== undefined && currentTab.collectionId.length > 0) {
+        parentCollection = collections.value.find((c) => c.id === currentTab.collectionId) ?? null;
       }
 
       const validationResult = requestValidator.validate(
-        activeTab.value,
+        currentTab,
         {
           environment: activeEnv,
           collection: parentCollection,
@@ -252,32 +310,38 @@ const useRequest = (): UseRequestReturn => {
       );
 
       if (!validationResult.isValid) {
-        validationIssuesState.value = validationResult.issues;
+        validationIssuesByTabState.value = {
+          ...validationIssuesByTabState.value,
+          [tabId]: validationResult.issues,
+        };
         const primaryIssue = validationResult.issues[0];
         const errorMessage = primaryIssue ? primaryIssue.message : 'Erro de validação preventiva';
-        executionResultState.value = {
-          status: 0,
-          statusText: 'Validation Error',
-          durationMs: 0,
-          sizeBytes: 0,
-          headers: {},
-          data: null,
-          error: errorMessage,
-          validationIssues: validationResult.issues,
+        executionResultsByTabState.value = {
+          ...executionResultsByTabState.value,
+          [tabId]: {
+            status: 0,
+            statusText: 'Validation Error',
+            durationMs: 0,
+            sizeBytes: 0,
+            headers: {},
+            data: null,
+            error: errorMessage,
+            validationIssues: validationResult.issues,
+          },
         };
         return;
       }
 
-      const prepared = await requestPreparationService.prepare(activeTab.value, {
+      const prepared = await requestPreparationService.prepare(currentTab, {
         environment: activeEnv,
         collection: parentCollection,
       });
 
-      const result = await requestRunner.execute(activeTab.value, timeoutMs, prepared);
+      const result = await requestRunner.execute(currentTab, timeoutMs, prepared);
 
       if (
-        activeTab.value.testScript !== undefined &&
-        activeTab.value.testScript.trim().length > 0
+        currentTab.testScript !== undefined &&
+        currentTab.testScript.trim().length > 0
       ) {
         const envVarsRecord: Record<string, string> = {};
         if (activeEnv) {
@@ -288,7 +352,7 @@ const useRequest = (): UseRequestReturn => {
           });
         }
 
-        const testReport = await scriptSandboxService.execute(activeTab.value.testScript, {
+        const testReport = await scriptSandboxService.execute(currentTab.testScript, {
           response: {
             status: result.status,
             statusText: result.statusText,
@@ -309,10 +373,22 @@ const useRequest = (): UseRequestReturn => {
         }
       }
 
-      executionResultState.value = result;
-      updateActiveTab({ status: result.status });
+      executionResultsByTabState.value = {
+        ...executionResultsByTabState.value,
+        [tabId]: result,
+      };
+
+      const tabInState = tabsState.value.find((t) => t.id === tabId);
+      if (tabInState) {
+        tabInState.status = result.status;
+        const { updateItemById } = useCollections();
+        updateItemById(tabId, { status: result.status });
+      }
     } finally {
-      isLoadingState.value = false;
+      loadingByTabState.value = {
+        ...loadingByTabState.value,
+        [tabId]: false,
+      };
     }
   };
 
@@ -333,9 +409,9 @@ const useRequest = (): UseRequestReturn => {
     tabs: tabsState,
     activeTabId: activeTabIdState,
     activeTab,
-    executionResult: executionResultState,
-    validationIssues: validationIssuesState,
-    isLoading: isLoadingState,
+    executionResult,
+    validationIssues,
+    isLoading,
     openTab,
     closeTab,
     setActiveTab,
@@ -346,6 +422,7 @@ const useRequest = (): UseRequestReturn => {
     addHeader,
     removeHeader,
     sendRequest,
+    setValidationIssues,
     clearValidationIssues,
     reorderTabs,
     renameTab,

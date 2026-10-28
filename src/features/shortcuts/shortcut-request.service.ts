@@ -60,7 +60,7 @@ class ShortcutRequestService implements IShortcutRequestService {
     initial?: Partial<CreateItemInput>,
   ): ShortcutRequestGenerationResult => {
     const method = initial?.method ?? 'GET';
-    const url = initial?.url ?? 'https://jsonplaceholder.typicode.com/todos/1';
+    const url = initial?.url ?? 'https://eusouanderson.github.io/Trex-Http-Client/get';
     const body = initial?.body ?? '';
     const auth = initial?.auth ?? { type: 'none' };
     const testScript = initial?.testScript ?? '';

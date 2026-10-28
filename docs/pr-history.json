@@ -218,5 +218,137 @@
     "mergeCommit": "73000ed",
     "summary": "Atualização recente: feat(layout): implementar opcao de layout com paineis separados",
     "targetVersion": "1.14.0"
+  },
+  {
+    "number": 31,
+    "title": "feat(ui): implementar estilizacao reativa para modos de densidade visual confortavel e compacto",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/31",
+    "author": "Anderson",
+    "mergedAt": "2026-10-21T22:28:03-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "ffa0547",
+    "summary": "Atualização recente: feat(ui): implementar estilizacao reativa para modos de densidade visual confortavel e compacto",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 32,
+    "title": "feat(pwa): implementar notificacao controlada de atualizacao do service worker",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/32",
+    "author": "Anderson",
+    "mergedAt": "2026-10-21T22:28:48-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "84ca91a",
+    "summary": "Atualização recente: feat(pwa): implementar notificacao controlada de atualizacao do service worker",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 33,
+    "title": "feat(docs): implementar documentacao versionada historico de prs e metricas lighthouse",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/33",
+    "author": "Anderson",
+    "mergedAt": "2026-10-21T22:33:14-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "00e791f",
+    "summary": "Atualização recente: feat(docs): implementar documentacao versionada historico de prs e metricas lighthouse",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 35,
+    "title": "feat(shortcuts): implementar sistema global de atalhos de teclado e paleta de comandos",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/35",
+    "author": "Anderson",
+    "mergedAt": "2026-10-22T12:31:03-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "d97c86f",
+    "summary": "Atualização recente: feat(shortcuts): implementar sistema global de atalhos de teclado e paleta de comandos",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 37,
+    "title": "fix(shortcuts): persistir requisicoes criadas e duplicadas via atalhos em colecoes (#36)",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/37",
+    "author": "Anderson",
+    "mergedAt": "2026-10-23T12:03:58-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "4f66da4",
+    "summary": "Atualização recente: fix(shortcuts): persistir requisicoes criadas e duplicadas via atalhos em colecoes (#36)",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 38,
+    "title": "feat(shortcuts): adicionar tooltips com atalhos de teclado nos botões",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/38",
+    "author": "Anderson",
+    "mergedAt": "2026-10-23T12:48:48-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "ba52eb7",
+    "summary": "Atualização recente: feat(shortcuts): adicionar tooltips com atalhos de teclado nos botões",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 39,
+    "title": "fix(shortcuts): teleportar tooltip para o body com posicionamento fixo",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/39",
+    "author": "Anderson",
+    "mergedAt": "2026-10-26T11:23:09-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "fcc5f27",
+    "summary": "Atualização recente: fix(shortcuts): teleportar tooltip para o body com posicionamento fixo",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 40,
+    "title": "chore(deps): bump zod from 3.25.76 to 4.6.6",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/40",
+    "author": "Anderson",
+    "mergedAt": "2026-10-28T17:26:40-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "ecde5da",
+    "summary": "Atualização recente: chore(deps): bump zod from 3.25.76 to 4.6.6",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 41,
+    "title": "chore(deps): bump fast-uri from 3.1.8 to 3.1.9",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/41",
+    "author": "Anderson",
+    "mergedAt": "2026-10-26T14:06:43-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "dddaf5a",
+    "summary": "Atualização recente: chore(deps): bump fast-uri from 3.1.8 to 3.1.9",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 43,
+    "title": "docs(roadmap): documentar especificacao de features futuras e roadmap",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/43",
+    "author": "Anderson",
+    "mergedAt": "2026-10-28T16:13:18-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "5acea45",
+    "summary": "Atualização recente: docs(roadmap): documentar especificacao de features futuras e roadmap",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 44,
+    "title": "feat(request): implementar validacao preventiva e fallback de erros de requisicao",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/44",
+    "author": "Anderson",
+    "mergedAt": "2026-10-28T16:56:40-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "ea8393a",
+    "summary": "Atualização recente: feat(request): implementar validacao preventiva e fallback de erros de requisicao",
+    "targetVersion": "1.18.0"
+  },
+  {
+    "number": 45,
+    "title": "feat(settings): adicionar feedback de issues e ajustar dimensionamento da busca de atalhos",
+    "url": "https://github.com/eusouanderson/Trex-Http-Client/pull/45",
+    "author": "Anderson",
+    "mergedAt": "2026-10-28T17:27:09-03:00",
+    "targetBranch": "main",
+    "mergeCommit": "c984e5f",
+    "summary": "Atualização recente: feat(settings): adicionar feedback de issues e ajustar dimensionamento da busca de atalhos",
+    "targetVersion": "1.18.0"
   }
 ]

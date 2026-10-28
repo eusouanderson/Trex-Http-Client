@@ -127,7 +127,7 @@ const useAppLayout = (): UseAppLayoutReturn => {
       collectionId: parentCol?.id,
       name: item.name,
       method: item.method ?? 'GET',
-      url: item.url ?? 'https://jsonplaceholder.typicode.com/posts',
+      url: item.url ?? 'https://eusouanderson.github.io/Trex-Http-Client/get',
       params: paramsList,
       headers: headersList,
       bodyType: hasBody ? 'json' : 'none',
