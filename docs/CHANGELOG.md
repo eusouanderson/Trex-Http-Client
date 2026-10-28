@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.19.0...v1.20.0) (2026-10-28)
+
+
+### Features
+
+* **response:** implementar comparador de diff de respostas e alternancia de paineis ([45449e0](https://github.com/eusouanderson/Trex-Http-Client/commit/45449e085a4052750c528be1d4402f48258a99dd))
+
 # [1.19.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.18.0...v1.19.0) (2026-10-28)
 
 
