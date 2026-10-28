@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.17.1...v1.18.0) (2026-10-28)
+
+
+### Features
+
+* **request:** implementar validacao preventiva e fallback de erros de requisicao ([c52bd30](https://github.com/eusouanderson/Trex-Http-Client/commit/c52bd3060aadc37a9d14bc9d96e982b55b9f6e02))
+
 ## [1.17.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.17.0...v1.17.1) (2026-10-26)
 
 
