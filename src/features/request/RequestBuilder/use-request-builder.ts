@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { computed, ref, type ComputedRef } from 'vue';
 import type { HttpMethod } from '../../../core/http/interfaces';
 import type { BodyType } from '../interfaces';
 import { useRequest } from '../use-request';
@@ -13,6 +13,9 @@ interface UseRequestBuilderReturn {
   activeCategory: typeof activeCategoryState;
   activeTab: ReturnType<typeof useRequest>['activeTab'];
   isLoading: ReturnType<typeof useRequest>['isLoading'];
+  validationIssues: ReturnType<typeof useRequest>['validationIssues'];
+  hasUrlError: ComputedRef<boolean>;
+  clearValidationIssues: () => void;
   setCategory: (cat: RequestTabCategory) => void;
   setMethod: (method: HttpMethod) => void;
   setUrl: (url: string) => void;
@@ -35,6 +38,8 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
   const {
     activeTab,
     isLoading,
+    validationIssues,
+    clearValidationIssues,
     createTab,
     updateActiveTab,
     addParam,
@@ -43,6 +48,10 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
     removeHeader,
     sendRequest,
   } = useRequest();
+
+  const hasUrlError = computed<boolean>(() => {
+    return validationIssues.value.some((issue) => issue.category === 'url' || issue.field === 'url');
+  });
 
   const setCategory = (cat: RequestTabCategory): void => {
     activeCategoryState.value = cat;
@@ -101,6 +110,9 @@ const useRequestBuilder = (onSent?: () => void): UseRequestBuilderReturn => {
     activeCategory: activeCategoryState,
     activeTab,
     isLoading,
+    validationIssues,
+    hasUrlError,
+    clearValidationIssues,
     setCategory,
     setMethod,
     setUrl,

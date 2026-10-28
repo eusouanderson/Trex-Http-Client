@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCollections } from '../../collections';
 import { useRequest } from '../use-request';
+import { RequestValidatorService } from '../request-validator.service';
 
 describe('useRequest', () => {
   beforeEach(() => {
@@ -121,6 +122,15 @@ describe('useRequest', () => {
 
   it('should execute sendRequest with environment interpolation and update result', async () => {
     const { activeTab, updateActiveTab, sendRequest, executionResult, isLoading } = useRequest();
+    const { createEnvironment, setActiveEnvironment, updateEnvironment } = (await import('../../environments')).useEnvironments();
+
+    const env = createEnvironment('InterpolationEnv');
+    env.variables.push(
+      { id: 'v1', key: 'env_val', value: 'dino', enabled: true },
+      { id: 'v2', key: 'api_key', value: 'secret', enabled: true },
+    );
+    updateEnvironment(env);
+    setActiveEnvironment(env.id);
 
     updateActiveTab({
       url: 'https://jsonplaceholder.typicode.com/todos/1',
@@ -309,5 +319,49 @@ describe('useRequest', () => {
     const updatedItem = updatedCol?.items.find((i) => i.id === targetItem.id);
     expect(updatedItem?.headers).toEqual({ 'X-Trex-Id': '42' });
     expect(updatedItem?.params).toEqual({ page: '5' });
+  });
+
+  it('should prevent request dispatch and record validation issues when request is invalid', async () => {
+    const { updateActiveTab, sendRequest, executionResult, validationIssues } = useRequest();
+
+    updateActiveTab({
+      url: '',
+      method: 'GET',
+    });
+
+    await sendRequest();
+
+    expect(validationIssues.value.length).toBeGreaterThan(0);
+    expect(validationIssues.value[0]?.code).toBe('URL_EMPTY');
+    expect(executionResult.value?.status).toBe(0);
+    expect(executionResult.value?.statusText).toBe('Validation Error');
+    expect(executionResult.value?.validationIssues).toEqual(validationIssues.value);
+  });
+
+  it('should clear validation issues on clearValidationIssues', async () => {
+    const { updateActiveTab, sendRequest, validationIssues, clearValidationIssues } = useRequest();
+
+    updateActiveTab({
+      url: '   ',
+      method: 'GET',
+    });
+
+    await sendRequest();
+    expect(validationIssues.value.length).toBeGreaterThan(0);
+
+    clearValidationIssues();
+    expect(validationIssues.value).toHaveLength(0);
+  });
+
+  it('should use fallback error message when validation fails with empty issues list', async () => {
+    const { sendRequest, executionResult, validationIssues } = useRequest();
+    vi.spyOn(RequestValidatorService.prototype, 'validate').mockReturnValueOnce({
+      isValid: false,
+      issues: [],
+    });
+
+    await sendRequest();
+    expect(validationIssues.value).toHaveLength(0);
+    expect(executionResult.value?.error).toBe('Erro de validação preventiva');
   });
 });

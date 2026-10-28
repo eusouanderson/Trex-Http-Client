@@ -100,10 +100,28 @@ const {
       <div v-if="activeTab === 'body'" class="h-full">
         <div
           v-if="result.error"
-          class="p-4 bg-magma-500/10 border border-magma-500/30 rounded-lg text-xs text-magma-300 space-y-1 font-mono"
+          class="p-4 bg-magma-500/10 border border-magma-500/30 rounded-lg text-xs text-magma-300 space-y-2 font-mono"
         >
           <div class="font-bold">⚠️ Erro na Requisição:</div>
           <div>{{ result.error }}</div>
+          <div
+            v-if="result.validationIssues && result.validationIssues.length > 0"
+            class="pt-2 border-t border-magma-500/20 space-y-1.5 font-sans"
+            data-testid="validation-issues-list"
+          >
+            <div
+              v-for="issue in result.validationIssues"
+              :key="issue.code"
+              class="bg-magma-500/5 p-2 rounded border border-magma-500/20 text-xs"
+            >
+              <div class="font-semibold text-magma-200">
+                {{ issue.message }}
+              </div>
+              <div class="text-fossil-300 text-[11px] mt-0.5">
+                💡 {{ issue.remediation }}
+              </div>
+            </div>
+          </div>
         </div>
 
         <code-editor

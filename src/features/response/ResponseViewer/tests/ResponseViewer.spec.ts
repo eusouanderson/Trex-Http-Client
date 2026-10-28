@@ -188,4 +188,32 @@ describe('ResponseViewer Component', () => {
     expect(badge.exists()).toBe(true);
     expect(badge.text()).toBe('0/1');
   });
+
+  it('should display validation issues and remediation when validationIssues are present', () => {
+    const wrapper = mount(ResponseViewer, {
+      props: {
+        loading: false,
+        result: {
+          status: 0,
+          statusText: 'Validation Error',
+          durationMs: 0,
+          sizeBytes: 0,
+          headers: {},
+          data: null,
+          error: 'A URL da requisição não pode estar vazia.',
+          validationIssues: [
+            {
+              code: 'URL_EMPTY',
+              category: 'url',
+              message: 'A URL da requisição não pode estar vazia.',
+              remediation: 'Informe uma URL válida ou um caminho relativo.',
+            },
+          ],
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('A URL da requisição não pode estar vazia.');
+    expect(wrapper.text()).toContain('Informe uma URL válida ou um caminho relativo.');
+  });
 });

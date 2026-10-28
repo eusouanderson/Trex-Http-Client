@@ -18,6 +18,9 @@ const {
   activeCategory,
   activeTab,
   isLoading,
+  validationIssues,
+  hasUrlError,
+  clearValidationIssues,
   setCategory,
   setMethod,
   setUrl,
@@ -66,7 +69,8 @@ const {
           type="text"
           aria-label="URL da requisição"
           placeholder="https://api.dinossauro.dev/v1/fossils"
-          class="flex-1 bg-surface-ground border border-surface-border rounded-lg px-3.5 py-2 text-xs text-bone-100 placeholder-fossil-500 focus:outline-none focus:border-dino-400 font-mono"
+          class="flex-1 bg-surface-ground border rounded-lg px-3.5 py-2 text-xs text-bone-100 placeholder-fossil-500 focus:outline-none font-mono"
+          :class="hasUrlError ? 'border-magma-500 focus:border-magma-400' : 'border-surface-border focus:border-dino-400'"
           @input="setUrl(($event.target as HTMLInputElement).value)"
           @keydown.enter="send()"
         />
@@ -84,6 +88,32 @@ const {
           </button>
         </shortcut-tooltip>
       </div>
+    </div>
+
+    <div
+      v-if="validationIssues.length > 0"
+      class="bg-magma-500/10 border-b border-magma-500/30 px-4 py-2.5 flex items-start justify-between gap-3 text-xs"
+      data-testid="validation-banner"
+    >
+      <div class="flex items-start gap-2.5">
+        <span class="text-magma-400 font-bold text-sm">⚠️</span>
+        <div class="space-y-0.5">
+          <p class="font-bold text-magma-300">
+            {{ validationIssues[0]?.message }}
+          </p>
+          <p class="text-fossil-300 text-[11px]">
+            {{ validationIssues[0]?.remediation }}
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="text-fossil-400 hover:text-bone-100 p-1 rounded transition-colors text-xs cursor-pointer"
+        aria-label="Fechar alerta de validação"
+        @click="clearValidationIssues()"
+      >
+        ✕
+      </button>
     </div>
 
     <div class="request-category-tabs flex items-center px-4 border-b border-surface-border bg-surface-ground/20">

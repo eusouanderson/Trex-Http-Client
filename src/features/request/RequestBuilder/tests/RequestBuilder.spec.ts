@@ -1,10 +1,36 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRequest } from '../../use-request';
 import RequestBuilder from '../index.vue';
 import { TestScriptEditor } from '../../TestScriptEditor';
 
 describe('RequestBuilder Component', () => {
+  beforeAll(() => {
+    if (typeof Range.prototype.getClientRects === 'undefined') {
+      Range.prototype.getClientRects = (): DOMRectList => [] as unknown as DOMRectList;
+      Range.prototype.getBoundingClientRect = (): DOMRect => ({
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+        toJSON: (): Record<string, number> => ({
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          width: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+        }),
+      });
+    }
+  });
+
   beforeEach(() => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ ok: true }), { status: 200, statusText: 'OK' }),
@@ -177,5 +203,25 @@ describe('RequestBuilder Component', () => {
 
     await testsBtn?.trigger('click');
     expect(wrapper.text()).toContain('Snippets Rápidos');
+  });
+
+  it('should display validation banner and highlight url input when validation fails on send', async () => {
+    const wrapper = mount(RequestBuilder);
+    const input = wrapper.find('input[type="text"]');
+    await input.setValue('');
+
+    const sendBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Enviar'));
+    await sendBtn?.trigger('click');
+
+    const banner = wrapper.find('[data-testid="validation-banner"]');
+    expect(banner.exists()).toBe(true);
+    expect(wrapper.text()).toContain('A URL da requisição não pode estar vazia.');
+    expect(wrapper.find('input[type="text"]').classes()).toContain('border-magma-500');
+
+    const closeBtn = wrapper.find('[aria-label="Fechar alerta de validação"]');
+    await closeBtn.trigger('click');
+    expect(wrapper.find('[data-testid="validation-banner"]').exists()).toBe(false);
   });
 });
