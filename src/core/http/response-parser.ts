@@ -51,7 +51,7 @@ class ResponseParser {
       return data;
     }
 
-    const zodSchema = schema as z.ZodTypeAny;
+    const zodSchema = schema as z.ZodType;
     const result = zodSchema.safeParse(data);
     if (!result.success) {
       throw new TrexError(`Validation error: ${result.error.message}`, {

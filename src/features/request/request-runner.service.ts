@@ -1,4 +1,5 @@
 import { createTrexClient, TrexHttpError } from '../../core/http';
+import { createDemoEndpointService, type IDemoEndpointService } from '../../core/endpoints';
 import type { QueryParams, TrexRequestConfig } from '../../core/http/interfaces';
 import type {
   ExecutionResult,
@@ -9,11 +10,24 @@ import type {
 import type { PreparedRequest } from './request-preparation.service';
 
 class RequestRunnerService implements IRequestRunnerService {
-  private readonly fetchFn?: typeof fetch;
+  public readonly fetchFn: typeof fetch;
+  private readonly demoEndpoints: IDemoEndpointService;
 
-  constructor(customFetch?: typeof fetch) {
-    this.fetchFn = customFetch;
+  constructor(customFetch?: typeof fetch, demoEndpoints?: IDemoEndpointService) {
+    this.demoEndpoints = demoEndpoints ?? createDemoEndpointService();
+    this.fetchFn = this.resolveFetch(customFetch);
   }
+
+  private resolveFetch = (customFetch?: typeof fetch): typeof fetch => {
+    return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const urlString = typeof input === 'string' ? input : 'url' in input ? input.url : input.href;
+      if (this.demoEndpoints.matches(urlString)) {
+        return this.demoEndpoints.dispatch(urlString, init);
+      }
+      const activeFetch = customFetch ?? globalThis.fetch;
+      return activeFetch(input, init);
+    };
+  };
 
   public async execute(
     tab: RequestTab,

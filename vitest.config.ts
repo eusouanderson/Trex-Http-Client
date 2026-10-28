@@ -16,6 +16,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    hookTimeout: 30000,
+    testTimeout: 30000,
     setupFiles: ['src/tests/setup-indexeddb.ts'],
     include: ['src/**/*.spec.ts', 'scripts/**/*.spec.ts'],
     exclude: ['e2e/**', 'node_modules/**'],

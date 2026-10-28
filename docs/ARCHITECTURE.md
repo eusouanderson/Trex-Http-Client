@@ -36,6 +36,8 @@ meu-http-client/
     ├── core/                  # Regras puras e infraestrutura técnica (Agnóstico de UI/Vue)
     │   ├── http/
     │   │   └── tests/
+    │   ├── endpoints/
+    │   │   └── tests/
     │   ├── storage/
     │   │   ├── migrations/
     │   │   └── tests/

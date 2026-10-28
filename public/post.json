@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "message": "Espécime fóssil registrado com sucesso no acervo do Trex",
+  "endpoint": "https://eusouanderson.github.io/Trex-Http-Client/post",
+  "source": "Trex HTTP Client Engine"
+}
+

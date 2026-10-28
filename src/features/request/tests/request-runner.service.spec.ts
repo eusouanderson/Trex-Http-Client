@@ -221,4 +221,87 @@ describe('RequestRunnerService', () => {
     const errorResult = await service.execute(tab);
     expect(errorResult.status).toBe(502);
   });
+
+  it('should intercept Trex demo endpoints automatically and return realistic dinosaur responses', async () => {
+    const demoService = new RequestRunnerService();
+    const tab: RequestTab = {
+      id: 'tab-demo-get',
+      name: 'Listar Dinossauros',
+      method: 'GET',
+      url: 'https://eusouanderson.github.io/Trex-Http-Client/get',
+      params: [{ id: 'p1', key: 'limit', value: '3', enabled: true }],
+      headers: [{ id: 'h1', key: 'Accept', value: 'application/json', enabled: true }],
+      bodyType: 'none',
+      body: '',
+      isDirty: false,
+    };
+
+    const result = await demoService.execute(tab);
+    expect(result.status).toBe(200);
+    expect(result.statusText).toBe('OK');
+    const data = result.data as { count: number; total: number; dinosaurs: { name: string }[] };
+    expect(data.count).toBe(3);
+    expect(data.dinosaurs[0]?.name).toBe('Tyrannosaurus Rex');
+  });
+
+  it('should intercept Trex demo POST endpoint and return created status 201', async () => {
+    const demoService = new RequestRunnerService();
+    const tab: RequestTab = {
+      id: 'tab-demo-post',
+      name: 'Criar Espécime',
+      method: 'POST',
+      url: 'https://eusouanderson.github.io/Trex-Http-Client/post',
+      params: [],
+      headers: [],
+      bodyType: 'json',
+      body: JSON.stringify({ name: 'Iguanodon', diet: 'Herbívoro' }),
+      isDirty: false,
+    };
+
+    const result = await demoService.execute(tab);
+    expect(result.status).toBe(201);
+    const data = result.data as { success: boolean; data: { name: string } };
+    expect(data.success).toBe(true);
+    expect(data.data.name).toBe('Iguanodon');
+  });
+
+  it('should fallback to globalThis.fetch when customFetch is not provided and url is not demo', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ external: true }), {
+        status: 200,
+        statusText: 'OK',
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const defaultService = new RequestRunnerService();
+    const tab: RequestTab = {
+      id: 'tab-external',
+      name: 'External Request',
+      method: 'GET',
+      url: 'https://api.external.com/data',
+      params: [],
+      headers: [],
+      bodyType: 'none',
+      body: '',
+      isDirty: false,
+    };
+
+    const result = await defaultService.execute(tab);
+    expect(result.status).toBe(200);
+    expect(result.data).toEqual({ external: true });
+    expect(fetchSpy).toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it('should resolve url string from URL instance or Request object in fetchFn', async () => {
+    const demoService = new RequestRunnerService();
+    const urlObj = new URL('https://eusouanderson.github.io/Trex-Http-Client/get');
+    const resUrl = await demoService.fetchFn(urlObj);
+    expect(resUrl.status).toBe(200);
+
+    const reqObj = new Request('https://eusouanderson.github.io/Trex-Http-Client/get');
+    const resReq = await demoService.fetchFn(reqObj);
+    expect(resReq.status).toBe(200);
+  });
 });

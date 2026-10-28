@@ -1,0 +1,69 @@
+{
+  "message": "🦖 Acervo Paleontológico Trex HTTP Client (Endpoint Público GitHub Pages)",
+  "total": 6,
+  "count": 6,
+  "dinosaurs": [
+    {
+      "id": "dino-1",
+      "name": "Tyrannosaurus Rex",
+      "period": "Cretáceo Superior",
+      "diet": "Carnívoro",
+      "lengthMeters": 12.3,
+      "weightKg": 8400,
+      "fossilLocation": "América do Norte",
+      "dangerLevel": "Extremo"
+    },
+    {
+      "id": "dino-2",
+      "name": "Spinosaurus",
+      "period": "Cretáceo Superior",
+      "diet": "Carnívoro",
+      "lengthMeters": 15.0,
+      "weightKg": 7500,
+      "fossilLocation": "Norte da África",
+      "dangerLevel": "Extremo"
+    },
+    {
+      "id": "dino-3",
+      "name": "Velociraptor",
+      "period": "Cretáceo Superior",
+      "diet": "Carnívoro",
+      "lengthMeters": 2.0,
+      "weightKg": 15,
+      "fossilLocation": "Mongólia",
+      "dangerLevel": "Alto"
+    },
+    {
+      "id": "dino-4",
+      "name": "Triceratops",
+      "period": "Cretáceo Superior",
+      "diet": "Herbívoro",
+      "lengthMeters": 9.0,
+      "weightKg": 6000,
+      "fossilLocation": "América do Norte",
+      "dangerLevel": "Médio"
+    },
+    {
+      "id": "dino-5",
+      "name": "Ankylosaurus",
+      "period": "Cretáceo Superior",
+      "diet": "Herbívoro",
+      "lengthMeters": 8.0,
+      "weightKg": 6000,
+      "fossilLocation": "América do Norte",
+      "dangerLevel": "Médio"
+    },
+    {
+      "id": "dino-6",
+      "name": "Brachiosaurus",
+      "period": "Jurássico Superior",
+      "diet": "Herbívoro",
+      "lengthMeters": 26.0,
+      "weightKg": 40000,
+      "fossilLocation": "América do Norte",
+      "dangerLevel": "Baixo"
+    }
+  ],
+  "source": "https://github.com/eusouanderson/Trex-Http-Client"
+}
+

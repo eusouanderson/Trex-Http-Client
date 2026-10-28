@@ -149,7 +149,7 @@ const useCollectionTree = (
       name: name ?? 'Nova Requisição',
       type: 'request',
       method: 'GET',
-      url: 'https://jsonplaceholder.typicode.com/todos/1',
+      url: 'https://eusouanderson.github.io/Trex-Http-Client/get',
     });
     const updated = new Set(expandedSet.value);
     updated.add(colId);

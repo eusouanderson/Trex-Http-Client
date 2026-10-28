@@ -78,7 +78,7 @@ describe('useRequestBuilder', () => {
       sentCalled = true;
     });
 
-    builder.setUrl('https://jsonplaceholder.typicode.com/posts/1');
+    builder.setUrl('https://eusouanderson.github.io/Trex-Http-Client/get');
     builder.setMethod('GET');
     await builder.send();
     expect(sentCalled).toBe(true);
@@ -100,9 +100,9 @@ describe('useRequestBuilder', () => {
 
   it('should evaluate hasUrlError for category url, field url and other categories', () => {
     const builder = useRequestBuilder();
-    const { validationIssues } = useRequest();
+    const { setValidationIssues } = useRequest();
 
-    validationIssues.value = [
+    setValidationIssues([
       {
         code: 'VARIABLE_VALUE_EMPTY',
         category: 'variable',
@@ -110,10 +110,10 @@ describe('useRequestBuilder', () => {
         message: 'Empty variable',
         remediation: 'Fill variable',
       },
-    ];
+    ]);
     expect(builder.hasUrlError.value).toBe(true);
 
-    validationIssues.value = [
+    setValidationIssues([
       {
         code: 'HEADER_NAME_EMPTY',
         category: 'header',
@@ -121,7 +121,7 @@ describe('useRequestBuilder', () => {
         message: 'Empty header',
         remediation: 'Fill header',
       },
-    ];
+    ]);
     expect(builder.hasUrlError.value).toBe(false);
 
     builder.clearValidationIssues();

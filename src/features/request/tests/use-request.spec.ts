@@ -364,4 +364,62 @@ describe('useRequest', () => {
     expect(validationIssues.value).toHaveLength(0);
     expect(executionResult.value?.error).toBe('Erro de validação preventiva');
   });
+
+  it('should maintain separate execution results and state per tab when switching tabs', async () => {
+    const { createTab, setActiveTab, updateActiveTab, sendRequest, executionResult, closeTab, tabs } = useRequest();
+
+    const tab1 = tabs.value[0];
+    expect(tab1).toBeDefined();
+    if (!tab1) {
+      return;
+    }
+
+    setActiveTab(tab1.id);
+    updateActiveTab({
+      url: 'https://eusouanderson.github.io/Trex-Http-Client/get?diet=Carnívoro',
+      method: 'GET',
+    });
+    await sendRequest();
+    const result1 = executionResult.value;
+    expect(result1).not.toBeNull();
+    expect(result1?.status).toBe(200);
+
+    const tab2 = createTab({
+      url: 'https://eusouanderson.github.io/Trex-Http-Client/get?diet=Herbívoro',
+      method: 'GET',
+    });
+    expect(executionResult.value).toBeNull();
+
+    await sendRequest();
+    const result2 = executionResult.value;
+    expect(result2).not.toBeNull();
+    expect(result2?.status).toBe(200);
+
+    setActiveTab(tab1.id);
+    expect(executionResult.value).toBe(result1);
+
+    setActiveTab(tab2.id);
+    expect(executionResult.value).toBe(result2);
+
+    closeTab(tab2.id);
+    expect(executionResult.value).toBe(result1);
+  });
+
+  it('should return null or default values for computed properties when tabs are empty', () => {
+    const { tabs, closeTab, executionResult, validationIssues, isLoading, clearValidationIssues, setValidationIssues } = useRequest();
+
+    while (tabs.value.length > 0) {
+      const firstTab = tabs.value[0];
+      if (firstTab) {
+        closeTab(firstTab.id);
+      }
+    }
+
+    expect(executionResult.value).toBeNull();
+    expect(validationIssues.value).toHaveLength(0);
+    expect(isLoading.value).toBe(false);
+
+    clearValidationIssues('');
+    setValidationIssues([], '');
+  });
 });

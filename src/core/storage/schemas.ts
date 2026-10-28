@@ -83,8 +83,8 @@ const collectionItemSchema: z.ZodType<CollectionItem> = z.lazy(() =>
     parentId: z.string().nullable().optional(),
     method: httpMethodSchema.optional(),
     url: z.string().optional(),
-    headers: z.record(z.string()).optional(),
-    params: z.record(z.string()).optional(),
+    headers: z.record(z.string(), z.string()).optional(),
+    params: z.record(z.string(), z.string()).optional(),
     body: z.string().optional(),
     auth: authConfigSchema.optional(),
     testScript: z.string().optional(),
@@ -177,7 +177,7 @@ const clientSettingsSchema = z.object({
   defaultTimeout: z.number().positive(),
   defaultRetryAttempts: z.number().nonnegative(),
   followRedirects: z.boolean(),
-  globalHeaders: z.record(z.string()),
+  globalHeaders: z.record(z.string(), z.string()),
   jsonTheme: jsonThemeSettingsSchema,
   customThemes: z.array(customThemeSchema).default([]),
 });
@@ -189,7 +189,7 @@ const requestHistoryItemSchema = z.object({
   status: z.number().optional(),
   durationMs: z.number().optional(),
   timestamp: z.number(),
-  headers: z.record(z.string()).optional(),
+  headers: z.record(z.string(), z.string()).optional(),
   body: z.string().optional(),
 });
 
