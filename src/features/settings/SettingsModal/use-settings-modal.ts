@@ -140,6 +140,7 @@ interface UseSettingsModalReturn {
   activeEnvironmentName: ComputedRef<string>;
   totalEnvironments: ComputedRef<number>;
   openEnvironmentManager: () => void;
+  issuesUrl: string;
 }
 
 const activeTabState = ref<SettingsTab>('general');
@@ -360,6 +361,7 @@ const useSettingsModal = (options?: UseSettingsModalOptions): UseSettingsModalRe
     activeEnvironmentName,
     totalEnvironments,
     openEnvironmentManager,
+    issuesUrl: 'https://github.com/eusouanderson/Trex-Http-Client/issues',
   };
 };
 

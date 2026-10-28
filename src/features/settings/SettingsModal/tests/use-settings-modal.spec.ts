@@ -288,6 +288,11 @@ describe('useSettingsModal', () => {
     modal.setPanelLayout('default');
     expect(modal.settings.value.panelLayout).toBe('default');
   });
+
+  it('should expose github issues URL for feedback', () => {
+    const modal = useSettingsModal();
+    expect(modal.issuesUrl).toBe('https://github.com/eusouanderson/Trex-Http-Client/issues');
+  });
 });
 
 

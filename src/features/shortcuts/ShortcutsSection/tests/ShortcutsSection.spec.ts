@@ -87,4 +87,10 @@ describe('ShortcutsSection.vue', () => {
       }
     }
   });
+
+  it('renders search input with full width dedicated container', () => {
+    const wrapper = mount(ShortcutsSection);
+    const searchInput = wrapper.find('input[aria-label="Buscar atalho"]');
+    expect(searchInput.classes()).toContain('w-full');
+  });
 });
