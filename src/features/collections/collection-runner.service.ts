@@ -3,6 +3,7 @@ import { VariableResolverService } from '../../core/variables';
 import { ScriptSandboxService } from '../../core/scripts';
 import { RequestPreparationService } from '../request/request-preparation.service';
 import { RequestRunnerService } from '../request/request-runner.service';
+import { RequestValidatorService } from '../request/request-validator.service';
 import { useEnvironments } from '../environments';
 import { useCollections } from './use-collections';
 import type {
@@ -18,6 +19,7 @@ import type { RequestTab, KeyValuePair } from '../request/interfaces';
 class CollectionRunnerService implements ICollectionRunnerService {
   private readonly requestRunner: RequestRunnerService;
   private readonly requestPreparation: RequestPreparationService;
+  private readonly requestValidator: RequestValidatorService;
   private readonly scriptSandbox: ScriptSandboxService;
 
   constructor(
@@ -25,6 +27,7 @@ class CollectionRunnerService implements ICollectionRunnerService {
     requestRunner?: RequestRunnerService,
     requestPreparation?: RequestPreparationService,
     scriptSandbox?: ScriptSandboxService,
+    requestValidator?: RequestValidatorService,
   ) {
     this.requestRunner = requestRunner ?? new RequestRunnerService(fetchFn);
     const authRegistry = createDefaultAuthRegistry();
@@ -32,6 +35,7 @@ class CollectionRunnerService implements ICollectionRunnerService {
     this.requestPreparation =
       requestPreparation ?? new RequestPreparationService(authRegistry, variableResolver);
     this.scriptSandbox = scriptSandbox ?? new ScriptSandboxService();
+    this.requestValidator = requestValidator ?? new RequestValidatorService(variableResolver);
   }
 
   private convertItemToTab(item: CollectionItem, collectionId: string): RequestTab {
@@ -91,6 +95,37 @@ class CollectionRunnerService implements ICollectionRunnerService {
 
       const tab = this.convertItemToTab(item, collection.id);
       const activeEnv = activeEnvironment.value;
+
+      const validationResult = this.requestValidator.validate(tab, {
+        environment: activeEnv,
+        collection,
+      });
+
+      if (!validationResult.isValid) {
+        failedCount += 1;
+        updateItemById(item.id, { status: 0 });
+        const primaryIssue = validationResult.issues[0];
+        const errorMessage = primaryIssue ? primaryIssue.message : 'Erro de validação preventiva';
+        const itemRunResult: CollectionRunItemResult = {
+          itemId: item.id,
+          name: item.name,
+          method: item.method ?? 'GET',
+          url: item.url ?? '',
+          status: 0,
+          statusText: 'Validation Error',
+          durationMs: 0,
+          sizeBytes: 0,
+          error: errorMessage,
+          tests: [],
+        };
+
+        itemsResults.push(itemRunResult);
+
+        if (onProgress) {
+          onProgress(itemRunResult, i, total);
+        }
+        continue;
+      }
 
       const prepared = await this.requestPreparation.prepare(tab, {
         environment: activeEnv,
@@ -167,8 +202,8 @@ class CollectionRunnerService implements ICollectionRunnerService {
       const itemRunResult: CollectionRunItemResult = {
         itemId: item.id,
         name: item.name,
-        method: item.method ?? 'GET',
-        url: item.url ?? '',
+        method: tab.method,
+        url: tab.url,
         status: execResult.status,
         statusText: execResult.statusText,
         durationMs: execResult.durationMs,

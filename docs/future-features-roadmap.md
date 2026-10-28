@@ -121,6 +121,17 @@ A funcionalidade de **Histórico de Requisições** visa preencher essa lacuna, 
 - **Interface:**
   - Sub-abas automáticas no topo do `ResponseViewer`: `Pretty JSON` (padrão quando aplicável), `Preview Visual`, `Raw` e `Headers`.
 
+## 2.4. Opção 5: Criar nossos próprios endpoints
+- **Objetivo:** No mommento utilizamos o endpoint de terceiros(jsonplaceholder), para servir como exemplo ao usuário que inicia seu uso no Trex HTTP Client, demonstrando funcionalidades básicas, mas planejamos criar nossos próprios endpoints para maior controle e personalização das respostas.
+- **Benefícios Esperados:**
+  - Controle total sobre os dados retornados e formatos de resposta.
+  - Possibilidade de implementar autenticação e autorização customizadas.
+  - POST, GET, PUT, DELETE personalizados com dados do Trex HTTP Client.
+  - Possibilidade de testar todos os cenarios de Auth disponíveis no Trex HTTP Client.
+  - Flexibilidade para simular diferentes respostas de erro e sucesso para cada endpoint.
+
+**Observação:** A implementação deste endpoint próprio permitirá maior flexibilidade e controle sobre os dados utilizados nas requisições do Trex HTTP Client.
+**Status:** Planejado
 ---
 
 ## 3. Matriz de Priorização & Roadmap

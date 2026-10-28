@@ -7,26 +7,11 @@ import type {
   IVariableResolverService,
   VariableScope,
 } from '../../core/variables/interfaces';
-import type { Collection } from '../collections/interfaces';
-import type { Environment } from '../environments/interfaces';
-import type { RequestTab } from './interfaces';
-
-interface PreparationContext {
-  environment?: Environment | null;
-  collection?: Collection | null;
-}
-
-interface PreparedRequest {
-  url: string;
-  method: RequestTab['method'];
-  headers: Record<string, string>;
-  params: Record<string, string>;
-  body: string;
-  maskedHeaders: Record<string, string>;
-  maskedParams: Record<string, string>;
-  maskedUrl: string;
-  secrets: string[];
-}
+import type {
+  PreparationContext,
+  PreparedRequest,
+  RequestTab,
+} from './interfaces';
 
 class RequestPreparationService {
   private readonly secretsMasker = new SecretsMaskerService();

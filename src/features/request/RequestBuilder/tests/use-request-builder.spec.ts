@@ -83,4 +83,48 @@ describe('useRequestBuilder', () => {
     await builder.send();
     expect(sentCalled).toBe(true);
   });
+
+  it('should reflect validation issues and hasUrlError when validation fails', async () => {
+    const builder = useRequestBuilder();
+
+    builder.setUrl('   ');
+    await builder.send();
+
+    expect(builder.validationIssues.value.length).toBeGreaterThan(0);
+    expect(builder.hasUrlError.value).toBe(true);
+
+    builder.clearValidationIssues();
+    expect(builder.validationIssues.value).toHaveLength(0);
+    expect(builder.hasUrlError.value).toBe(false);
+  });
+
+  it('should evaluate hasUrlError for category url, field url and other categories', () => {
+    const builder = useRequestBuilder();
+    const { validationIssues } = useRequest();
+
+    validationIssues.value = [
+      {
+        code: 'VARIABLE_VALUE_EMPTY',
+        category: 'variable',
+        field: 'url',
+        message: 'Empty variable',
+        remediation: 'Fill variable',
+      },
+    ];
+    expect(builder.hasUrlError.value).toBe(true);
+
+    validationIssues.value = [
+      {
+        code: 'HEADER_NAME_EMPTY',
+        category: 'header',
+        field: 'headers',
+        message: 'Empty header',
+        remediation: 'Fill header',
+      },
+    ];
+    expect(builder.hasUrlError.value).toBe(false);
+
+    builder.clearValidationIssues();
+    expect(builder.hasUrlError.value).toBe(false);
+  });
 });

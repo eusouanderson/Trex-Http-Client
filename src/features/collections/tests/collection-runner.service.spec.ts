@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Collection } from '../interfaces';
 import { CollectionRunnerService } from '../collection-runner.service';
+import type { RequestValidatorService } from '../../request';
 
 describe('CollectionRunnerService', () => {
   const mockFetch = vi.fn<typeof fetch>();
@@ -268,5 +269,61 @@ describe('CollectionRunnerService', () => {
     const report = await runner.run(col);
     expect(report.items[0]?.method).toBe('GET');
     expect(report.items[0]?.url).toBe('');
+  });
+
+  it('should fail item with validation error and avoid network call when item is invalid', async () => {
+    const col: Collection = {
+      id: 'col-invalid',
+      name: 'Invalid Col',
+      items: [
+        {
+          id: 'req-invalid',
+          name: 'Invalid URL Item',
+          type: 'request',
+          url: 'ftp://unsupported.dino.dev',
+        },
+      ],
+    };
+
+    let progressCalled = false;
+    const report = await runner.run(col, () => {
+      progressCalled = true;
+    });
+    expect(mockFetch).not.toHaveBeenCalled();
+    expect(progressCalled).toBe(true);
+    expect(report.failed).toBe(1);
+    expect(report.passed).toBe(0);
+    expect(report.items[0]?.status).toBe(0);
+    expect(report.items[0]?.error).toContain('ftp');
+  });
+
+  it('should use fallback message when validation fails with empty issues list', async () => {
+    const validatorMock = {
+      validate: vi.fn().mockReturnValue({ isValid: false, issues: [] }),
+    };
+    const customRunner = new CollectionRunnerService(
+      mockFetch,
+      undefined,
+      undefined,
+      undefined,
+      validatorMock as unknown as RequestValidatorService,
+    );
+
+    const col: Collection = {
+      id: 'col-mock-fail',
+      name: 'Mock Fail Col',
+      items: [
+        {
+          id: 'req-mock',
+          name: 'Mock Item',
+          type: 'request',
+          url: 'https://api.dino.dev',
+        },
+      ],
+    };
+
+    const report = await customRunner.run(col);
+    expect(report.failed).toBe(1);
+    expect(report.items[0]?.error).toBe('Erro de validação preventiva');
   });
 });

@@ -2,8 +2,9 @@ import type { ComputedRef } from 'vue';
 import { computed, ref } from 'vue';
 import { useCollections } from '../collections';
 import type { Collection, CollectionItem } from '../collections/interfaces';
-import type { ExecutionResult, KeyValuePair, RequestTab } from './interfaces';
+import type { ExecutionResult, KeyValuePair, RequestTab, ValidationIssue } from './interfaces';
 import { RequestRunnerService } from './request-runner.service';
+import { RequestValidatorService } from './request-validator.service';
 import { useEnvironments } from '../environments';
 import { createDefaultAuthRegistry } from '../../core/security';
 import { VariableResolverService } from '../../core/variables';
@@ -28,10 +29,12 @@ const defaultTab: RequestTab = {
 const tabsState = ref<RequestTab[]>([defaultTab]);
 const activeTabIdState = ref<string>(defaultTab.id);
 const executionResultState = ref<ExecutionResult | null>(null);
+const validationIssuesState = ref<ValidationIssue[]>([]);
 const isLoadingState = ref<boolean>(false);
 const requestRunner = new RequestRunnerService();
 const authRegistry = createDefaultAuthRegistry();
 const variableResolver = new VariableResolverService();
+const requestValidator = new RequestValidatorService(variableResolver);
 const requestPreparationService = new RequestPreparationService(authRegistry, variableResolver);
 const scriptSandboxService = new ScriptSandboxService();
 
@@ -40,6 +43,7 @@ interface UseRequestReturn {
   activeTabId: typeof activeTabIdState;
   activeTab: ComputedRef<RequestTab | null>;
   executionResult: typeof executionResultState;
+  validationIssues: typeof validationIssuesState;
   isLoading: typeof isLoadingState;
   openTab: (tab: RequestTab) => void;
   closeTab: (tabId: string) => void;
@@ -51,6 +55,7 @@ interface UseRequestReturn {
   addHeader: () => void;
   removeHeader: (id: string) => void;
   sendRequest: (timeoutMs?: number) => Promise<void>;
+  clearValidationIssues: () => void;
   reorderTabs: (newTabs: RequestTab[]) => void;
   renameTab: (tabId: string, name: string) => void;
 }
@@ -217,10 +222,15 @@ const useRequest = (): UseRequestReturn => {
     });
   };
 
+  const clearValidationIssues = (): void => {
+    validationIssuesState.value = [];
+  };
+
   const sendRequest = async (timeoutMs?: number): Promise<void> => {
     if (!activeTab.value) {
       return;
     }
+    clearValidationIssues();
     isLoadingState.value = true;
     try {
       const { activeEnvironment } = useEnvironments();
@@ -230,6 +240,32 @@ const useRequest = (): UseRequestReturn => {
       let parentCollection: Collection | null = null;
       if (activeTab.value.collectionId !== undefined && activeTab.value.collectionId.length > 0) {
         parentCollection = collections.value.find((c) => c.id === activeTab.value?.collectionId) ?? null;
+      }
+
+      const validationResult = requestValidator.validate(
+        activeTab.value,
+        {
+          environment: activeEnv,
+          collection: parentCollection,
+        },
+        timeoutMs,
+      );
+
+      if (!validationResult.isValid) {
+        validationIssuesState.value = validationResult.issues;
+        const primaryIssue = validationResult.issues[0];
+        const errorMessage = primaryIssue ? primaryIssue.message : 'Erro de validação preventiva';
+        executionResultState.value = {
+          status: 0,
+          statusText: 'Validation Error',
+          durationMs: 0,
+          sizeBytes: 0,
+          headers: {},
+          data: null,
+          error: errorMessage,
+          validationIssues: validationResult.issues,
+        };
+        return;
       }
 
       const prepared = await requestPreparationService.prepare(activeTab.value, {
@@ -298,6 +334,7 @@ const useRequest = (): UseRequestReturn => {
     activeTabId: activeTabIdState,
     activeTab,
     executionResult: executionResultState,
+    validationIssues: validationIssuesState,
     isLoading: isLoadingState,
     openTab,
     closeTab,
@@ -309,6 +346,7 @@ const useRequest = (): UseRequestReturn => {
     addHeader,
     removeHeader,
     sendRequest,
+    clearValidationIssues,
     reorderTabs,
     renameTab,
   };
