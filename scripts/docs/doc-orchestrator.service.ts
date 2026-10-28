@@ -260,6 +260,18 @@ class DocOrchestratorService implements IDocOrchestratorService {
       });
     }
 
+    const roadmapGuidePath = join(this.projectRoot, 'docs', 'future-features-roadmap.md');
+    if (this.fileSystem.existsSync(roadmapGuidePath)) {
+      const content = this.fileSystem.readFileSync(roadmapGuidePath, 'utf-8');
+      guides.push({
+        id: 'future-features-roadmap',
+        title: 'Roadmap de Features Futuras',
+        description: 'Planejamento e especificação das próximas funcionalidades: Histórico de Requisições, Gerador de Snippets, Importador cURL e Preview HTML.',
+        fileName: 'future-features-roadmap',
+        content,
+      });
+    }
+
     return guides;
   };
 }
