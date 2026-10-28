@@ -1,3 +1,11 @@
+# [1.19.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.18.0...v1.19.0) (2026-10-28)
+
+
+### Features
+
+* **endpoints:** adicionar endpoints proprios de demonstracao e isolamento de resposta por aba ([5ca70fd](https://github.com/eusouanderson/Trex-Http-Client/commit/5ca70fd32989cf95957d98b1bfde731b5a0f3d21))
+* **settings:** adicionar feedback de issues e ajustar dimensionamento da busca de atalhos ([1510535](https://github.com/eusouanderson/Trex-Http-Client/commit/15105351851833659dc3e77b2f5886fa9dbc9d27))
+
 # [1.18.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.17.1...v1.18.0) (2026-10-28)
 
 
