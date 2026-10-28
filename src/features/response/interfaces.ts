@@ -1,4 +1,4 @@
-type ResponseViewTab = 'body' | 'headers' | 'tests';
+type ResponseViewTab = 'body' | 'headers' | 'tests' | 'diff';
 
 interface ResponseMeta {
   status: number;

@@ -57,6 +57,8 @@ interface UseRequestReturn {
   activeTabId: typeof activeTabIdState;
   activeTab: ComputedRef<RequestTab | null>;
   executionResult: ComputedRef<ExecutionResult | null>;
+  executionResultsByTab: ComputedRef<Record<string, ExecutionResult | null>>;
+  getExecutionResultByTabId: (tabId: string) => ExecutionResult | null;
   validationIssues: ComputedRef<ValidationIssue[]>;
   isLoading: ComputedRef<boolean>;
   openTab: (tab: RequestTab) => void;
@@ -88,6 +90,14 @@ const useRequest = (): UseRequestReturn => {
     }
     return null;
   });
+
+  const executionResultsByTab = computed<Record<string, ExecutionResult | null>>(() => {
+    return executionResultsByTabState.value;
+  });
+
+  const getExecutionResultByTabId = (tabId: string): ExecutionResult | null => {
+    return executionResultsByTabState.value[tabId] ?? null;
+  };
 
   const validationIssues = computed<ValidationIssue[]>(() => {
     const targetId = activeTab.value?.id;
@@ -410,6 +420,8 @@ const useRequest = (): UseRequestReturn => {
     activeTabId: activeTabIdState,
     activeTab,
     executionResult,
+    executionResultsByTab,
+    getExecutionResultByTabId,
     validationIssues,
     isLoading,
     openTab,

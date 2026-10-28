@@ -14,6 +14,10 @@ import { useAppLayout } from './use-app-layout';
 
 const {
   isSidebarOpen,
+  isRequestBuilderOpen,
+  sidebarPanelClass,
+  mainContainerClass,
+  innerPanelClass,
   settings,
   customThemeStyles,
   tabs,
@@ -142,7 +146,7 @@ const {
           size="22"
           min-size="15"
           max-size="40"
-          :class="settings.panelLayout === 'separated' ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm' : 'bg-surface-panel'"
+          :class="sidebarPanelClass"
         >
           <collection-tree @select-item="handleSelectItem" />
         </pane>
@@ -150,9 +154,10 @@ const {
         <pane
           size="78"
           class="flex flex-col overflow-hidden"
-          :class="settings.panelLayout === 'separated' ? 'bg-transparent' : 'bg-surface-ground'"
+          :class="mainContainerClass"
         >
           <splitpanes
+            v-if="isRequestBuilderOpen"
             class="flex-1"
             :class="{ 'splitpanes--separated': settings.panelLayout === 'separated' }"
             :horizontal="settings.orientation === 'vertical'"
@@ -160,18 +165,26 @@ const {
             <pane
               size="55"
               min-size="25"
-              :class="settings.panelLayout === 'separated' ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm' : ''"
+              :class="innerPanelClass"
             >
               <request-builder />
             </pane>
             <pane
               size="45"
               min-size="20"
-              :class="settings.panelLayout === 'separated' ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm' : ''"
+              :class="innerPanelClass"
             >
-              <response-viewer :result="executionResult" :loading="isLoading" />
+              <response-viewer :result="executionResult" :loading="isLoading" :active-tab-id="activeTabId" />
             </pane>
           </splitpanes>
+
+          <div
+            v-else
+            class="flex-1 flex flex-col overflow-hidden"
+            :class="innerPanelClass"
+          >
+            <response-viewer :result="executionResult" :loading="isLoading" :active-tab-id="activeTabId" />
+          </div>
         </pane>
       </splitpanes>
     </div>

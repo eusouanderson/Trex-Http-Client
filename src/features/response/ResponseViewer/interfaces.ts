@@ -4,6 +4,7 @@ import type { ResponseViewTab } from '../interfaces';
 interface ResponseViewerProps {
   result?: ExecutionResult | null;
   loading?: boolean;
+  activeTabId?: string;
 }
 
 interface UseResponseViewerReturn {

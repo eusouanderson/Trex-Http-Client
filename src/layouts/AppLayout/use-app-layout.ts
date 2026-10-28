@@ -6,14 +6,23 @@ import { useRequest } from '../../features/request';
 import { useSettings } from '../../features/settings';
 import { useShortcuts } from '../../features/shortcuts';
 import { ThemeStyleService } from '../../features/settings/theme-style.service';
-import type { SidebarTab } from './interfaces';
+import type { LayoutStage, SidebarTab } from './interfaces';
 
-const isSidebarOpenState = ref<boolean>(true);
+const layoutStageState = ref<LayoutStage>('full');
 const activeSidebarTabState = ref<SidebarTab>('collections');
 const themeStyleService = new ThemeStyleService();
 
+const resetLayoutStage = (): void => {
+  layoutStageState.value = 'full';
+};
+
 interface UseAppLayoutReturn {
-  isSidebarOpen: typeof isSidebarOpenState;
+  isSidebarOpen: ComputedRef<boolean>;
+  isRequestBuilderOpen: ComputedRef<boolean>;
+  layoutStage: ComputedRef<LayoutStage>;
+  sidebarPanelClass: ComputedRef<string>;
+  mainContainerClass: ComputedRef<string>;
+  innerPanelClass: ComputedRef<string>;
   activeSidebarTab: typeof activeSidebarTabState;
   isSettingsOpen: ReturnType<typeof useSettings>['isOpen'];
   settings: ReturnType<typeof useSettings>['settings'];
@@ -23,6 +32,7 @@ interface UseAppLayoutReturn {
   executionResult: ReturnType<typeof useRequest>['executionResult'];
   isLoading: ReturnType<typeof useRequest>['isLoading'];
   toggleSidebar: () => void;
+  setLayoutStage: (stage: LayoutStage) => void;
   setSidebarTab: (tab: SidebarTab) => void;
   openSettings: () => void;
   closeSettings: () => void;
@@ -53,6 +63,12 @@ const useAppLayout = (): UseAppLayoutReturn => {
   } = useRequest();
   const { collections, selectItem } = useCollections();
 
+  const isSidebarOpen = computed<boolean>(() => layoutStageState.value === 'full');
+  const isRequestBuilderOpen = computed<boolean>(
+    () => layoutStageState.value !== 'focus',
+  );
+  const layoutStage = computed<LayoutStage>(() => layoutStageState.value);
+
   const customThemeStyles = computed<Record<string, string>>(() => {
     const current = settings.value.customThemes.find(
       (t) => t.id === settings.value.theme,
@@ -63,8 +79,34 @@ const useAppLayout = (): UseAppLayoutReturn => {
     return themeStyleService.getThemeStyle(current);
   });
 
+  const sidebarPanelClass = computed<string>(() => {
+    return settings.value.panelLayout === 'separated'
+      ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm'
+      : 'bg-surface-panel';
+  });
+
+  const mainContainerClass = computed<string>(() => {
+    return settings.value.panelLayout === 'separated' ? 'bg-transparent' : 'bg-surface-ground';
+  });
+
+  const innerPanelClass = computed<string>(() => {
+    return settings.value.panelLayout === 'separated'
+      ? 'rounded-lg border border-surface-border bg-surface-panel overflow-hidden shadow-sm'
+      : '';
+  });
+
   const toggleSidebar = (): void => {
-    isSidebarOpenState.value = !isSidebarOpenState.value;
+    if (layoutStageState.value === 'full') {
+      layoutStageState.value = 'compact';
+    } else if (layoutStageState.value === 'compact') {
+      layoutStageState.value = 'focus';
+    } else {
+      layoutStageState.value = 'full';
+    }
+  };
+
+  const setLayoutStage = (stage: LayoutStage): void => {
+    layoutStageState.value = stage;
   };
 
   const setSidebarTab = (tab: SidebarTab): void => {
@@ -153,7 +195,12 @@ const useAppLayout = (): UseAppLayoutReturn => {
   }
 
   return {
-    isSidebarOpen: isSidebarOpenState,
+    isSidebarOpen,
+    isRequestBuilderOpen,
+    layoutStage,
+    sidebarPanelClass,
+    mainContainerClass,
+    innerPanelClass,
     activeSidebarTab: activeSidebarTabState,
     isSettingsOpen,
     settings,
@@ -163,6 +210,7 @@ const useAppLayout = (): UseAppLayoutReturn => {
     executionResult,
     isLoading,
     toggleSidebar,
+    setLayoutStage,
     setSidebarTab,
     openSettings,
     closeSettings,
@@ -178,4 +226,4 @@ const useAppLayout = (): UseAppLayoutReturn => {
   };
 };
 
-export { useAppLayout };
+export { useAppLayout, resetLayoutStage };

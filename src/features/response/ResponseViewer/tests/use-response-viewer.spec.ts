@@ -54,6 +54,8 @@ describe('useResponseViewer', () => {
 
     viewer.setTab('headers');
     expect(viewer.activeTab.value).toBe('headers');
+    viewer.setTab('diff');
+    expect(viewer.activeTab.value).toBe('diff');
     viewer.setTab('body');
     expect(viewer.activeTab.value).toBe('body');
   });
