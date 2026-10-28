@@ -1,22 +1,49 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useCollections } from '../../../features/collections';
 import { useSettings } from '../../../features/settings';
-import { useAppLayout } from '../use-app-layout';
+import { useAppLayout, resetLayoutStage } from '../use-app-layout';
 
 describe('useAppLayout', () => {
   beforeEach(() => {
+    resetLayoutStage();
     const layout = useAppLayout();
     layout.setSidebarTab('collections');
   });
 
-  it('should toggle sidebar open and closed', () => {
+  it('should cycle layout stages on toggleSidebar', () => {
     const layout = useAppLayout();
 
+    expect(layout.layoutStage.value).toBe('full');
     expect(layout.isSidebarOpen.value).toBe(true);
+    expect(layout.isRequestBuilderOpen.value).toBe(true);
+
     layout.toggleSidebar();
+    expect(layout.layoutStage.value).toBe('compact');
     expect(layout.isSidebarOpen.value).toBe(false);
+    expect(layout.isRequestBuilderOpen.value).toBe(true);
+
     layout.toggleSidebar();
+    expect(layout.layoutStage.value).toBe('focus');
+    expect(layout.isSidebarOpen.value).toBe(false);
+    expect(layout.isRequestBuilderOpen.value).toBe(false);
+
+    layout.toggleSidebar();
+    expect(layout.layoutStage.value).toBe('full');
     expect(layout.isSidebarOpen.value).toBe(true);
+    expect(layout.isRequestBuilderOpen.value).toBe(true);
+  });
+
+  it('should allow setting layoutStage directly', () => {
+    const layout = useAppLayout();
+
+    layout.setLayoutStage('compact');
+    expect(layout.layoutStage.value).toBe('compact');
+
+    layout.setLayoutStage('focus');
+    expect(layout.layoutStage.value).toBe('focus');
+
+    layout.setLayoutStage('full');
+    expect(layout.layoutStage.value).toBe('full');
   });
 
   it('should switch sidebar tabs between collections and history', () => {

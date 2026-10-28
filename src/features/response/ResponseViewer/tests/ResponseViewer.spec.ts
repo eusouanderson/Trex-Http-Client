@@ -216,4 +216,29 @@ describe('ResponseViewer Component', () => {
     expect(wrapper.text()).toContain('A URL da requisição não pode estar vazia.');
     expect(wrapper.text()).toContain('Informe uma URL válida ou um caminho relativo.');
   });
+
+  it('should switch to diff tab and render response-diff-viewer', async () => {
+    const wrapper = mount(ResponseViewer, {
+      props: {
+        loading: false,
+        activeTabId: 'tab-1',
+        result: {
+          status: 200,
+          statusText: 'OK',
+          durationMs: 45,
+          sizeBytes: 128,
+          headers: {},
+          data: { dino: 'T-Rex' },
+        },
+      },
+    });
+
+    const diffBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Comparar'));
+    expect(diffBtn).toBeDefined();
+    await diffBtn?.trigger('click');
+
+    expect(wrapper.text()).toContain('Comparar com:');
+  });
 });

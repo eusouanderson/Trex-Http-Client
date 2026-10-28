@@ -422,4 +422,22 @@ describe('useRequest', () => {
     clearValidationIssues('');
     setValidationIssues([], '');
   });
+
+  it('should expose executionResultsByTab and getExecutionResultByTabId', async () => {
+    const { createTab, sendRequest, executionResultsByTab, getExecutionResultByTabId } = useRequest();
+
+    const tab = createTab({
+      url: 'https://eusouanderson.github.io/Trex-Http-Client/get',
+      method: 'GET',
+    });
+
+    expect(getExecutionResultByTabId(tab.id)).toBeNull();
+
+    await sendRequest();
+
+    const retrieved = getExecutionResultByTabId(tab.id);
+    expect(retrieved).not.toBeNull();
+    expect(retrieved?.status).toBe(200);
+    expect(executionResultsByTab.value[tab.id]?.status).toBe(200);
+  });
 });

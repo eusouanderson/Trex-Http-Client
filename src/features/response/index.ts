@@ -1,4 +1,5 @@
 import ResponseViewer from './ResponseViewer/index.vue';
+import { ResponseDiffViewer } from './ResponseDiffViewer';
 
 export type {
   ResponseMeta,
@@ -7,4 +8,5 @@ export type {
 
 export {
   ResponseViewer,
+  ResponseDiffViewer,
 };

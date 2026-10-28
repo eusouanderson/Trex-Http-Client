@@ -5,10 +5,12 @@ import CollectionTree from '../../../features/collections/CollectionTree/index.v
 import { EnvironmentSelector } from '../../../features/environments';
 import { useRequest } from '../../../features/request';
 import { useSettings } from '../../../features/settings';
+import { resetLayoutStage } from '../use-app-layout';
 import AppLayout from '../index.vue';
 
 describe('AppLayout Component', () => {
   beforeEach(() => {
+    resetLayoutStage();
     const { createTab, activeTabId, setActiveTab } = useRequest();
     if (!activeTabId.value) {
       createTab();
@@ -17,7 +19,10 @@ describe('AppLayout Component', () => {
     }
   });
 
-  it('should render AppLayout and handle sidebar toggling', async () => {
+  it('should render AppLayout and handle sidebar toggling across three stages', async () => {
+    const { updateSettings } = useSettings();
+    updateSettings({ panelLayout: 'default' });
+
     const wrapper = mount(AppLayout, {
       global: {
         stubs: {
@@ -40,8 +45,30 @@ describe('AppLayout Component', () => {
 
     const toggleSidebarBtn = wrapper.find('button[title="Alternar Barra Lateral"]');
     expect(toggleSidebarBtn.exists()).toBe(true);
+    expect(wrapper.find('.collection-tree-stub').exists()).toBe(true);
+    expect(wrapper.find('.request-builder-stub').exists()).toBe(true);
+    expect(wrapper.find('.response-viewer-stub').exists()).toBe(true);
+
     await toggleSidebarBtn.trigger('click');
+    expect(wrapper.find('.collection-tree-stub').exists()).toBe(false);
+    expect(wrapper.find('.request-builder-stub').exists()).toBe(true);
+    expect(wrapper.find('.response-viewer-stub').exists()).toBe(true);
+
     await toggleSidebarBtn.trigger('click');
+    expect(wrapper.find('.collection-tree-stub').exists()).toBe(false);
+    expect(wrapper.find('.request-builder-stub').exists()).toBe(false);
+    expect(wrapper.find('.response-viewer-stub').exists()).toBe(true);
+
+    updateSettings({ panelLayout: 'separated' });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.response-viewer-stub').exists()).toBe(true);
+    updateSettings({ panelLayout: 'default' });
+    await wrapper.vm.$nextTick();
+
+    await toggleSidebarBtn.trigger('click');
+    expect(wrapper.find('.collection-tree-stub').exists()).toBe(true);
+    expect(wrapper.find('.request-builder-stub').exists()).toBe(true);
+    expect(wrapper.find('.response-viewer-stub').exists()).toBe(true);
   });
 
   it('should render tabs and allow tab selection and closure', async () => {

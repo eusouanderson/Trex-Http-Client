@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { CodeEditor } from '../../../shared/editor/CodeEditor';
+import { ResponseDiffViewer } from '../ResponseDiffViewer';
 import { TestResultsViewer } from '../TestResultsViewer';
 import type { ResponseViewerProps } from './interfaces';
 import { useResponseViewer } from './use-response-viewer';
@@ -73,6 +74,14 @@ const {
           >
             {{ result.testResults.totalPassed }}/{{ result.testResults.results.length }}
           </span>
+        </button>
+        <button
+          type="button"
+          class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors"
+          :class="activeTab === 'diff' ? 'bg-surface-border text-bone-100' : 'text-fossil-400 hover:text-bone-200'"
+          @click="setTab('diff')"
+        >
+          Comparar
         </button>
       </div>
     </div>
@@ -153,6 +162,10 @@ const {
 
       <div v-else-if="activeTab === 'tests'" class="h-full">
         <test-results-viewer :report="result.testResults" />
+      </div>
+
+      <div v-else-if="activeTab === 'diff'" class="h-full">
+        <response-diff-viewer :current-result="result" :active-tab-id="activeTabId" />
       </div>
     </div>
   </div>
