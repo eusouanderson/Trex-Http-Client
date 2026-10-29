@@ -1,3 +1,11 @@
+## [1.20.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.20.0...v1.20.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* **ci:** declarar campo packages no pnpm-workspace para compatibilidade com pnpm 9 ([d3c86ab](https://github.com/eusouanderson/Trex-Http-Client/commit/d3c86abb4043289538d05e88d88d5c54024e9d11))
+* **security:** atualizar vite e configurar overrides para mitigar vulnerabilidades do dependabot ([2c8757f](https://github.com/eusouanderson/Trex-Http-Client/commit/2c8757f9bedfabb4ad08f8fcc6105d1b2256eb98))
+
 # [1.20.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.19.0...v1.20.0) (2026-10-28)
 
 
