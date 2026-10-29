@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DocOrchestratorService } from '../doc-orchestrator.service';
 import type {
@@ -18,16 +19,16 @@ describe('DocOrchestratorService', () => {
   let mockMetricsCollector: IMetricsCollectorService;
   let mockPrHistoryService: IPrHistoryService;
 
-  let execSpy: ReturnType<typeof vi.fn>;
-  let analyzeSpy: ReturnType<typeof vi.fn>;
-  let buildPortalSpy: ReturnType<typeof vi.fn>;
-  let buildGuideSpy: ReturnType<typeof vi.fn>;
-  let existsSpy: ReturnType<typeof vi.fn>;
-  let mkdirSpy: ReturnType<typeof vi.fn>;
-  let readSpy: ReturnType<typeof vi.fn>;
-  let writeSpy: ReturnType<typeof vi.fn>;
-  let recordVersionMock: ReturnType<typeof vi.fn>;
-  let syncFromGitMock: ReturnType<typeof vi.fn>;
+  let execSpy: Mock<ICommandRunner['exec']>;
+  let analyzeSpy: Mock<IGroqDocService['analyzeChanges']>;
+  let buildPortalSpy: Mock<IPortalBuilderService['buildPortalHtml']>;
+  let buildGuideSpy: Mock<IPortalBuilderService['buildGuideHtml']>;
+  let existsSpy: Mock<IFileSystem['existsSync']>;
+  let mkdirSpy: Mock<IFileSystem['mkdirSync']>;
+  let readSpy: Mock<IFileSystem['readFileSync']>;
+  let writeSpy: Mock<IFileSystem['writeFileSync']>;
+  let recordVersionMock: Mock<IMetricsCollectorService['recordVersion']>;
+  let syncFromGitMock: Mock<IPrHistoryService['syncFromGit']>;
 
   beforeEach(() => {
     vi.restoreAllMocks();

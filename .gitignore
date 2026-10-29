@@ -10,7 +10,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-pnpm-workspace.yaml
 coverage
 .lighthouseci
 .DS_Store

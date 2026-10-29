@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ICommandRunner, IFileSystem, IGroqDocService } from '../interfaces';
 import { PrHistoryService } from '../pr-history.service';
@@ -7,8 +8,8 @@ describe('PrHistoryService', () => {
   let mockFileSystem: IFileSystem;
   let mockCommandRunner: ICommandRunner;
   let mockGroqDocService: IGroqDocService;
-  let execMock: ReturnType<typeof vi.fn>;
-  let analyzeChangesMock: ReturnType<typeof vi.fn>;
+  let execMock: Mock<ICommandRunner['exec']>;
+  let analyzeChangesMock: Mock<IGroqDocService['analyzeChanges']>;
   const projectRoot = '/test/project';
 
   beforeEach(() => {
