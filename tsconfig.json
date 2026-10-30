@@ -29,6 +29,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "vite.config.ts",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "e2e/**/*.ts"
   ]
 }
