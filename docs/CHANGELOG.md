@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.20.1...v1.21.0) (2026-10-30)
+
+
+### Features
+
+* **e2e:** implementar suite completa de testes ponta a ponta com playwright e page objects ([860bc6a](https://github.com/eusouanderson/Trex-Http-Client/commit/860bc6ad7e7a7a9f776379965e8f472ffe30f6dd))
+
 ## [1.20.1](https://github.com/eusouanderson/Trex-Http-Client/compare/v1.20.0...v1.20.1) (2026-10-29)
 
 

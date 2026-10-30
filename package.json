@@ -1,7 +1,7 @@
 {
   "name": "trex-http-client",
   "private": true,
-  "version": "1.20.1",
+  "version": "1.21.0",
   "type": "module",
   "author": "Anderson Rodrigues da Silva",
   "contributors": [
